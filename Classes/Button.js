@@ -76,9 +76,6 @@ Button.prototype.setOnClickWithParam = function(onClick, param) {
 	});
 };
 
-
-
 Button.prototype.setOnClick = function(onClick) {
-	this.svg.clickBox.addEventListener('click', onClick); 
+	this.svg.clickBox.addEventListener('click', onClick);
 };
-

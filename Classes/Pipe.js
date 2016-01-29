@@ -12,7 +12,7 @@ function Pipe(center, width, interiorHeight, wallWidth)
 	this.position = {x: 0, y: 0};
 	this.rect = this.getRect();
 	this.updatePosition();
-	
+
 }
 Pipe.prototype.createSVG = function() {
 	var SVGMain = document.getElementById("main");
@@ -21,7 +21,6 @@ Pipe.prototype.createSVG = function() {
 
 	SVGMain.appendChild(this.svg.walls);
 	SVGMain.appendChild(this.svg.interior);
-
 };
 
 Pipe.prototype.updateSVG = function() {
@@ -49,7 +48,7 @@ Pipe.prototype.updateSVG = function() {
 		this.svg.interior.setAttribute("y", this.position.y);
 	}
 
-	// walls 
+	// walls
 	this.svg.walls.setAttribute("x", this.position.x);
 	this.svg.walls.setAttribute("y", this.position.y);
 	this.svg.walls.setAttribute("fill", "black");
@@ -58,6 +57,11 @@ Pipe.prototype.updateSVG = function() {
 	this.svg.interior.setAttribute("fill", "blue");
 
 }
+
+Pipe.prototype.setAlignment = function (alignment) {
+	this.alignment = alignment
+	this.updatePosition()
+};
 
 Pipe.prototype.updatePosition = function() {
 	if(this.alignment === "horizontal") {
@@ -86,7 +90,7 @@ Pipe.prototype.getHeight = function() {
 		return this.interiorHeight + this.wallWidth * 2;
 	} else {
 		return this.width;
-	} 
+	}
 };
 
 Pipe.prototype.getWidth = function() {
@@ -94,7 +98,7 @@ Pipe.prototype.getWidth = function() {
 		return this.width;
 	} else {
 		return this.interiorHeight + this.wallWidth * 2;
-	} 
+	}
 };
 
 

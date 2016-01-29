@@ -1,4 +1,4 @@
-function Rect(position, width, height, color, fillOpacity) 
+function Rect(position, width, height, color, fillOpacity)
 {
 	this.width = width;
 	this.height = height;
@@ -18,11 +18,11 @@ Rect.prototype.intersects = function(rect) {
 	return  (
 				// this intersects rect
 			   ( // top left
-					   this.position.x <= rect.position.x 
+					   this.position.x <= rect.position.x
 					&& this.position.x + this.width >= rect.position.x
 					&& this.position.y <= rect.position.y
 					&& this.position.y + this.height >= rect.position.y
-			   ) || 
+			   ) ||
 			   ( // top right
 					   this.position.x <= rect.position.x + rect.width
 					&& this.position.x + this.width >= rect.position.x + rect.width
@@ -43,11 +43,11 @@ Rect.prototype.intersects = function(rect) {
 			   ) ||
 			   // rect intersects this
 			   ( // top left
-					   rect.position.x <= this.position.x 
+					   rect.position.x <= this.position.x
 					&& rect.position.x + rect.width >= this.position.x
 					&& rect.position.y <= this.position.y
 					&& rect.position.y + rect.height >= this.position.y
-			   ) || 
+			   ) ||
 			   ( // top right
 					   rect.position.x <= this.position.x + this.width
 					&& rect.position.x + rect.width >= this.position.x + this.width
@@ -67,6 +67,27 @@ Rect.prototype.intersects = function(rect) {
 					&& rect.position.y + rect.height >= this.position.y + this.height
 			   )
 			);
+};
+
+
+/*
+	Constructs a rectangle from two points.
+*/
+Rect.prototype.fromPoints = function (point1, point2) {
+	if(point1.x < point2.x) {
+		this.position.x = point1.x;
+	} else {
+		this.position.x = point2.x;
+	}
+
+	if(point1.y > point2.y) {
+		this.position.y = point1.y;
+	} else {
+		this.position.y = point2.y;
+	}
+
+	this.width = Math.abs(point1.x - point2.x);
+	this.height = Math.abs(point1.y - point2.y);
 };
 
 

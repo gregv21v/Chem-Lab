@@ -7,10 +7,10 @@
 	<!--
 		In the process of building the functionality of attaching pipes to tanks
 
-		
+
 		TODO: Pipes to connect the two tanks
 		TODO: Animation of liquid flowing through the pipes
-		TODO: Pump (whenever a pump is clicked it produces a square drop of liquid which moves down from the opening 
+		TODO: Pump (whenever a pump is clicked it produces a square drop of liquid which moves down from the opening
 					of the pump until it encounters a tank. At that point, it enters the tank, and fills that tank 1 unit.)
 		TODO: Multiple tanks
 		TODO: Pump to pump liquids out of tanks
@@ -23,27 +23,31 @@
 	-->
 
 
-	<!-- 
+	<!--
 		Main Idea:
 			A game about creating the most efficient fuel
 
 
 			You have a pump to collect liquid. Every click you get one drop of liquid.
 			Later, you can use your liquid to power an engine that will automatically pump liquid
-	--> 
+	-->
 
-	<style src="Main.css"></style>
 
-	<script src="jquery-1.11.3.min.js"></script>
-	<script src="Rect.js"></script>
-	<script src="World.js"></script>
-	<script src="Tank.js"></script>
-	<script src="Liquid.js"></script>
-	<script src="Pipe.js"></script>
-	<script src="Drop.js"></script>
-	<script src="Pump.js"></script>
-	<script src="Button.js"></script>
-	<script src="Inventory.js"></script>
+	<style src="CSS/style.css"></style>
+	<script src="Libraries/jquery-1.11.3.min.js"></script>
+
+	<script src="Classes/Shapes/Rect.js"></script>
+	<script src="Classes/Shapes/Point.js"></script>
+	<script src="Classes/Shapes/Circle.js"></script>
+
+	<script src="Classes/World.js"></script>
+	<script src="Classes/Tank.js"></script>
+	<script src="Classes/Liquid.js"></script>
+	<script src="Classes/Pipe.js"></script>
+	<script src="Classes/Drop.js"></script>
+	<script src="Classes/Pump.js"></script>
+	<script src="Classes/Button.js"></script>
+	<script src="Classes/Inventory.js"></script>
 
 
 
@@ -52,13 +56,12 @@
 		var inv = null;
 
 
-
 		$(document).ready(function() {
 			var svg = document.querySelector("svg");
 
 
-			world = new World({x: 270, y: 20}, svg.getAttribute("width") - (270 + 40), svg.getAttribute("height") - 120);
-			inv = new Inventory(world, {x: 20, y: 20}, 250, svg.getAttribute("height") - 120);
+			world = new World({x: 270, y: 20}, svg.getAttribute("width") - (270 + 40), svg.getAttribute("height") - 150);
+			inv = new Inventory(world, {x: 20, y: 20}, 250, svg.getAttribute("height") - 150);
 
 			inv.objs.push(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
 			inv.objs.push(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
@@ -87,7 +90,7 @@
 				world.update();
 			}, 20);
 		});
-			
+
 
 	</script>
 

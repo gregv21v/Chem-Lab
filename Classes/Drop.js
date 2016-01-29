@@ -13,6 +13,8 @@ function Drop(world, position, size, fill)
 	this.id = lastId;
 	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
+
+
 	lastId += 1;
 }
 /*
@@ -37,10 +39,18 @@ Drop.prototype.updateSVG = function() {
 	this.svg.setAttribute("fill", this.fill);
 };
 
+
+/*
+  Removes the svg
+*/
 Drop.prototype.destroySVG = function() {
 	this.svg.remove();
 }
 
+
+/*
+  Causes a drop to fall until it enters a tank, or exits the world
+*/
 Drop.prototype.fall = function() {
 	var self = this;
 
@@ -49,12 +59,13 @@ Drop.prototype.fall = function() {
 	this.position.y += 1;
 	this.updateSVG();
 
+  // drop is outside the world
 	if(!this.world.within({position: this.position, width: this.size, height: this.size}))
 	{
 		this.world.removeDrop(this);
 		this.destroySVG();
-	} 
-	else
+	}
+	else // drop is inside the world
 	{
 		// if in tank, remove drop and fill tank with size of drop
 		this.world.objs.forEach(function(obj) {
@@ -62,7 +73,7 @@ Drop.prototype.fall = function() {
 
 			if(obj instanceof Tank && obj.containsDrop(self))
 			{
-
+        // add respective amount of fluid to the tank
 				obj.addLiquid(self.size * self.size);
 				obj.updateLiquidSVG();
 
