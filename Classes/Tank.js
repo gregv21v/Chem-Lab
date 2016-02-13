@@ -26,6 +26,8 @@ function Tank(position, interior, wallWidth)
 	this.interior = interior;
 	this.wallWidth = wallWidth;
 	this.position = position;
+	this.snapPosition = {x: 0, y: 0};
+	this.snapping = false;
 	this.wallColor = "green";
 	this.liquidColor = "blue";
 	this.active = false;
@@ -34,12 +36,23 @@ function Tank(position, interior, wallWidth)
 		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
 		liquid: document.createElementNS("http://www.w3.org/2000/svg", "rect")
 	};
-	this.snapArea = null
+	this.snapAreas = {
+		bottom: null,
+		left: null,
+		right: null
+	}
 
 
 	// initial update
-	this.updateSnapArea();
+	this.updateSnapAreas();
 }
+
+Tank.prototype.centerAt = function (point) {
+	this.position.x = point.x - this.getWidth()/2;
+	this.position.y = point.y - this.getHeight()/2;
+
+	this.updateSVG();
+};
 
 Tank.prototype.getPercentageFull = function() {
 	return (100 * this.currentLevel/this.maxLevel);
@@ -59,8 +72,8 @@ Tank.prototype.createSVG = function() {
 };
 Tank.prototype.updateSVG = function() {
 	// setup walls svg
-	this.svg.walls.setAttribute("height", this.interior.height + this.wallWidth);
-	this.svg.walls.setAttribute("width", this.interior.width + (this.wallWidth*2));
+	this.svg.walls.setAttribute("height", this.getHeight());
+	this.svg.walls.setAttribute("width", this.getWidth());
 	this.svg.walls.setAttribute("x", this.position.x);
 	this.svg.walls.setAttribute("y", this.position.y);
 	this.svg.walls.setAttribute("fill", this.wallColor);
@@ -160,33 +173,91 @@ Tank.prototype.getHeight = function() {
 	return this.interior.height + this.wallWidth;
 }
 
+/*
+	Get a rectangle representing the tank.
+*/
 Tank.prototype.getRect = function() {
-	return new Tank(this.position, this.interior.width + this.wallWidth * 2, this.interior.height + this.wallWidth);
+	return new Rect(this.position, this.getWidth(), this.getHeight());
 };
 
-
+/*
+	Gets the center of the tank
+*/
 Tank.prototype.getCenter = function () {
 	return {
-		x: this.position.x + (this.interior.width + this.wallWidth * 2) / 2,
-		y: this.position.y + (this.interior.height + this.wallWidth) / 2,
+		x: this.position.x + (this.getWidth()) / 2,
+		y: this.position.y + (this.getHeight()) / 2,
 	};
 };
+
+
+
 
 /*
 	Updates the areas around the tank and inside the tank that will be used for attaching
 	pipes to tanks.
 
-	New snapping grid consists of a circle
+	(note: maybe combining solution 2, with the phantom pipe)
+	There are two possible alternatives to the snap areas.
+
+	A circlular snap area.
+	A a bunch of rectanglar snap areas
 */
-Tank.prototype.updateSnapArea = function() {
-	var center = this.getCenter();
-	this.snapArea = new Circle(center, Distance(this.position, center));
+Tank.prototype.updateSnapAreas = function() {
+	var externalWidth = 15;
+
+	// left
+	this.snapAreas.left = new Rect(
+			{x: this.position.x - externalWidth, y: this.position.y},
+			externalWidth,
+			this.getHeight(),
+			"orange",
+			1
+		);
+
+	// right
+	this.snapAreas.right = new Rect(
+			{x: this.position.x + this.getWidth(), y: this.position.y},
+			externalWidth,
+			this.getHeight(),
+			"orange",
+			1
+		);
+
+	// bottom
+	this.snapAreas.bottom = new Rect(
+			{x: this.position.x, y: this.position.y + this.getHeight()},
+			this.getWidth(),
+			externalWidth,
+			"orange",
+			1
+		);
 };
 
-Tank.prototype.showSnapArea = function () {
-	this.snapArea.createSVG()
+/*
+	Update the snap area SVG's
+*/
+Tank.prototype.updateSnapAreasSVG = function () {
+	this.snapAreas.first.updateSVG();
+	this.snapAreas.second.updateSVG();
 };
 
-Tank.prototype.hideSnapArea = function () {
-	this.snapArea.destroySVG()
+/*
+	Shows the snap area for the tank. Used
+	for debugging purposes.
+*/
+Tank.prototype.showSnapAreas = function () {
+	this.snapAreas.left.createSVG();
+	this.snapAreas.right.createSVG();
+	this.snapAreas.bottom.createSVG();
+};
+
+/*
+	Hides the snap area for the tank. Used
+	for debugging purposes.
+*/
+Tank.prototype.hideSnapAreas = function () {
+	this.snapAreas.left.destroySVG();
+	this.snapAreas.right.destroySVG();
+	this.snapAreas.bottom.destroySVG();
 };

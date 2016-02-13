@@ -11,7 +11,6 @@ function Rect(position, width, height, color, fillOpacity)
 
 /*
 	Determines if two rectangles intersect
-
 */
 Rect.prototype.intersects = function(rect) {
 	// if at least one corner of the rect is in the other rect
@@ -68,6 +67,7 @@ Rect.prototype.intersects = function(rect) {
 			   )
 			);
 };
+
 
 
 /*

@@ -2,16 +2,23 @@ function Pipe(center, width, interiorHeight, wallWidth)
 {
 	this.wallWidth = wallWidth;
 	this.interiorHeight = interiorHeight;
-	this.center = center;
+	this.center = center; // position of pipe
+	this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
+	this.snapping = false;
 	this.width = width;
 	this.svg = {
 		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
 		walls: document.createElementNS("http://www.w3.org/2000/svg", "rect")
 	}
 	this.alignment = "vertical";
+	this.snapAreas = {
+		first: null, // the
+		second: null // also the
+	};
 	this.position = {x: 0, y: 0};
 	this.rect = this.getRect();
 	this.updatePosition();
+	this.updateSnapAreas();
 
 }
 Pipe.prototype.createSVG = function() {
@@ -27,20 +34,12 @@ Pipe.prototype.updateSVG = function() {
 	this.updatePosition();
 
 	if(this.alignment === "horizontal") {
-		// walls
-		this.svg.walls.setAttribute("width", this.getWidth());
-		this.svg.walls.setAttribute("height", this.getHeight());
-
 		// interior
 		this.svg.interior.setAttribute("width", this.width);
 		this.svg.interior.setAttribute("height", this.interiorHeight);
 		this.svg.interior.setAttribute("x", this.position.x);
 		this.svg.interior.setAttribute("y", this.position.y + this.wallWidth);
 	} else {
-		// walls
-		this.svg.walls.setAttribute("width", this.getWidth());
-		this.svg.walls.setAttribute("height", this.getHeight());
-
 		// interior
 		this.svg.interior.setAttribute("width", this.interiorHeight);
 		this.svg.interior.setAttribute("height", this.width);
@@ -49,6 +48,8 @@ Pipe.prototype.updateSVG = function() {
 	}
 
 	// walls
+	this.svg.walls.setAttribute("width", this.getWidth());
+	this.svg.walls.setAttribute("height", this.getHeight());
 	this.svg.walls.setAttribute("x", this.position.x);
 	this.svg.walls.setAttribute("y", this.position.y);
 	this.svg.walls.setAttribute("fill", "black");
@@ -59,17 +60,18 @@ Pipe.prototype.updateSVG = function() {
 }
 
 Pipe.prototype.setAlignment = function (alignment) {
-	this.alignment = alignment
-	this.updatePosition()
+	this.alignment = alignment;
+	this.updateSnapAreas();
+	this.updatePosition();
 };
 
 Pipe.prototype.updatePosition = function() {
-	if(this.alignment === "horizontal") {
+	if(!this.snapping) {
 		this.position.x = this.center.x - this.getWidth()/2;
 		this.position.y = this.center.y - this.getHeight()/2;
 	} else {
-		this.position.x = this.center.x - this.getWidth()/2;
-		this.position.y = this.center.y - this.getHeight()/2;
+		this.position.x = this.snapCenter.x - this.getWidth()/2;
+		this.position.y = this.snapCenter.y - this.getHeight()/2;
 	}
 }
 
@@ -79,9 +81,9 @@ Pipe.prototype.updatePosition = function() {
 
 Pipe.prototype.rotate = function() {
 	if(this.alignment === "horizontal") {
-		this.alignment = "vertical";
+		this.setAlignment("vertical");
 	} else {
-		this.alignment = "horizontal";
+		this.setAlignment("horizontal");
 	}
 }
 
@@ -110,12 +112,94 @@ Pipe.prototype.getInfo = function() {
 };
 
 Pipe.prototype.getRect = function() {
+	this.updatePosition();
 	return new Rect(
 			{
-				x: this.position.x - (this.interiorHeight + this.wallWidth * 2)/2,
-				y: this.position.y - (this.interiorHeight + this.wallWidth * 2)/2
+				x: this.position.x,
+				y: this.position.y
 			},
 			this.getWidth(),
 			this.getHeight()
 		);
+};
+
+Pipe.prototype.updateSnapAreas = function () {
+	var externalWidth = 15;
+	if(this.alignment === "horizontal") {
+		// left
+		this.snapAreas.first = new Rect(
+			{
+				x: this.position.x - externalWidth,
+				y: this.position.y
+			},
+			externalWidth,
+			this.getHeight(),
+			"orange",
+			1
+		)
+
+		// right
+		this.snapAreas.second = new Rect(
+			{
+				x: this.position.x + this.getWidth(),
+				y: this.position.y
+			},
+			externalWidth,
+			this.getHeight(),
+			"orange",
+			1
+		)
+
+	} else if(this.alignment === "vertical") {
+		// top
+		this.snapAreas.first = new Rect(
+			{
+				x: this.position.x,
+				y: this.position.y - externalWidth
+			},
+			externalWidth,
+			this.getHeight(),
+			"orange",
+			1
+		)
+
+		// bottom
+		this.snapAreas.second = new Rect(
+			{
+				x: this.position.x,
+				y: this.position.y + this.getHeight()
+			},
+			externalWidth,
+			this.getHeight(),
+			"orange",
+			1
+		)
+
+	}
+};
+
+/*
+	Update the snap area SVG's
+*/
+Pipe.prototype.updateSnapAreasSVG = function () {
+	this.snapAreas.first.updateSVG();
+	this.snapAreas.second.updateSVG();
+};
+
+/*
+	Shows the snap area for the pipe. Used
+	for debugging purposes.
+*/
+Pipe.prototype.showSnapAreas = function () {
+	this.snapAreas.first.createSVG();
+	this.snapAreas.second.createSVG();
+};
+
+/*
+	Hides the snap area for the pipe. Used
+	for debugging purposes.
+*/
+Pipe.prototype.hideSnapAreas = function () {
+	this.snapAreas.first.destroySVG();
+	this.snapAreas.second.destroySVG();
 };

@@ -48,47 +48,23 @@
 	<script src="Classes/Pump.js"></script>
 	<script src="Classes/Button.js"></script>
 	<script src="Classes/Inventory.js"></script>
+	<script src="Classes/Player.js"></script>
+
 
 
 
 	<script type="text/javascript">
-		var world = null;
-		var inv = null;
-
+		var player = null;
 
 		$(document).ready(function() {
-			var svg = document.querySelector("svg");
+			player = new Player();
 
-
-			world = new World({x: 270, y: 20}, svg.getAttribute("width") - (270 + 40), svg.getAttribute("height") - 150);
-			inv = new Inventory(world, {x: 20, y: 20}, 250, svg.getAttribute("height") - 150);
-
-			inv.objs.push(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-			inv.objs.push(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-			inv.objs.push(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-			inv.objs.push(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-			inv.objs.push(new Pipe({x: 500, y: 500}, 100, 10, 5));
-
-			inv.createSVG();
+			player.createSVG();
+			player.update();
 
 
 
-			var tank = new Tank({x: 475, y: 540}, {width: 100, height: 100}, 5);
-			tank.wallColor = "green";
-			tank.liquidColor = "blue";
 
-			world.objs.push(tank);
-			//world.pipes.push(new Pipe({x: 500, y: 500}, 100, 20, 5));
-			world.objs.push(new Pump(world, {x: 500, y: 500}, 10));
-			world.objs.push(new Pump(world, {x: 540, y: 500}, 10));
-
-			world.createSVG();
-			world.showTankSnapArea();
-
-			// fill the tank
-			setInterval(function() {
-				world.update();
-			}, 20);
 		});
 
 
