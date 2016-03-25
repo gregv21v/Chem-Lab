@@ -1,12 +1,27 @@
-function Rect(position, width, height, color, fillOpacity)
+function Rect()
 {
-	this.width = width;
-	this.height = height;
-	this.position = position;
-	this.color = color;
-	this.fillOpacity = fillOpacity;
+	this.width = 0;
+	this.height = 0;
+	this.position = {x: 0, y: 0};
+	this.fill = {
+		opacity: 1.0,
+		color: "white"
+	};
+	this.stroke = {
+		color: "blue",
+		width: 10
+	};
 	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 }
+
+Rect.prototype.contains = function (point) {
+	return (
+			this.position.x <= point.x
+	 && this.position.x + this.width >= point.x
+	 && this.position.y <= point.y
+	 && this.position.y + this.height >= point.y
+ );
+};
 
 
 /*
@@ -14,58 +29,18 @@ function Rect(position, width, height, color, fillOpacity)
 */
 Rect.prototype.intersects = function(rect) {
 	// if at least one corner of the rect is in the other rect
-	return  (
-				// this intersects rect
-			   ( // top left
-					   this.position.x <= rect.position.x
-					&& this.position.x + this.width >= rect.position.x
-					&& this.position.y <= rect.position.y
-					&& this.position.y + this.height >= rect.position.y
-			   ) ||
-			   ( // top right
-					   this.position.x <= rect.position.x + rect.width
-					&& this.position.x + this.width >= rect.position.x + rect.width
-					&& this.position.y <= rect.position.y
-					&& this.position.y + this.height >= rect.position.y
-			   ) ||
-			   ( // bottom left
-					   this.position.x <= rect.position.x
-					&& this.position.x + this.width >= rect.position.x
-					&& this.position.y <= rect.position.y + rect.height
-					&& this.position.y + this.height >= rect.position.y + rect.height
-			   ) ||
-			   ( // bottom right
-					   this.position.x <= rect.position.x + rect.width
-					&& this.position.x + this.width >= rect.position.x + rect.width
-					&& this.position.y <= rect.position.y + rect.height
-					&& this.position.y + this.height >= rect.position.y + rect.height
-			   ) ||
-			   // rect intersects this
-			   ( // top left
-					   rect.position.x <= this.position.x
-					&& rect.position.x + rect.width >= this.position.x
-					&& rect.position.y <= this.position.y
-					&& rect.position.y + rect.height >= this.position.y
-			   ) ||
-			   ( // top right
-					   rect.position.x <= this.position.x + this.width
-					&& rect.position.x + rect.width >= this.position.x + this.width
-					&& rect.position.y <= this.position.y
-					&& rect.position.y + rect.height >= this.position.y
-			   ) ||
-			   ( // bottom left
-					   rect.position.x <= this.position.x
-					&& rect.position.x + rect.width >= this.position.x
-					&& rect.position.y <= this.position.y + this.height
-					&& rect.position.y + rect.height >= this.position.y + this.height
-			   ) ||
-			   ( // bottom right
-					   rect.position.x <= this.position.x + this.width
-					&& rect.position.x + rect.width >= this.position.x + this.width
-					&& rect.position.y <= this.position.y + this.height
-					&& rect.position.y + rect.height >= this.position.y + this.height
-			   )
-			);
+	return (
+		// this intersects rect
+		this.contains({x: rect.position.x, y: rect.position.y}) || // top left
+		this.contains({x: rect.position.x + rect.width, y: rect.position.y}) || // top right
+		this.contains({x: rect.position.x, y: rect.position.y + rect.height}) || // bottom left
+		this.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height}) || // bottom right
+		// rect intersects this
+		rect.contains({x: this.position.x, y: this.position.y}) || // top left
+		rect.contains({x: this.position.x + this.width, y: this.position.y}) || // top right
+		rect.contains({x: this.position.x, y: this.position.y + this.height}) || // bottom left
+		rect.contains({x: this.position.x + this.width, y: this.position.y + this.height}) // bottom right
+	);
 };
 
 
@@ -108,6 +83,8 @@ Rect.prototype.updateSVG = function() {
 	this.svg.setAttribute("height", this.height);
 	this.svg.setAttribute("x", this.position.x);
 	this.svg.setAttribute("y", this.position.y);
-	this.svg.setAttribute("fill", this.color);
-	this.svg.setAttribute("fill-opacity", this.fillOpacity);
+	this.svg.setAttribute("stroke-width", this.stroke.width);
+	this.svg.setAttribute("stroke", this.stroke.color);
+	this.svg.setAttribute("fill", this.fill.color);
+	this.svg.setAttribute("fill-opacity", this.fill.opacity);
 };

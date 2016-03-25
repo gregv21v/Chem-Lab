@@ -12,9 +12,22 @@ function Pipe(center, width, interiorHeight, wallWidth)
 	}
 	this.alignment = "vertical";
 	this.snapAreas = {
-		first: null, // the
-		second: null // also the
+		first: new Rect(), // the
+		second: new Rect() // also the
 	};
+	// color first snap areas
+	this.snapAreas.first.stroke.width = 1;
+	this.snapAreas.first.stroke.color = "black";
+	this.snapAreas.first.fill.color = "orange";
+	this.snapAreas.first.fill.opacity = 0.5;
+
+	// color second snap area
+	this.snapAreas.second.stroke.width = 1;
+	this.snapAreas.second.stroke.color = "black";
+	this.snapAreas.second.fill.color = "orange";
+	this.snapAreas.second.fill.opacity = 0.5;
+
+
 	this.position = {x: 0, y: 0};
 	this.rect = this.getRect();
 	this.updatePosition();
@@ -113,67 +126,59 @@ Pipe.prototype.getInfo = function() {
 
 Pipe.prototype.getRect = function() {
 	this.updatePosition();
-	return new Rect(
-			{
-				x: this.position.x,
-				y: this.position.y
-			},
-			this.getWidth(),
-			this.getHeight()
-		);
+	var newRect = new Rect();
+	newRect.position = {
+		x: this.position.x,
+		y: this.position.y
+	};
+	newRect.width =	this.getWidth();
+ 	newRect.height = this.getHeight();
+	return newRect;
 };
 
 Pipe.prototype.updateSnapAreas = function () {
 	var externalWidth = 15;
+
+
+
+
 	if(this.alignment === "horizontal") {
+		this.snapAreas.first.width = externalWidth;
+		this.snapAreas.first.height = this.getHeight();
+
+		this.snapAreas.second.width = externalWidth;
+		this.snapAreas.second.height = this.getHeight();
+
 		// left
-		this.snapAreas.first = new Rect(
-			{
+		this.snapAreas.first.position = {
 				x: this.position.x - externalWidth,
 				y: this.position.y
-			},
-			externalWidth,
-			this.getHeight(),
-			"orange",
-			1
-		)
+		};
+
 
 		// right
-		this.snapAreas.second = new Rect(
-			{
+		this.snapAreas.second.position = {
 				x: this.position.x + this.getWidth(),
 				y: this.position.y
-			},
-			externalWidth,
-			this.getHeight(),
-			"orange",
-			1
-		)
+		};
 
 	} else if(this.alignment === "vertical") {
+		this.snapAreas.first.width = this.getWidth();
+		this.snapAreas.first.height = externalWidth;
+
+		this.snapAreas.second.width =	this.getWidth();
+		this.snapAreas.second.height = externalWidth;
 		// top
-		this.snapAreas.first = new Rect(
-			{
+		this.snapAreas.first.position = {
 				x: this.position.x,
 				y: this.position.y - externalWidth
-			},
-			externalWidth,
-			this.getHeight(),
-			"orange",
-			1
-		)
+		};
 
 		// bottom
-		this.snapAreas.second = new Rect(
-			{
+		this.snapAreas.second.position = {
 				x: this.position.x,
 				y: this.position.y + this.getHeight()
-			},
-			externalWidth,
-			this.getHeight(),
-			"orange",
-			1
-		)
+		};
 
 	}
 };

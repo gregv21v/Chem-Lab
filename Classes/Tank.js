@@ -37,10 +37,30 @@ function Tank(position, interior, wallWidth)
 		liquid: document.createElementNS("http://www.w3.org/2000/svg", "rect")
 	};
 	this.snapAreas = {
-		bottom: null,
-		left: null,
-		right: null
+		bottom: new Rect(),
+		left: new Rect(),
+		right: new Rect()
 	}
+
+	// color bottom snap area
+	this.snapAreas.bottom.stroke.width = 1;
+	this.snapAreas.bottom.stroke.color = "black";
+	this.snapAreas.bottom.fill.color = "green";
+	this.snapAreas.bottom.fill.opacity = 0.5;
+
+	// color left snap area
+	this.snapAreas.left.stroke.width = 1;
+	this.snapAreas.left.stroke.color = "black";
+	this.snapAreas.left.fill.color = "green";
+	this.snapAreas.left.fill.opacity = 0.5;
+
+	// color right snap area
+	this.snapAreas.right.stroke.width = 1;
+	this.snapAreas.right.stroke.color = "black";
+	this.snapAreas.right.fill.color = "green";
+	this.snapAreas.right.fill.opacity = 0.5;
+
+
 
 
 	// initial update
@@ -177,7 +197,11 @@ Tank.prototype.getHeight = function() {
 	Get a rectangle representing the tank.
 */
 Tank.prototype.getRect = function() {
-	return new Rect(this.position, this.getWidth(), this.getHeight());
+	var newRect = new Rect();
+	newRect.position = this.position;
+	newRect.width = this.getWidth();
+	newRect.height = this.getHeight();
+	return newRect;
 };
 
 /*
@@ -207,39 +231,29 @@ Tank.prototype.updateSnapAreas = function() {
 	var externalWidth = 15;
 
 	// left
-	this.snapAreas.left = new Rect(
-			{x: this.position.x - externalWidth, y: this.position.y},
-			externalWidth,
-			this.getHeight(),
-			"orange",
-			1
-		);
+	this.snapAreas.left.position = {x: this.position.x - externalWidth, y: this.position.y};
+	this.snapAreas.left.width = externalWidth;
+	this.snapAreas.left.height = this.getHeight();
 
 	// right
-	this.snapAreas.right = new Rect(
-			{x: this.position.x + this.getWidth(), y: this.position.y},
-			externalWidth,
-			this.getHeight(),
-			"orange",
-			1
-		);
+	this.snapAreas.right.position = {x: this.position.x + this.getWidth(), y: this.position.y};
+	this.snapAreas.right.width = externalWidth;
+	this.snapAreas.right.height = this.getHeight();
 
 	// bottom
-	this.snapAreas.bottom = new Rect(
-			{x: this.position.x, y: this.position.y + this.getHeight()},
-			this.getWidth(),
-			externalWidth,
-			"orange",
-			1
-		);
+	this.snapAreas.bottom.position = {x: this.position.x, y: this.position.y + this.getHeight()};
+	this.snapAreas.bottom.width = this.getWidth();
+	this.snapAreas.bottom.height = externalWidth;
+
 };
 
 /*
 	Update the snap area SVG's
 */
 Tank.prototype.updateSnapAreasSVG = function () {
-	this.snapAreas.first.updateSVG();
-	this.snapAreas.second.updateSVG();
+	this.snapAreas.left.updateSVG();
+	this.snapAreas.right.updateSVG();
+	this.snapAreas.bottom.updateSVG();
 };
 
 /*

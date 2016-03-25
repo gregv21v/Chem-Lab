@@ -15,10 +15,14 @@
 function Inventory(player, position, width, height)
 {
 	this.player = player;
-	this.position = position;
+	this.rect = new Rect();
+	this.rect.position = position;
+	this.rect.width = width;
+	this.rect.height = height;
+	this.rect.stroke.width = 10;
+	this.rect.stroke.color = "black";
+	this.rect.fill.color = "blue";
 	this.objs = [];
-	this.width = width;
-	this.height = height;
 	this.buttons = [];
 
 	var self = this;
@@ -38,21 +42,12 @@ Inventory.prototype.createSVG = function() {
 
 
 	var svg = document.querySelector("svg");
+	this.rect.createSVG();
 
-	var background = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-	background.setAttribute("height", this.height);
-	background.setAttribute("width", this.width);
-	background.setAttribute("x", this.position.x);
-	background.setAttribute("y", this.position.y);
-	background.setAttribute("stroke-width", 10);
-	background.setAttribute("fill", "blue");
-	background.setAttribute("stroke", "black");
-
-	svg.appendChild(background);
 
 	// create the buttons
 	for(var i = 0; i < this.objs.length; i++) {
-		this.buttons.push(new Button({x: this.position.x, y: this.position.y + i * buttonHeight}, this.width, 80));
+		this.buttons.push(new Button({x: this.rect.position.x, y: this.rect.position.y + i * buttonHeight}, this.rect.width, 80));
 		this.buttons[i].setTextFill({color: "black"});
 		this.buttons[i].setFill({color: "blue", opacity: 0.5});
 		this.buttons[i].setText(this.objs[i].getInfo());
@@ -94,8 +89,5 @@ Inventory.prototype.pickItem = function () {
 };
 
 Inventory.prototype.contains = function(point) {
-	return point.x <= this.position.x + this.width
-		&& point.x >= this.position.x
-		&& point.y <= this.position.y + this.height
-		&& point.y >= this.position.y;
+	return this.rect.contains(point);
 };

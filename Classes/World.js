@@ -1,18 +1,22 @@
+/*
+	The world contains all the game objects.
+*/
+
+
 function World(player, position, width, height) {
 	this.player = player;
 	this.mouseObj = null; // the object centered on the mouse
-	this.position = position;
-	this.width = width;
-	this.height = height;
+	this.rect = new Rect();
+	this.rect.position = position;
+	this.rect.width = width;
+	this.rect.height = height;
+	this.rect.stroke.width = 10;
+	this.rect.stroke.color = "black";
 	this.drops = [];
 	this.objs = [];
-	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
-
-	var self = this;
 	var mainSVG = document.querySelector("svg");
-
-
+	var self = this;
 	/*****************************************************
 								Mouse Interactions
 	*****************************************************/
@@ -56,7 +60,7 @@ function World(player, position, width, height) {
 	*****************************************************/
 	document.addEventListener('keypress', function(evnt) {
 		// rotate the pipe in the players hand
-		// r = 114
+		// 'r' = 114
 		if(evnt.keyCode == 114 && self.player.hand instanceof Pipe) {
 			self.player.hand.rotate();
 			self.player.hand.updateSVG();
@@ -64,19 +68,12 @@ function World(player, position, width, height) {
 	})
 }
 
+
+/*
+	Create the SVG for the tank.
+*/
 World.prototype.createSVG = function() {
-	var svgMain = document.querySelector("svg");
-
-	this.svg.setAttribute("x", this.position.x);
-	this.svg.setAttribute("y", this.position.y);
-	this.svg.setAttribute("width", this.width);
-	this.svg.setAttribute("height", this.height);
-	this.svg.setAttribute("stroke-width", 10);
-	this.svg.setAttribute("stroke", "black");
-	this.svg.setAttribute("fill", "white");
-
-
-	svgMain.appendChild(this.svg);
+	this.rect.createSVG();
 
 	// create svg's for all the in world objects except drops
 	for(var i = 0; i < this.objs.length; i++)
@@ -84,6 +81,9 @@ World.prototype.createSVG = function() {
 
 }
 
+/*
+	Add an object (pump, tank... etc) to the world.
+*/
 World.prototype.add = function (obj) {
 	if(!(obj instanceof Pump)) {
 		obj.updateSnapAreas();
@@ -92,13 +92,26 @@ World.prototype.add = function (obj) {
 	this.objs.push(obj);
 };
 
+/*
+	Update the liquid drops that are currently in the
+	world.
+*/
 World.prototype.update = function() {
 	for(var i = 0; i < this.drops.length; i++)
 	{
 		this.drops[i].fall();
 	}
+
+	// move fluid drops through pipes
+
+
 };
 
+
+/*
+	Remove a given drop of liquid from the world.
+	Used for adding liquid drops to a tank.
+*/
 World.prototype.removeDrop = function(drop) {
 	this.drops = this.drops.filter(function(obj) {
 		return obj.id != drop.id;
@@ -107,42 +120,21 @@ World.prototype.removeDrop = function(drop) {
 
 /*
 	Check to see if a rectangler {position, width, height} object is within the world
-
 */
-// Swap from job search to game development, every other day.
-
 World.prototype.within = function(rect) {
 	// if all 4 corners of the rect are in the world
 	return  (
-			   ( // top left
-					   this.position.x <= rect.position.x
-					&& this.position.x + this.width >= rect.position.x
-					&& this.position.y <= rect.position.y
-					&& this.position.y + this.height >= rect.position.y
-			   ) &&
-			   ( // top right
-					   this.position.x <= rect.position.x + rect.width
-					&& this.position.x + this.width >= rect.position.x + rect.width
-					&& this.position.y <= rect.position.y
-					&& this.position.y + this.height >= rect.position.y
-			   ) &&
-			   ( // bottom left
-					   this.position.x <= rect.position.x
-					&& this.position.x + this.width >= rect.position.x
-					&& this.position.y <= rect.position.y + rect.height
-					&& this.position.y + this.height >= rect.position.y + rect.height
-			   ) &&
-			   ( // bottom right
-					   this.position.x <= rect.position.x + rect.width
-					&& this.position.x + this.width >= rect.position.x + rect.width
-					&& this.position.y <= rect.position.y + rect.height
-					&& this.position.y + this.height >= rect.position.y + rect.height
-			   )
-			);
+			this.rect.contains({x: rect.position.x, y: rect.position.y}) && // top left
+			this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y}) && // top right
+			this.rect.contains({x: rect.position.x, y: rect.position.y + rect.height}) && // bottom left
+			this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height})
+	);
 };
 
 
-
+/*
+	Find all the tanks in the world.
+*/
 World.prototype.findTanks = function() {
 	var tanks = [];
 	for(var i = 0; i < this.objs.length; i++) {
@@ -153,6 +145,9 @@ World.prototype.findTanks = function() {
 	return tanks;
 };
 
+/*
+	Find all the pipes in the world.
+*/
 World.prototype.findPipes = function() {
 	var pipes = [];
 	for(var i = 0; i < this.objs.length; i++) {
@@ -163,6 +158,9 @@ World.prototype.findPipes = function() {
 	return pipes;
 };
 
+/*
+	Handles snapping of pipes to tanks.
+*/
 World.prototype.snapPipe = function (pipe, mousePos) {
 
 	var tanks = this.findTanks();
@@ -226,13 +224,35 @@ World.prototype.snapPipe = function (pipe, mousePos) {
 	pipe.updateSVG();
 };
 
+
+/*
+	Handles snapping of tanks to pipes.
+*/
 World.prototype.snapTank = function (tank, mousePos) {
 
 	var pipes = this.findPipes();
 	var snapping = false;
 
 	for(var i = 0; i < pipes.length; i++) {
-		
+		// determine which snap area is on which side of the tank
+		var orientation = ""; // FS = first -- second
+													// SF = second -- first
+													// V = vertical
+													// H = horizontal
+		if(pipes[i].alignment === "horizontal") {
+			if(pipes[i].snapAreas.first.position.x < pipes[i].snapAreas.second.position.x) {
+				orientation = "FSH"
+			} else {
+				orientation = "SFH"
+			}
+		} else {
+			if(pipes[i].snapAreas.first.position.y < pipes[i].snapAreas.second.position.y) {
+				orientation = "FSV"
+			} else {
+				orientation = "SFV"
+			}
+		}
+
 		// tanks in a snap area snap to the corresponding side of the tank
 
 
@@ -263,7 +283,7 @@ World.prototype.snapTank = function (tank, mousePos) {
 	[]==========[]
 */
 World.prototype.snapTankAtAreaToPipe = function (area, pipe, tank, mousePos) {
-	if(pipe.alignment == "horizontal") {
+	if(pipe.alignment === "horizontal") {
 		// which side of the tank is is the first snap area closest to
 		var dx1 = area.position.x - tank.snapPosition.x; // distance from snap area to left tank wall
 		var dx2 = area.position.x - (tank.snapPosition.x + tank.getWidth()); // distance from snap area to right tank wall
@@ -300,7 +320,9 @@ World.prototype.snapTankAtAreaToPipe = function (area, pipe, tank, mousePos) {
 	return false;
 };
 
-
+/*
+	Show the snap areas of all objects in the world.
+*/
 World.prototype.showSnapAreas = function() {
 	for(var i = 0; i < this.objs.length; i++) {
 		if(!(this.objs[i] instanceof Pump)) {
@@ -309,6 +331,10 @@ World.prototype.showSnapAreas = function() {
 	}
 };
 
+
+/*
+	Hide the snap areas of all objects in the world.
+*/
 World.prototype.hideSnapAreas = function() {
 	for(var i = 0; i < this.objs.length; i++) {
 		if(!(this.objs[i] instanceof Pump)) {
