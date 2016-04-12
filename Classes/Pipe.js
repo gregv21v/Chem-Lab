@@ -1,3 +1,9 @@
+/*
+	Pipe: a conduet for moving liquid
+	from one tank to another.
+
+*/
+
 function Pipe(center, width, interiorHeight, wallWidth)
 {
 	this.wallWidth = wallWidth;
@@ -91,7 +97,6 @@ Pipe.prototype.updatePosition = function() {
 /*
 	Switch the pipe too and from horizontal and vertical alignment.
 */
-
 Pipe.prototype.rotate = function() {
 	if(this.alignment === "horizontal") {
 		this.setAlignment("vertical");
@@ -118,7 +123,7 @@ Pipe.prototype.getWidth = function() {
 
 
 /*
-	A string of info used for creating a tooltip
+	Info used for creating a tooltip
 */
 Pipe.prototype.getInfo = function() {
 	return "Interior Height: " + this.interiorHeight + ", Width: " + this.width;
@@ -138,10 +143,7 @@ Pipe.prototype.getRect = function() {
 
 Pipe.prototype.updateSnapAreas = function () {
 	var externalWidth = 15;
-
-
-
-
+	
 	if(this.alignment === "horizontal") {
 		this.snapAreas.first.width = externalWidth;
 		this.snapAreas.first.height = this.getHeight();

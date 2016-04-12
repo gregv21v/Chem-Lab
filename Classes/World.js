@@ -1,8 +1,6 @@
 /*
 	The world contains all the game objects.
 */
-
-
 function World(player, position, width, height) {
 	this.player = player;
 	this.mouseObj = null; // the object centered on the mouse

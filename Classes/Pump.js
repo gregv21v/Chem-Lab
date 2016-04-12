@@ -1,11 +1,11 @@
 /*
-	Pump: every time you click the pump, a drop of liquid is 
+	Pump: every time you click the pump, a drop of liquid is
 	produced. Liquid always comes from the bottom of the pump.
 
-	Alternatively, if an engine is attached to the pump, it will pump 
+	Alternatively, if an engine is attached to the pump, it will pump
 	fluid out automatically.
 
-	
+
 
 
 	extra:
@@ -14,10 +14,6 @@
 */
 
 
-
-/*
-	Creates the pumps data
-*/
 function Pump(world, position, production)
 {
 	this.production = production;
@@ -56,11 +52,15 @@ Pump.prototype.updateSVG = function() {
 	this.svg.spout.setAttribute("y", this.position.y + this.production);
 }
 
+
+/*
+	Creates a drop of liquid upon clicking the pump.
+*/
 Pump.prototype.click = function() {
 	var drop = new Drop(
 					this.world,
-					{x: this.position.x - this.production/2, y: this.position.y + this.production * 3}, 
-					this.production, 
+					{x: this.position.x - this.production/2, y: this.position.y + this.production * 3},
+					this.production,
 					"blue"
 			   );
 	drop.createSVG();
@@ -70,14 +70,8 @@ Pump.prototype.click = function() {
 
 
 /*
-	A string of info used for creating a tooltip
+	A info used for creating a tooltip
 */
 Pump.prototype.getInfo = function() {
 	return this.production;
 };
-
-Pump.prototype.createIcon = function() {
-	
-}
-
-

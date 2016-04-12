@@ -135,6 +135,8 @@ Tank.prototype.addLiquid = function(amount) {
 /*
 	Checks to see if the bottom two corners of a drop are in the liquid
 	near the bottom of the tank
+
+	TODO: convert this to be more readable and elegant.
 */
 Tank.prototype.containsDrop = function(drop) {
 	// Either the drop is in the bottom of the tank, or touching the

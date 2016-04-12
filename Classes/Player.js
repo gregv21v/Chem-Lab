@@ -1,6 +1,8 @@
+/*
 
-// TODO: make the player start from his or her beginning
-function Player()
+*/
+
+function Game()
 {
   var svg = document.querySelector("svg");
 
@@ -21,24 +23,16 @@ function Player()
 
   this.world.add(tank);
   this.world.add(new Pump(this.world, {x: 500, y: 500}, 10));
-
-
-
-
-
-
 }
 
-Player.prototype.update = function () {
+Game.prototype.update = function () {
   var self = this;
   setInterval(function() {
     self.world.update();
   }, 20);
 };
 
-
-
-Player.prototype.createSVG = function () {
+Game.prototype.createSVG = function () {
   this.inventory.createSVG();
   this.world.createSVG();
 

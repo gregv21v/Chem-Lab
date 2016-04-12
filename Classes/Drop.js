@@ -1,5 +1,8 @@
 /*
-	LiquidDrop: falls until it reaches the bottom of a tank. At that point,
+	Drop: the smallest unit of liquid
+
+
+  Behavior: falls until it reaches the bottom of a tank. At that point,
 	it enters the tank.
 */
  var lastId = 0;
