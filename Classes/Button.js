@@ -13,6 +13,7 @@ function Button(position, width, height) {
 Button.prototype.createSVG = function() {
 	var svgMain = document.querySelector("svg");
 
+
 	this.svg.clickBox.setAttribute("x", this.position.x);
 	this.svg.clickBox.setAttribute("y", this.position.y);
 	this.svg.clickBox.setAttribute("width", this.width);

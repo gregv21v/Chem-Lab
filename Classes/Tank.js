@@ -23,18 +23,20 @@ function Tank(position, interior, wallWidth)
 {
 	this.currentLevel = 0;
 	this.maxLevel = interior.width * interior.height;
+	this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
 	this.interior = interior;
 	this.wallWidth = wallWidth;
 	this.position = position;
 	this.snapPosition = {x: 0, y: 0};
 	this.snapping = false;
 	this.wallColor = "green";
-	this.liquidColor = "blue";
 	this.active = false;
+	this.text = "";
 	this.svg = {
 		walls: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
 		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-		liquid: document.createElementNS("http://www.w3.org/2000/svg", "rect")
+		liquid: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
+		label: document.createElementNS("http://www.w3.org/2000/svg", "text")
 	};
 	this.snapAreas = {
 		bottom: new Rect(),
@@ -89,6 +91,7 @@ Tank.prototype.createSVG = function() {
 	SVGMain.appendChild(this.svg.walls);
 	SVGMain.appendChild(this.svg.interior);
 	SVGMain.appendChild(this.svg.liquid);
+	SVGMain.appendChild(this.svg.label);
 };
 Tank.prototype.updateSVG = function() {
 	// setup walls svg
@@ -110,13 +113,26 @@ Tank.prototype.updateSVG = function() {
 	this.svg.liquid.setAttribute("height", this.getPercentageFull());
 	this.svg.liquid.setAttribute("x", this.position.x + this.wallWidth);
 	this.svg.liquid.setAttribute("y", this.getLiquidY());
-	this.svg.liquid.setAttribute("fill", this.liquidColor);
+	this.svg.liquid.setAttribute("fill", this.liquid.fill());
+
+	// setup label svg
+	this.svg.label.setAttribute("fill", "black");
+	this.svg.label.setAttribute("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+	this.svg.label.setAttribute("y", this.position.y + this.getHeight()/2);
+
+
+
+
 }
 
 
 Tank.prototype.updateLiquidSVG = function() {
 	this.svg.liquid.setAttribute("height", this.getPercentageFull());
 	this.svg.liquid.setAttribute("y", this.getLiquidY());
+	this.svg.liquid.setAttribute("fill", this.liquid.fill());
+
+	this.svg.label.setAttribute("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+	this.svg.label.textContent = this.text;
 };
 
 Tank.prototype.destroySVG = function() {
@@ -125,11 +141,22 @@ Tank.prototype.destroySVG = function() {
 	this.svg.liquid.remove();
 }
 
-Tank.prototype.addLiquid = function(amount) {
-	if(this.currentLevel + amount < this.maxLevel)
+Tank.prototype.addLiquid = function(amount, liquid) {
+	// Handle liquid coloring and value
+	if(this.currentLevel == 0) {
+		this.liquid = liquid;
+	} else if(this.currentLevel > 0) {
+		this.liquid = Liquid.mix(this.liquid, liquid);
+	}
+
+	// Handle liquid level
+	if(this.currentLevel + amount < this.maxLevel) {
 		this.currentLevel += amount;
-	else
+	} else {
 		this.currentLevel = this.maxLevel;
+	}
+
+	this.text = "" + (this.currentLevel * this.liquid.value);
 };
 
 /*

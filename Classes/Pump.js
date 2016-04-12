@@ -57,12 +57,21 @@ Pump.prototype.updateSVG = function() {
 	Creates a drop of liquid upon clicking the pump.
 */
 Pump.prototype.click = function() {
+	var possibleLiquids = [
+		new Liquid(1, {red: 50, green: 0, blue: 100}),
+		new Liquid(3, {red: 0, green: 75, blue: 100}),
+		new Liquid(5, {red: 10, green: 100, blue: 100}),
+		new Liquid(100, {red: 255, green: 0, blue: 0})
+	];
+
+
 	var drop = new Drop(
 					this.world,
 					{x: this.position.x - this.production/2, y: this.position.y + this.production * 3},
 					this.production,
-					"blue"
+					possibleLiquids[getRandomInt(0, possibleLiquids.length)]
 			   );
+
 	drop.createSVG();
 
 	return drop;

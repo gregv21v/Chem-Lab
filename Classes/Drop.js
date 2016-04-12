@@ -7,11 +7,11 @@
 */
  var lastId = 0;
 
-function Drop(world, position, size, fill)
+function Drop(world, position, size, liquid)
 {
 	this.position = position;
 	this.size = size;
-	this.fill = fill;
+  this.liquid = liquid;
 	this.world = world;
 	this.id = lastId;
 	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -39,7 +39,7 @@ Drop.prototype.updateSVG = function() {
 	this.svg.setAttribute("height", this.size);
 	this.svg.setAttribute("x", this.position.x);
 	this.svg.setAttribute("y", this.position.y);
-	this.svg.setAttribute("fill", this.fill);
+	this.svg.setAttribute("fill", this.liquid.fill());
 };
 
 
@@ -72,12 +72,11 @@ Drop.prototype.fall = function() {
 	{
 		// if in tank, remove drop and fill tank with size of drop
 		this.world.objs.forEach(function(obj) {
-			console.log(obj);
 
 			if(obj instanceof Tank && obj.containsDrop(self))
 			{
         // add respective amount of fluid to the tank
-				obj.addLiquid(self.size * self.size);
+				obj.addLiquid(self.size * self.size, self.liquid);
 				obj.updateLiquidSVG();
 
 				// remove drop from world

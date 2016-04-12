@@ -36,6 +36,8 @@
 	<style src="CSS/style.css"></style>
 	<script src="Libraries/jquery-1.11.3.min.js"></script>
 
+	<script src="Libraries/util.js" charset="utf-8"></script>
+
 	<script src="Classes/Shapes/Rect.js"></script>
 	<script src="Classes/Shapes/Point.js"></script>
 	<script src="Classes/Shapes/Circle.js"></script>
@@ -48,7 +50,7 @@
 	<script src="Classes/Pump.js"></script>
 	<script src="Classes/Button.js"></script>
 	<script src="Classes/Inventory.js"></script>
-	<script src="Classes/Player.js"></script>
+	<script src="Classes/Game.js"></script>
 
 
 	<!--
@@ -66,8 +68,8 @@
 		$(document).ready(function() {
 			game = new Game();
 
-			player.createSVG();
-			player.update();
+			game.createSVG();
+			game.update();
 		});
 
 

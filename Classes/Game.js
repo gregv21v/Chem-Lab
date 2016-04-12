@@ -17,9 +17,8 @@ function Game()
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
   this.inventory.add(new Pipe({x: 500, y: 500}, 100, 10, 5));
 
-  var tank = new Tank({x: 475, y: 340}, {width: 100, height: 100}, 5);
+  var tank = new Tank({x: 475, y: 540}, {width: 100, height: 100}, 5);
   tank.wallColor = "green";
-  tank.liquidColor = "blue";
 
   this.world.add(tank);
   this.world.add(new Pump(this.world, {x: 500, y: 500}, 10));
