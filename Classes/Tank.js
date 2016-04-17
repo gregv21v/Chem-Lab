@@ -21,6 +21,7 @@
 
 function Tank(position, interior, wallWidth)
 {
+	this.connectedPipes = [];
 	this.currentLevel = 0;
 	this.maxLevel = interior.width * interior.height;
 	this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
@@ -69,6 +70,13 @@ function Tank(position, interior, wallWidth)
 	this.updateSnapAreas();
 }
 
+Tank.prototype.attachTo = function (pipe, side) {
+	this.connectedPipes.push({
+		pipe: pipe,
+		side: side
+	});
+};
+
 Tank.prototype.centerAt = function (point) {
 	this.position.x = point.x - this.getWidth()/2;
 	this.position.y = point.y - this.getHeight()/2;
@@ -76,12 +84,14 @@ Tank.prototype.centerAt = function (point) {
 	this.updateSVG();
 };
 
-Tank.prototype.getPercentageFull = function() {
-	return (100 * this.currentLevel/this.maxLevel);
+Tank.prototype.getLiquidHeight = function () {
+	return this.interior.height * this.currentLevel / this.maxLevel;
 };
+
 Tank.prototype.getLiquidY = function() {
-	return this.position.y + this.interior.height - this.getPercentageFull();
+	return this.position.y + this.interior.height - this.getLiquidHeight();
 };
+
 Tank.prototype.createSVG = function() {
 
 	var SVGMain = document.getElementById("main");
@@ -93,6 +103,7 @@ Tank.prototype.createSVG = function() {
 	SVGMain.appendChild(this.svg.liquid);
 	SVGMain.appendChild(this.svg.label);
 };
+
 Tank.prototype.updateSVG = function() {
 	// setup walls svg
 	this.svg.walls.setAttribute("height", this.getHeight());
@@ -110,7 +121,7 @@ Tank.prototype.updateSVG = function() {
 
 	// setup liquid svg
 	this.svg.liquid.setAttribute("width", this.interior.width);
-	this.svg.liquid.setAttribute("height", this.getPercentageFull());
+	this.svg.liquid.setAttribute("height", this.getLiquidHeight());
 	this.svg.liquid.setAttribute("x", this.position.x + this.wallWidth);
 	this.svg.liquid.setAttribute("y", this.getLiquidY());
 	this.svg.liquid.setAttribute("fill", this.liquid.fill());
@@ -119,17 +130,14 @@ Tank.prototype.updateSVG = function() {
 	this.svg.label.setAttribute("fill", "black");
 	this.svg.label.setAttribute("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
 	this.svg.label.setAttribute("y", this.position.y + this.getHeight()/2);
-
-
-
-
 }
 
-
 Tank.prototype.updateLiquidSVG = function() {
-	this.svg.liquid.setAttribute("height", this.getPercentageFull());
+	this.svg.liquid.setAttribute("height", this.getLiquidHeight());
 	this.svg.liquid.setAttribute("y", this.getLiquidY());
-	this.svg.liquid.setAttribute("fill", this.liquid.fill());
+
+	if(this.liquid)
+		this.svg.liquid.setAttribute("fill", this.liquid.fill());
 
 	this.svg.label.setAttribute("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
 	this.svg.label.textContent = this.text;
@@ -141,21 +149,21 @@ Tank.prototype.destroySVG = function() {
 	this.svg.liquid.remove();
 }
 
-Tank.prototype.addLiquid = function(amount, liquid) {
+Tank.prototype.addDrop = function(drop) {
 	// Handle liquid coloring and value
 	if(this.currentLevel == 0) {
-		this.liquid = liquid;
-	} else if(this.currentLevel > 0) {
-		this.liquid = Liquid.mix(this.liquid, liquid);
+		this.liquid = drop.liquid;
+	} else if(this.currentLevel != this.maxLevel) {
+		this.liquid = Liquid.mix(this.liquid, drop.liquid);
 	}
 
 	// Handle liquid level
-	if(this.currentLevel + amount < this.maxLevel) {
-		this.currentLevel += amount;
+	if(this.currentLevel + drop.getVolume() < this.maxLevel) {
+		this.currentLevel += drop.getVolume();
 	} else {
 		this.currentLevel = this.maxLevel;
 	}
-
+	// show percentage full ==> "(" + this.currentLevel + "/" + this.maxLevel + ")"
 	this.text = "" + (this.currentLevel * this.liquid.value);
 };
 
@@ -173,7 +181,7 @@ Tank.prototype.containsDrop = function(drop) {
 	var touchingLiquid = (
 							drop.position.x >= this.position.x + this.wallWidth &&
 						 	drop.position.x <= this.position.x + this.wallWidth + this.interior.width &&
-						 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getPercentageFull() &&
+						 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getLiquidHeight() &&
 						 	drop.position.y + drop.size <= this.position.y + this.interior.height
 						 )
 							||
@@ -181,7 +189,7 @@ Tank.prototype.containsDrop = function(drop) {
 						 (
 						 	drop.position.x + drop.size >= this.position.x + this.wallWidth &&
 						 	drop.position.x + drop.size <= this.position.x + this.wallWidth + this.interior.width &&
-						 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getPercentageFull() &&
+						 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getLiquidHeight() &&
 						 	drop.position.y + drop.size <= this.position.y + this.interior.height
 						 )
 
@@ -244,6 +252,40 @@ Tank.prototype.getCenter = function () {
 };
 
 
+/*
+	Get the liquid in the tank.
+*/
+Tank.prototype.getLiquid = function () {
+	return {
+		amount: this.currentLevel,
+		type: this.liquid
+	}
+}
+
+Tank.prototype.getDrop = function (size) {
+	if(size * size <= this.currentLevel) {
+		this.currentLevel -= size * size;
+		var drop = new Drop({x: 0, y: 0}, size, this.liquid);
+		if(this.currentLevel == 0) {
+			this.liquid = null;
+		}
+		return drop;
+	} else
+		return null;
+};
+
+
+/*
+	Empties the tank of all its liquid
+*/
+Tank.prototype.empty = function () {
+	this.currentLevel = 0;
+	this.liquid = null;
+	this.text = ""
+
+	this.updateLiquidSVG();
+};
+
 
 
 /*
@@ -275,6 +317,7 @@ Tank.prototype.updateSnapAreas = function() {
 	this.snapAreas.bottom.height = externalWidth;
 
 };
+
 
 /*
 	Update the snap area SVG's

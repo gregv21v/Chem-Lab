@@ -7,12 +7,11 @@
 */
  var lastId = 0;
 
-function Drop(world, position, size, liquid)
+function Drop(position, size, liquid)
 {
 	this.position = position;
 	this.size = size;
   this.liquid = liquid;
-	this.world = world;
 	this.id = lastId;
 	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
@@ -42,6 +41,10 @@ Drop.prototype.updateSVG = function() {
 	this.svg.setAttribute("fill", this.liquid.fill());
 };
 
+Drop.prototype.getVolume = function () {
+  return this.size * this.size;
+};
+
 
 /*
   Removes the svg
@@ -54,7 +57,7 @@ Drop.prototype.destroySVG = function() {
 /*
   Causes a drop to fall until it enters a tank, or exits the world
 */
-Drop.prototype.fall = function() {
+Drop.prototype.fall = function(world) {
 	var self = this;
 
 	var svg = document.querySelector("svg");
@@ -63,28 +66,87 @@ Drop.prototype.fall = function() {
 	this.updateSVG();
 
   // drop is outside the world
-	if(!this.world.within({position: this.position, width: this.size, height: this.size}))
+	if(!world.within({position: this.position, width: this.size, height: this.size}))
 	{
-		this.world.removeDrop(this);
+		world.removeDrop(this);
 		this.destroySVG();
 	}
 	else // drop is inside the world
 	{
 		// if in tank, remove drop and fill tank with size of drop
-		this.world.objs.forEach(function(obj) {
+		world.objs.forEach(function(obj) {
 
 			if(obj instanceof Tank && obj.containsDrop(self))
 			{
         // add respective amount of fluid to the tank
-				obj.addLiquid(self.size * self.size, self.liquid);
+				obj.addDrop(self);
 				obj.updateLiquidSVG();
 
 				// remove drop from world
-				self.world.removeDrop(self);
+				world.removeDrop(self);
 				self.destroySVG();
 
 				return;
 			}
 		})
 	}
+};
+
+
+
+/*
+  Causes the drop to flow through a pipe.
+  This function is called every update.
+  directions: up, down, left, right
+*/
+Drop.prototype.flow = function (pipe, direction) {
+  /*if(direction === "up") {
+    this.position.y -= 1
+  } */
+  if(direction === "down") {
+    this.position.y += 1
+  }
+  /*
+  else if(direction === "left") {
+    this.position.x -= 1
+  } */
+  else if(direction === "right") {
+    this.position.x += 1
+  }
+  this.updateSVG();
+};
+
+
+/*
+  Checks to see if the drops can flow.
+
+  Behavior: drops flow down and to the right.
+*/
+Drop.prototype.canFlow = function (pipe, direction) {
+  /*
+  if(direction === "up") {
+    // make sure the drop is below the pipes upper edge
+    if(this.position.y - 1 < pipe.center.y - pipe.getHeight()/2 - this.size) {
+      return false;
+    }
+  }
+  */
+  if(direction === "down") {
+    // make sure the drop is below the pipes lower edge
+    if(this.position.y + 1 > pipe.center.y + pipe.getHeight()/2 - this.size) {
+      return false;
+    }
+  } /*else if(direction === "left") {
+    // make sure the drop is below the pipes left edge
+    if(this.position.x - 1 < pipe.center.x - pipe.getWidth()/2) {
+      return false;
+    }
+  }*/
+  else if(direction === "right") {
+    // make sure the drop is below the pipes right edge
+    if(this.position.x + 1 > pipe.center.x + pipe.getWidth()/2 - this.size) {
+      return false;
+    }
+  }
+  return true;
 };

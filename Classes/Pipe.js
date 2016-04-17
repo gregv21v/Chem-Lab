@@ -6,12 +6,19 @@
 
 function Pipe(center, width, interiorHeight, wallWidth)
 {
+	this.connectedTanks = [];
 	this.wallWidth = wallWidth;
 	this.interiorHeight = interiorHeight;
 	this.center = center; // position of pipe
+	this.width = width;
+
+	this.currentLevel = 0;
+	this.drops = [];
+
 	this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
 	this.snapping = false;
-	this.width = width;
+
+
 	this.svg = {
 		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
 		walls: document.createElementNS("http://www.w3.org/2000/svg", "rect")
@@ -21,6 +28,7 @@ function Pipe(center, width, interiorHeight, wallWidth)
 		first: new Rect(), // the
 		second: new Rect() // also the
 	};
+
 	// color first snap areas
 	this.snapAreas.first.stroke.width = 1;
 	this.snapAreas.first.stroke.color = "black";
@@ -40,6 +48,41 @@ function Pipe(center, width, interiorHeight, wallWidth)
 	this.updateSnapAreas();
 
 }
+
+Pipe.prototype.addDrop = function (drop, direction) {
+	this.drops.push({
+		drop: drop,
+		direction: direction
+	})
+};
+
+/*
+	Here is where the liquid comes out of the Pipe
+	and can be collected by another tank or something else.
+*/
+Pipe.prototype.spout = function () {
+	// search for available drops
+	var leakingDrops = []; // drops at their exit.
+	for(var x in this.drops) {
+
+		// if a drop can no longer flow in the direction it was
+		// flowing, give it is at its spout, and ready to leak.
+
+		if(!this.drops[x].drop.canFlow(this, this.drops[x].direction)) {
+			//leakingDrops.push()
+		}
+	}
+};
+
+Pipe.prototype.updateDrops = function () {
+	for(var x in this.drops) {
+		if(this.drops[x].drop.canFlow(this, this.drops[x].direction)) {
+			this.drops[x].drop.flow(this, this.drops[x].direction);
+		}
+	}
+};
+
+
 Pipe.prototype.createSVG = function() {
 	var SVGMain = document.getElementById("main");
 
@@ -74,7 +117,7 @@ Pipe.prototype.updateSVG = function() {
 	this.svg.walls.setAttribute("fill", "black");
 
 	// interior
-	this.svg.interior.setAttribute("fill", "blue");
+	this.svg.interior.setAttribute("fill", "white");
 
 }
 
@@ -121,6 +164,10 @@ Pipe.prototype.getWidth = function() {
 	}
 };
 
+Pipe.prototype.getDropSize = function () {
+	return this.interiorHeight;
+};
+
 
 /*
 	Info used for creating a tooltip
@@ -143,7 +190,7 @@ Pipe.prototype.getRect = function() {
 
 Pipe.prototype.updateSnapAreas = function () {
 	var externalWidth = 15;
-	
+
 	if(this.alignment === "horizontal") {
 		this.snapAreas.first.width = externalWidth;
 		this.snapAreas.first.height = this.getHeight();
@@ -170,6 +217,7 @@ Pipe.prototype.updateSnapAreas = function () {
 
 		this.snapAreas.second.width =	this.getWidth();
 		this.snapAreas.second.height = externalWidth;
+
 		// top
 		this.snapAreas.first.position = {
 				x: this.position.x,
@@ -183,6 +231,23 @@ Pipe.prototype.updateSnapAreas = function () {
 		};
 
 	}
+};
+
+
+/*
+	Gets the orientation of the pipe:
+		Left - Right
+
+*/
+Pipe.prototype.getOrientation = function () {
+
+};
+
+Pipe.prototype.attachTo = function (tank, side) {
+	this.connectedTanks.push({
+		tank: tank,
+		side: side
+	});
 };
 
 /*

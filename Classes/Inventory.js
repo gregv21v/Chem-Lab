@@ -16,6 +16,8 @@
 function Inventory(player, position, width, height)
 {
 	this.player = player;
+	this.slots = 3;
+	this.slotHeight = 80;
 	this.rect = new Rect();
 	this.rect.position = position;
 	this.rect.width = width;
@@ -24,7 +26,7 @@ function Inventory(player, position, width, height)
 	this.rect.stroke.color = "black";
 	this.rect.fill.color = "blue";
 	this.objs = [];
-	this.buttons = [];
+	this.slots = [];
 
 	var self = this;
 
@@ -39,24 +41,23 @@ function Inventory(player, position, width, height)
 }
 Inventory.prototype.createSVG = function() {
 	var self = this;
-	var buttonHeight = 80;
 
 
 	var svg = document.querySelector("svg");
 	this.rect.createSVG();
 
 
-	// create the buttons
+	// create the slots
 	for(var i = 0; i < this.objs.length; i++) {
-		this.buttons.push(new Button({x: this.rect.position.x, y: this.rect.position.y + i * buttonHeight}, this.rect.width, 80));
-		this.buttons[i].setTextFill({color: "black"});
-		this.buttons[i].setFill({color: "blue", opacity: 0.5});
-		this.buttons[i].setText(this.objs[i].getInfo());
-		this.buttons[i].setStroke({color: "black", width: 10});
-		this.buttons[i].index = i;
+		this.slots.push(new Slot({x: this.rect.position.x, y: this.rect.position.y + i * this.slotHeight}, this.rect.width, 80));
+		this.slots[i].setTextFill({color: "black"});
+		this.slots[i].setFill({color: "blue", opacity: 0.5});
+		this.slots[i].setText(this.objs[i].getInfo());
+		this.slots[i].setStroke({color: "black", width: 10});
+		this.slots[i].index = i;
 
-		this.buttons[i].createSVG();
-		this.buttons[i].setOnClickWithParam(function(button) {
+		this.slots[i].createSVG();
+		this.slots[i].setOnClickWithParam(function(button) {
 			// move the object to the player's hand
 
 			// pickup item
@@ -68,15 +69,23 @@ Inventory.prototype.createSVG = function() {
 
 			// remove the button
 			button.destroySVG();
-			self.buttons.splice(button.index, 1);
+			self.slots.splice(button.index, 1);
 
 			// resign indicies
-			for(var i = 0; i < self.buttons.length; i++) {
-				self.buttons[i].index = i;
+			for(var i = 0; i < self.slots.length; i++) {
+				self.slots[i].index = i;
 			}
 
-		}, this.buttons[i]);
+		}, this.slots[i]);
 	}
+};
+
+Inventory.prototype.getWidth = function () {
+	return this.rect.width + 20;
+};
+
+Inventory.prototype.getHeight = function () {
+	return this.rect.height + 20;
 };
 
 Inventory.prototype.add = function (item) {

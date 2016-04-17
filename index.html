@@ -33,24 +33,30 @@
 	-->
 
 
-	<style src="CSS/style.css"></style>
-	<script src="Libraries/jquery-1.11.3.min.js"></script>
+	<link rel="stylesheet" href="css/style.css" media="screen" title="no title" charset="utf-8">
+	<script src="lib/jquery-1.11.3.min.js"></script>
 
-	<script src="Libraries/util.js" charset="utf-8"></script>
+	<script src="lib/util.js" charset="utf-8"></script>
 
-	<script src="Classes/Shapes/Rect.js"></script>
-	<script src="Classes/Shapes/Point.js"></script>
-	<script src="Classes/Shapes/Circle.js"></script>
+	<script src="classes/Shapes/Rect.js"></script>
+	<script src="classes/Shapes/Point.js"></script>
+	<script src="classes/Shapes/Circle.js"></script>
 
-	<script src="Classes/World.js"></script>
-	<script src="Classes/Tank.js"></script>
-	<script src="Classes/Liquid.js"></script>
-	<script src="Classes/Pipe.js"></script>
-	<script src="Classes/Drop.js"></script>
-	<script src="Classes/Pump.js"></script>
-	<script src="Classes/Button.js"></script>
-	<script src="Classes/Inventory.js"></script>
-	<script src="Classes/Game.js"></script>
+	<script src="classes/Button.js"></script>
+	<script src="classes/Slot.js"></script>
+
+	<!-- World Objects -->
+	<script src="classes/Tank.js"></script>
+	<script src="classes/Liquid.js"></script>
+	<script src="classes/Pipe.js"></script>
+	<script src="classes/Drop.js"></script>
+	<script src="classes/Pump.js"></script>
+
+	<script src="classes/World.js"></script>
+
+	<script src="classes/Inventory.js"></script>
+
+	<script src="classes/Player.js"></script>
 
 
 	<!--
@@ -63,13 +69,13 @@
 
 
 	<script type="text/javascript">
-		var game = null;
+		var player = null;
 
 		$(document).ready(function() {
-			game = new Game();
+			player = new Player();
 
-			game.createSVG();
-			game.update();
+			player.createSVG();
+			player.update();
 		});
 
 

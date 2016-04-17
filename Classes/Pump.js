@@ -16,12 +16,18 @@
 
 function Pump(world, position, production)
 {
+
+
 	this.production = production;
 	this.position = position;
-	this.world = world;
 	this.svg = {
 		spout: document.createElementNS("http://www.w3.org/2000/svg", "rect"), // where the liquid comes out
 		button: document.createElementNS("http://www.w3.org/2000/svg", "circle") // pressed to get liquid
+	}
+
+	var self = this;
+	this.svg.button.onclick = function() {
+		self.produceDrop(world)
 	}
 }
 
@@ -42,9 +48,6 @@ Pump.prototype.updateSVG = function() {
 	this.svg.button.setAttribute("cx", this.position.x);
 	this.svg.button.setAttribute("cy", this.position.y);
 	this.svg.button.setAttribute("fill", "red");
-	this.svg.button.onclick = function() {
-		self.world.drops.push(self.click());
-	}
 
 	this.svg.spout.setAttribute("width", this.production);
 	this.svg.spout.setAttribute("height", this.production * 2);
@@ -56,7 +59,7 @@ Pump.prototype.updateSVG = function() {
 /*
 	Creates a drop of liquid upon clicking the pump.
 */
-Pump.prototype.click = function() {
+Pump.prototype.produceDrop = function(world) {
 	var possibleLiquids = [
 		new Liquid(1, {red: 50, green: 0, blue: 100}),
 		new Liquid(3, {red: 0, green: 75, blue: 100}),
@@ -65,18 +68,24 @@ Pump.prototype.click = function() {
 	];
 
 
+
 	var drop = new Drop(
-					this.world,
-					{x: this.position.x - this.production/2, y: this.position.y + this.production * 3},
-					this.production,
-					possibleLiquids[getRandomInt(0, possibleLiquids.length)]
-			   );
-
+			{x: this.position.x - this.production/2, y: this.position.y + this.production * 3},
+			this.production,
+			possibleLiquids[getRandomInt(0, possibleLiquids.length)]
+	  )
 	drop.createSVG();
-
-	return drop;
+	world.addDrop(drop);
 };
 
+Pump.prototype.getWidth = function () {
+	return this.production * 4;
+};
+
+
+Pump.prototype.getHeight = function () {
+	return this.production * 4;
+};
 
 /*
 	A info used for creating a tooltip
