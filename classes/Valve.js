@@ -5,7 +5,7 @@
 
 function Valve(center, width, interiorHeight, wallWidth) {
   this.width = width;
-  
+  this.opened = false;
   this.alignment = "horizontal";
   this.pipe = null; // the pipe that this valve is connected to.
   this.position = position;
@@ -17,7 +17,9 @@ function Valve(center, width, interiorHeight, wallWidth) {
     // walls of the valve
     walls: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
     // inner portion of the pipe.
-    interior: document.createElementNS("http://www.w3.org/2000/svg", "rect")  //
+    interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
+    // the rect to toggle the latch open and closed
+    toggle: document.createElementNS("http://www.w3.org/2000/svg", "rect")
   }
 }
 
@@ -57,6 +59,13 @@ Valve.prototype.updateSVG = function() {
 	this.svg.walls.setAttribute("x", this.position.x);
 	this.svg.walls.setAttribute("y", this.position.y);
 	this.svg.walls.setAttribute("fill", "black");
+
+  // latch
+  this.svg.latch.setAttribute("width", this.getWidth());
+	this.svg.latch.setAttribute("height", this.getHeight());
+	this.svg.latch.setAttribute("x", this.position.x);
+	this.svg.latch.setAttribute("y", this.position.y);
+	this.svg.latch.setAttribute("fill", "black");
 
 	// interior
 	this.svg.interior.setAttribute("fill", "white");

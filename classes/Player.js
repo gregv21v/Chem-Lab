@@ -9,10 +9,16 @@ function Player()
   var self = this;
 
   this.hand = null;
-  this.credits = 0;
+
 
   this.world = new World(this, {x: 270, y: 20}, svg.getAttribute("width") - (270 + 400), height);
-  this.inventory = new Inventory(this, {x: 20, y: 20}, 250, height);
+  this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25);
+  this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
+  this.credits.setFill({color: "red"})
+  this.credits.setTextFill({color: "black"})
+  this.credits.setStroke({color: "black", width: 10})
+  this.credits.setLabel("Credits");
+  this.credits.setValue(0)
 
   // add example items to the players inventory
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
@@ -24,7 +30,7 @@ function Player()
   this.sellBtn = new Button(
     {
       x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button */,
-      y: this.inventory.getHeight() - 25 /* Space for the button */
+      y: this.world.getHeight() - 35 /* Space for the button */
     },
     208,
     30
@@ -38,7 +44,7 @@ function Player()
   var sellTank = new Tank(
     {
       x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
-      y: this.inventory.getHeight() - 50 - 20 /* Space for the button */
+      y: this.inventory.getHeight() - 50 - 5 /* Space for the button */
     },
     {
       width: 200,
@@ -59,8 +65,9 @@ function Player()
     // empty the tank
     sellTank.empty();
 
-    self.credits += liquid.amount * liquid.type.value;
-    console.log(self.credits);
+    self.credits.value += liquid.amount * liquid.type.value;
+    self.credits.updateText();
+    self.credits.updateSVG();
 
   })
 
@@ -86,6 +93,7 @@ Player.prototype.createSVG = function () {
   this.inventory.createSVG();
   this.world.createSVG();
   this.sellBtn.createSVG();
+  this.credits.createSVG();
 
   // show-hide snap areas
   //this.world.showSnapAreas();

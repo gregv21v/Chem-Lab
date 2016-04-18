@@ -150,21 +150,26 @@ Tank.prototype.destroySVG = function() {
 }
 
 Tank.prototype.addDrop = function(drop) {
+	console.log("Adding Drop");
+
 	// Handle liquid coloring and value
 	if(this.currentLevel == 0) {
 		this.liquid = drop.liquid;
-	} else if(this.currentLevel != this.maxLevel) {
+	} else if(this.currentLevel + drop.getVolume() <= this.maxLevel) {
 		this.liquid = Liquid.mix(this.liquid, drop.liquid);
 	}
 
 	// Handle liquid level
-	if(this.currentLevel + drop.getVolume() < this.maxLevel) {
+	if(this.currentLevel + drop.getVolume() <= this.maxLevel) {
 		this.currentLevel += drop.getVolume();
+		this.text = "" + (this.currentLevel * this.liquid.value);
+		return true;
 	} else {
-		this.currentLevel = this.maxLevel;
+		return false;
 	}
+
 	// show percentage full ==> "(" + this.currentLevel + "/" + this.maxLevel + ")"
-	this.text = "" + (this.currentLevel * this.liquid.value);
+
 };
 
 /*
@@ -265,6 +270,8 @@ Tank.prototype.getLiquid = function () {
 Tank.prototype.getDrop = function (size) {
 	if(size * size <= this.currentLevel) {
 		this.currentLevel -= size * size;
+		this.text = "" + (this.currentLevel * this.liquid.value);
+		this.updateLiquidSVG();
 		var drop = new Drop({x: 0, y: 0}, size, this.liquid);
 		if(this.currentLevel == 0) {
 			this.liquid = null;

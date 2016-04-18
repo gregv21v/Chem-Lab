@@ -64,3 +64,7 @@ ValueBox.prototype.setValue = function (value) {
   this.value = value;
 	this.svg.label.textContent = this.label + ": " + this.value;
 };
+
+ValueBox.prototype.updateText = function () {
+	this.svg.label.textContent = this.label + ": " + this.value;
+};

@@ -57,22 +57,34 @@ Pipe.prototype.addDrop = function (drop, direction) {
 };
 
 /*
+	Adds back a drop that was retrieved from
+	the spout.
+*/
+Pipe.prototype.addDropBack = function (drop) {
+	this.drops.push(drop);
+};
+
+/*
 	Here is where the liquid comes out of the Pipe
 	and can be collected by another tank or something else.
 */
 Pipe.prototype.spout = function () {
 	// search for available drops
 	var leakingDrops = []; // drops at their exit.
+	var keptDrops = [];
 	for(var x in this.drops) {
-
 		// if a drop can no longer flow in the direction it was
 		// flowing, give it is at its spout, and ready to leak.
-
 		if(!this.drops[x].drop.canFlow(this, this.drops[x].direction)) {
-			//leakingDrops.push()
+			leakingDrops.push(this.drops[x]);
+		} else {
+			keptDrops.push(this.drops[x]);
 		}
 	}
+	this.drops = keptDrops;
+	return leakingDrops;
 };
+
 
 Pipe.prototype.updateDrops = function () {
 	for(var x in this.drops) {
