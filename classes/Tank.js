@@ -149,6 +149,22 @@ Tank.prototype.destroySVG = function() {
 	this.svg.liquid.remove();
 }
 
+/*
+	Checks to see if a given pipe can access the
+	liquid in the tank.
+*/
+Tank.prototype.pipeCanAccessLiquid = function (pipe) {
+	// the opening of the pipe is even with the
+	// tanks liquid or above it.
+	var pipeY = pipe.center.y + pipe.interiorHeight/2; // y bottom interior wall of pipe.
+	if(pipeY > this.getLiquidY()) {
+		return true;
+	} else {
+		return false;
+	}
+
+};
+
 Tank.prototype.addDrop = function(drop) {
 	console.log("Adding Drop");
 
