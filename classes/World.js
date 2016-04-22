@@ -146,7 +146,14 @@ World.prototype.update = function() {
 
 			// drops enter pipe.
 			if(side === "right" || side === "down") {
-				var drop = tank.getDrop(pipe.getDropSize());
+				// only get the drop if the pipe is at or
+				// below the tanks liquid level.
+				var drop;
+				if (tank.pipeCanAccessLiquid(pipe)) {
+					drop = tank.getDrop(pipe.getDropSize());
+				} else {
+					drop = null;
+				}
 				if(drop) {
 					/*if(side === "left") {
 						drop.position = {
