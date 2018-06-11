@@ -1,7 +1,7 @@
 # Chem-Lab
 
 
-An idle game about mixing chemicals.
+An idle game about mixing chemicals. <br>
 Inspired by Minecraft's Buildcraft Mod
 
 <strong>Objective:</strong>
