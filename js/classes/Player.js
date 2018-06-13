@@ -10,7 +10,6 @@ function Player()
 
   this.hand = null;
 
-
   this.world = new World(this, {x: 270, y: 20}, svg.getAttribute("width") - (270 + 400), height);
   this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25);
   this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
@@ -25,7 +24,19 @@ function Player()
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Pipe({x: 500, y: 500}, 100, 10, 5));
+
+  var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
+  this.inventory.add(newPipe);
+  
+  this.inventory.add(new Valve(
+    {
+      x: this.inventory.getWidth() + this.world.getWidth()/2,
+      y: this.world.getHeight()/2
+    },
+    20,
+    10,
+    5
+  ));
 
   this.sellBtn = new Button(
     {

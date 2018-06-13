@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>
-		Chemistry
-	</title>
-	<!--
-		In the process of building the functionality of attaching pipes to tanks
-
+ <head>
+  <title>
+   Chemistry
+  </title>
+  <script src="js/classes/world_objects/tanks/SellTank.js"></script>
+  <script src="js/classes/world_objects/tanks/SidedTank.js"></script>
+  <script src="js/classes/world_objects/tanks/Tank.js"></script>
+  <script src="js/classes/gui/Button.js"></script>
+  <script src="js/classes/gui/Inventory.js"></script>
+  <script src="js/classes/gui/Slot.js"></script>
+  <script src="js/classes/gui/ValueBox.js"></script>
+  <script src="js/classes/shapes/Circle.js"></script>
+  <script src="js/classes/shapes/Point.js"></script>
+  <script src="js/classes/shapes/Rect.js"></script>
+  <script src="js/classes/world_objects/Drop.js"></script>
+  <script src="js/classes/world_objects/GameObject.js"></script>
+  <script src="js/classes/world_objects/Pipe.js"></script>
+  <script src="js/classes/world_objects/Pump.js"></script>
+  <script src="js/classes/world_objects/Valve.js"></script>
+  <script src="js/classes/Liquid.js"></script>
+  <script src="js/classes/Player.js"></script>
+  <script src="js/classes/World.js"></script>
+  <!--
 
 		TODO: Pipes to connect the two tanks
 		TODO: Animation of liquid flowing through the pipes
@@ -17,13 +33,8 @@
 		TODO: Prevent text from being selected.
 		TODO: Prevent pipes from overlapping.
 		TODO: Liquid not entering tank.
-
-
-
 	-->
-
-
-	<!--
+  <!--
 		Main Idea:
 			A game about creating the most efficient fuel
 
@@ -31,46 +42,16 @@
 			You have a pump to collect liquid. Every click you get one drop of liquid.
 			Later, you can use your liquid to power an engine that will automatically pump liquid
 	-->
-
-
-	<link rel="stylesheet" href="css/style.css" media="screen" title="no title" charset="utf-8">
-	<script src="lib/jquery-1.11.3.min.js"></script>
-
-	<script src="lib/util.js" charset="utf-8"></script>
-
-	<script src="classes/shapes/Rect.js"></script>
-	<script src="classes/shapes/Point.js"></script>
-	<script src="classes/shapes/Circle.js"></script>
-
-	<script src="classes/Button.js"></script>
-	<script src="classes/ValueBox.js" charset="utf-8"></script>
-	<script src="classes/Slot.js"></script>
-
-	<!-- World Objects -->
-	<script src="classes/Tank.js"></script>
-	<script src="classes/Liquid.js"></script>
-	<script src="classes/Pipe.js"></script>
-	<script src="classes/Drop.js"></script>
-	<script src="classes/Pump.js"></script>
-
-	<script src="classes/World.js"></script>
-
-	<script src="classes/Inventory.js"></script>
-
-	<script src="classes/Player.js"></script>
-
-
-	<!--
+  <link charset="utf-8" href="css/style.css" media="screen" rel="stylesheet" title="no title"></link>
+   <script src="lib/jquery-1.11.3.min.js"></script>
+   <script charset="utf-8" src="lib/util.js"></script>
+   <!--
 		Tests
 			-Rect.contains
 			-Rect.intersects
 	-->
-
-
-
-
-	<script type="text/javascript">
-		var player = null;
+   <script type="text/javascript">
+    var player = null;
 
 		$(document).ready(function() {
 			player = new Player();
@@ -78,13 +59,10 @@
 			player.createSVG();
 			player.update();
 		});
-
-
-	</script>
-
-
-</head>
-<body>
-	<SVG id="main" width="1900" height="1000"></SVG>
-</body>
+   </script>
+ </head>
+ <body>
+  <svg id="main" height="1000" width="1900">
+  </svg>
+ </body>
 </html>

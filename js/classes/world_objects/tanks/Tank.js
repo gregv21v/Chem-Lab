@@ -19,7 +19,7 @@
 
 
 
-function Tank(position, interior, wallWidth)
+function Tank(center, interior, wallWidth)
 {
 	this.connectedPipes = [];
 	this.currentLevel = 0;
@@ -27,9 +27,11 @@ function Tank(position, interior, wallWidth)
 	this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
 	this.interior = interior;
 	this.wallWidth = wallWidth;
-	this.position = position;
+	this.position = center;
+
 	this.snapPosition = {x: 0, y: 0};
 	this.snapping = false;
+
 	this.wallColor = "green";
 	this.active = false;
 	this.text = "";
@@ -69,6 +71,12 @@ function Tank(position, interior, wallWidth)
 	// initial update
 	this.updateSnapAreas();
 }
+
+
+
+Tank.prototype.snapTo = function (pipe) {
+
+};
 
 Tank.prototype.attachTo = function (pipe, side) {
 	this.connectedPipes.push({
@@ -238,7 +246,7 @@ Tank.prototype.containsDrop = function(drop) {
 	A string of info used for creating a tooltip
 */
 Tank.prototype.getInfo = function() {
-	return this.interior.width + "x" + this.interior.height;
+	return "Tank: " + this.interior.width + "x" + this.interior.height;
 };
 
 

@@ -43,6 +43,10 @@ Rect.prototype.intersects = function(rect) {
 	);
 };
 
+Rect.prototype.snapTo = function (object) {
+	// TODO: Implement rect snapping to other rectangles
+};
+
 
 
 /*

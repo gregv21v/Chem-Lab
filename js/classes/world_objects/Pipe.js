@@ -1,28 +1,31 @@
 /*
-	Pipe: a conduet for moving liquid
+	Pipe: a conduett for moving liquid
 	from one tank to another.
 
 */
 
 function Pipe(center, width, interiorHeight, wallWidth)
 {
+	GameObject.call(this, center);
 	this.connectedTanks = [];
 	this.wallWidth = wallWidth;
 	this.interiorHeight = interiorHeight;
-	this.center = center; // position of pipe
+	this.position = {x: 0, y: 0}
+	//this.center = center; // position of pipe
 	this.width = width;
 
 	this.currentLevel = 0;
 	this.drops = [];
 
-	this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
-	this.snapping = false;
+	//this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
+	//this.snapping = false;
 
 
 	this.svg = {
 		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
 		walls: document.createElementNS("http://www.w3.org/2000/svg", "rect")
 	}
+
 	this.alignment = "vertical";
 	this.snapAreas = {
 		first: new Rect(), // the
@@ -47,7 +50,70 @@ function Pipe(center, width, interiorHeight, wallWidth)
 	this.updatePosition();
 	this.updateSnapAreas();
 
+	// call the constructor of the base class
+	console.log("Pipe Constructor");
+
 }
+
+//Pipe.prototype = Object.create(GameObject.prototype);
+//Pipe.prototype.constructor = Pipe;
+
+/*
+	Checks to see if this pipe snaps to a tank, and return
+	the side the tank is on.
+
+	Returns: side that the tank is on
+*/
+Pipe.prototype.snapTo = function (tank) {
+	/*
+		Left snapping region check.
+	*/
+	if(tank.snapAreas.left.intersects(this.getRect())) {
+		this.setAlignment("horizontal");
+
+		// set the snapping position to the left edge of the
+		// tank closest to the pipe.
+		this.snapCenter.x = tank.position.x	- this.getWidth()/2;
+		this.snapCenter.y = this.center.y;
+
+		// tank is one the right side
+		return "right";
+	}
+
+	/*
+		Right snapping region check.
+	*/
+	if(tank.snapAreas.right.intersects(this.getRect())) {
+		this.setAlignment("horizontal");
+
+		// set the snapping position to the right edge of the
+		// tank closest to the pipe.
+		this.snapCenter.x = tank.position.x + tank.getWidth()	+ this.getWidth()/2;
+		this.snapCenter.y = this.center.y;
+
+		// tank is one the left side
+		return "left";
+	}
+
+	/*
+		Bottom snapping region check.
+	*/
+	if(tank.snapAreas.bottom.intersects(this.getRect())) {
+		this.setAlignment("vertical");
+
+		// set the snapping position to the bottom edge of the
+		// tank closest to the this.
+		this.snapCenter.x = this.center.x;
+		this.snapCenter.y = tank.position.y + tank.getHeight() + this.getHeight()/2;
+
+		// tank is one the up side
+		return "up";
+	}
+
+	return "";
+};
+
+
 
 Pipe.prototype.addDrop = function (drop, direction) {
 	this.drops.push({
@@ -94,7 +160,9 @@ Pipe.prototype.updateDrops = function () {
 	}
 };
 
-
+/*
+	=============Drawing the Pipe=============
+*/
 Pipe.prototype.createSVG = function() {
 	var SVGMain = document.getElementById("main");
 
@@ -132,6 +200,9 @@ Pipe.prototype.updateSVG = function() {
 	this.svg.interior.setAttribute("fill", "white");
 
 }
+/*
+	==========================================
+*/
 
 Pipe.prototype.setAlignment = function (alignment) {
 	this.alignment = alignment;
@@ -160,6 +231,11 @@ Pipe.prototype.rotate = function() {
 	}
 }
 
+
+
+/************************************************
+	Physical Properties
+************************************************/
 Pipe.prototype.getHeight = function() {
 	if(this.alignment === "horizontal") {
 		return this.interiorHeight + this.wallWidth * 2;
@@ -185,7 +261,7 @@ Pipe.prototype.getDropSize = function () {
 	Info used for creating a tooltip
 */
 Pipe.prototype.getInfo = function() {
-	return "Interior Height: " + this.interiorHeight + ", Width: " + this.width;
+	return "Pipe => Interior Height: " + this.interiorHeight + ", Width: " + this.width;
 };
 
 Pipe.prototype.getRect = function() {
@@ -200,6 +276,10 @@ Pipe.prototype.getRect = function() {
 	return newRect;
 };
 
+
+/************************************************
+	Snapping
+************************************************/
 Pipe.prototype.updateSnapAreas = function () {
 	var externalWidth = 15;
 

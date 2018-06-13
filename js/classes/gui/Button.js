@@ -9,6 +9,7 @@ function Button(position, width, height) {
 		clickBox: document.createElementNS("http://www.w3.org/2000/svg", "rect")
 	};
 }
+
 Button.prototype.createSVG = function() {
 	var svgMain = document.querySelector("svg");
 

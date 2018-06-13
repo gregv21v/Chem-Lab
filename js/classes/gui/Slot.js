@@ -4,5 +4,5 @@ function Slot(position, width, height) {
   this.index = 0;
 }
 
-
-Slot.prototype = Button.prototype;
+Slot.prototype = Button.prototype
+Slot.prototype.constructor = Slot
