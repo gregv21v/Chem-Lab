@@ -10,6 +10,8 @@
 		adjust text sizes
 		make everything prettier
 
+
+
 */
 
 
@@ -49,10 +51,17 @@ Inventory.prototype.createSVG = function() {
 
 	// create the slots
 	for(var i = 0; i < this.objs.length; i++) {
-		this.slots.push(new Slot({x: this.rect.position.x, y: this.rect.position.y + i * this.slotHeight}, this.rect.width, 80));
+		this.slots.push(
+			new Slot(
+				{
+					x: this.rect.position.x,
+					y: this.rect.position.y + i * this.slotHeight
+				}, this.rect.width, 80));
 		this.slots[i].setTextFill({color: "black"});
 		this.slots[i].setFill({color: "blue", opacity: 0.5});
-		this.slots[i].setText(this.objs[i].getInfo());
+		this.slots[i].setName(this.objs[i].getName());
+		this.slots[i].setDimensions(this.objs[i].getWidth(), this.objs[i].getHeight());
+		this.slots[i].setLiquidType(this.objs[i].getLiquidType());
 		this.slots[i].setStroke({color: "black", width: 10});
 		this.slots[i].index = i;
 

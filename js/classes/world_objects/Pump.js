@@ -17,6 +17,7 @@
 function Pump(world, position, production)
 {
 
+	GameObject.call(this, position)
 
 	this.production = production;
 	this.position = position;
@@ -30,6 +31,9 @@ function Pump(world, position, production)
 		self.produceDrop(world)
 	}
 }
+
+Pump.prototype = Object.create(GameObject.prototype);
+Pump.prototype.constructor = Pump;
 
 
 Pump.prototype.createSVG = function() {
@@ -90,6 +94,10 @@ Pump.prototype.getHeight = function () {
 /*
 	A info used for creating a tooltip
 */
-Pump.prototype.getInfo = function() {
+Pump.prototype.getName = function() {
 	return this.production;
+};
+
+Pump.prototype.getLiquidType = function () {
+	return "Water";
 };

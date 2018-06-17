@@ -55,8 +55,8 @@ function Pipe(center, width, interiorHeight, wallWidth)
 
 }
 
-//Pipe.prototype = Object.create(GameObject.prototype);
-//Pipe.prototype.constructor = Pipe;
+Pipe.prototype = Object.create(GameObject.prototype);
+Pipe.prototype.constructor = Pipe;
 
 /*
 	Checks to see if this pipe snaps to a tank, and return
@@ -257,12 +257,21 @@ Pipe.prototype.getDropSize = function () {
 };
 
 
-/*
-	Info used for creating a tooltip
-*/
-Pipe.prototype.getInfo = function() {
-	return "Pipe => Interior Height: " + this.interiorHeight + ", Width: " + this.width;
+
+Pipe.prototype.getName = function () {
+	return "Pipe";
 };
+
+Pipe.prototype.getHeight = function () {
+	return this.interiorHeight;
+};
+
+Pipe.prototype.getWidth = function () {
+	return this.width;
+};
+
+
+
 
 Pipe.prototype.getRect = function() {
 	this.updatePosition();

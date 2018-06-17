@@ -1,5 +1,5 @@
 /*
-
+  The Player object stores all the relavent information about the player
 */
 
 function Player()
@@ -16,7 +16,7 @@ function Player()
   this.credits.setFill({color: "red"})
   this.credits.setTextFill({color: "black"})
   this.credits.setStroke({color: "black", width: 10})
-  this.credits.setLabel("Credits");
+  this.credits.setLabel("Coins");
   this.credits.setValue(0)
 
   // add example items to the players inventory
@@ -27,7 +27,7 @@ function Player()
 
   var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
   this.inventory.add(newPipe);
-  
+
   this.inventory.add(new Valve(
     {
       x: this.inventory.getWidth() + this.world.getWidth()/2,

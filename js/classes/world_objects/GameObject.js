@@ -36,6 +36,7 @@ function GameObject(center) {
 
 
 
+
 GameObject.prototype.createSVG = function () {
   var svg = d3.select("body").select("svg")
 
@@ -55,4 +56,21 @@ GameObject.prototype.updateSVG = function () {
 
 GameObject.prototype.destroySVG = function () {
 
+};
+
+
+GameObject.prototype.getLiquidType = function () {
+  return "";
+};
+
+GameObject.prototype.getWidth = function () {
+  return 0;
+};
+
+GameObject.prototype.getHeight = function () {
+  return 0;
+};
+
+GameObject.prototype.getName = function () {
+  return "";
 };

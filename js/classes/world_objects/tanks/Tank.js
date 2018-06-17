@@ -21,6 +21,8 @@
 
 function Tank(center, interior, wallWidth)
 {
+	GameObject.call(this, center);
+
 	this.connectedPipes = [];
 	this.currentLevel = 0;
 	this.maxLevel = interior.width * interior.height;
@@ -72,7 +74,8 @@ function Tank(center, interior, wallWidth)
 	this.updateSnapAreas();
 }
 
-
+Tank.prototype = Object.create(GameObject.prototype);
+Tank.prototype.constructor = Tank;
 
 Tank.prototype.snapTo = function (pipe) {
 
@@ -245,8 +248,8 @@ Tank.prototype.containsDrop = function(drop) {
 /*
 	A string of info used for creating a tooltip
 */
-Tank.prototype.getInfo = function() {
-	return "Tank: " + this.interior.width + "x" + this.interior.height;
+Tank.prototype.getName = function() {
+	return "Tank";
 };
 
 

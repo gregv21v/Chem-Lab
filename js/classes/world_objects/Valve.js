@@ -6,6 +6,9 @@
 
 
 function Valve(center, width, interiorHeight, wallWidth) {
+
+  GameObject.call(this, center)
+
   this.width = width;
   this.opened = false;
   this.alignment = "horizontal";
@@ -31,7 +34,8 @@ function Valve(center, width, interiorHeight, wallWidth) {
 
 }
 
-
+Valve.prototype = Object.create(GameObject.prototype);
+Valve.prototype.constructor = Valve;
 
 
 Valve.prototype.createSVG = function() {
@@ -130,6 +134,6 @@ Valve.prototype.getRect = function () {
 /*
 	Info used for creating a tooltip
 */
-Valve.prototype.getInfo = function() {
-	return "Valve => Interior Height: " + this.interiorHeight + ", Width: " + this.width;
+Valve.prototype.getName = function() {
+	return "Valve";
 };
