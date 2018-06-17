@@ -262,13 +262,7 @@ Pipe.prototype.getName = function () {
 	return "Pipe";
 };
 
-Pipe.prototype.getHeight = function () {
-	return this.interiorHeight;
-};
 
-Pipe.prototype.getWidth = function () {
-	return this.width;
-};
 
 
 
