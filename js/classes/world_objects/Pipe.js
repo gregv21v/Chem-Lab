@@ -16,6 +16,7 @@ function Pipe(center, width, interiorHeight, wallWidth)
 
 	this.currentLevel = 0;
 	this.drops = [];
+	this.tooltip = new ToolTip(this.position, "Pipes transport liquid")
 
 	//this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
 	//this.snapping = false;
@@ -51,7 +52,7 @@ function Pipe(center, width, interiorHeight, wallWidth)
 	this.updateSnapAreas();
 
 	// call the constructor of the base class
-	console.log("Pipe Constructor");
+	//console.log("Pipe Constructor");
 
 }
 
@@ -165,6 +166,8 @@ Pipe.prototype.updateDrops = function () {
 */
 Pipe.prototype.createSVG = function() {
 	var SVGMain = document.getElementById("main");
+
+	this.tooltip.createSVG();
 
 	this.updateSVG();
 

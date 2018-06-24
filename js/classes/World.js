@@ -100,7 +100,7 @@ World.prototype.createSVG = function() {
 	Add an object (pump, tank... etc) to the world.
 */
 World.prototype.add = function (obj) {
-	if(!(obj instanceof Pump) && !(obj instanceof Valve)) {
+	if(obj instanceof Tank) {
 		obj.updateSnapAreas();
 	}
 	this.objs.push(obj);

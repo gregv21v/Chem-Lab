@@ -5,7 +5,7 @@
 function Player()
 {
   var svg = document.querySelector("svg");
-  var height = 700;
+  var height = svg.getAttribute("height");
   var self = this;
 
   this.hand = null;
@@ -37,6 +37,7 @@ function Player()
     10,
     5
   ));
+
 
   this.sellBtn = new Button(
     {
@@ -86,8 +87,16 @@ function Player()
   startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
   startPump.position.y = startPump.getWidth() + startPump.production;
 
+  var testFaucet = new Faucet({
+    x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
+    y: 50
+  }, 50, 40, 10)
+
+
+
   this.world.add(sellTank);
   this.world.add(startPump);
+  this.world.add(testFaucet);
 
 
 }

@@ -11,7 +11,9 @@ function Rect()
 		color: "blue",
 		width: 10
 	};
-	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+	var mainSVG = d3.select("body").select("svg")
+	this.svg = mainSVG.append("rect");
 }
 
 Rect.prototype.contains = function (point) {
@@ -71,24 +73,19 @@ Rect.prototype.fromPoints = function (point1, point2) {
 
 
 Rect.prototype.createSVG = function() {
-	var SVGMain = document.querySelector("svg");
-
-	this.updateSVG();
-
-	SVGMain.appendChild(this.svg);
+	this.svg.attr("width", this.width);
+	this.svg.attr("height", this.height);
+	this.svg.attr("x", this.position.x);
+	this.svg.attr("y", this.position.y);
+	this.svg.attr("stroke-width", this.stroke.width);
+	this.svg.attr("stroke", this.stroke.color);
+	this.svg.attr("fill", this.fill.color);
+	this.svg.attr("fill-opacity", this.fill.opacity);
 };
 
 Rect.prototype.destroySVG = function() {
-	this.svg.remove();
+	this.svg.attr("width", 0)
 };
 
 Rect.prototype.updateSVG = function() {
-	this.svg.setAttribute("width", this.width);
-	this.svg.setAttribute("height", this.height);
-	this.svg.setAttribute("x", this.position.x);
-	this.svg.setAttribute("y", this.position.y);
-	this.svg.setAttribute("stroke-width", this.stroke.width);
-	this.svg.setAttribute("stroke", this.stroke.color);
-	this.svg.setAttribute("fill", this.fill.color);
-	this.svg.setAttribute("fill-opacity", this.fill.opacity);
 };

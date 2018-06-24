@@ -16,7 +16,17 @@ function GameObject(center) {
   /*********
     Visuals
   **********/
-  this.svg = {} // TODO: set graphic attributes within this object
+  this.svg = {
+    default: {
+      type: "circle",
+      properties: {
+        radius: 20,
+        fill: "blue",
+        x: this.center.x,
+        y: this.center.y
+      }
+    }
+  } // TODO: set graphic attributes within this object
   // each object looks like this: { type: "", properties: {} }
   // then creating the object looks like this: svg.data(properties).enter().append(type)
 
@@ -38,16 +48,20 @@ function GameObject(center) {
 
 
 GameObject.prototype.createSVG = function () {
-  var svg = d3.select("body").select("svg")
+  var mainSVG = d3.select("body").select("svg")
+
+  console.log(mainSVG);
 
 	this.updateSVG();
 
 	// add all the svg objects to the world
-  for(var key in this.svg) {
-      svg.data(this.svg[key].properties)
-         .enter()
-            append(this.svg[key].type)
-  }
+  var obj = mainSVG.append(this.svg.default.type)
+
+  obj.attr("cx", this.svg.default.properties.x)
+    .attr("cy", this.svg.default.properties.y)
+    .attr("r", this.svg.default.properties.radius)
+    .style("fill", this.svg.default.properties.fill)
+
 };
 
 GameObject.prototype.updateSVG = function () {

@@ -6,7 +6,9 @@ function Circle(center, radius)
 	this.center = center;
 	this.color = "rgb(0, 0, 255)";
 	this.fillOpacity = 0.5;
-	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+	var mainSVG = d3.select("body").select("svg");
+	this.svg = mainSVG.append("circle");
 }
 
 
@@ -15,21 +17,17 @@ Circle.prototype.contains = function (point) {
 };
 
 Circle.prototype.createSVG = function() {
-	var SVGMain = document.querySelector("svg");
-
-	this.updateSVG();
-
-	SVGMain.appendChild(this.svg);
+	this.svg.attr("r", this.radius);
+	this.svg.attr("cx", this.center.x);
+	this.svg.attr("cy", this.center.y);
+	this.svg.attr("fill", this.color);
+	this.svg.attr("fill-opacity", this.fillOpacity);
 };
 
 Circle.prototype.destroySVG = function() {
-	this.svg.remove();
+	this.svg.attr("r", 0);
 };
 
 Circle.prototype.updateSVG = function() {
-	this.svg.setAttribute("r", this.radius);
-	this.svg.setAttribute("cx", this.center.x);
-	this.svg.setAttribute("cy", this.center.y);
-	this.svg.setAttribute("fill", this.color);
-	this.svg.setAttribute("fill-opacity", this.fillOpacity);
+
 };
