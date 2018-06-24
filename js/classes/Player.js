@@ -96,7 +96,7 @@ function Player()
 
   this.world.add(sellTank);
   this.world.add(startPump);
-  this.world.add(testFaucet);
+  //this.world.add(testFaucet);
 
 
 }
