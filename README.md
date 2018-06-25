@@ -19,7 +19,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 <strong> Mechanics </strong>
 - A <b>store</b> where you can buy, and sell tanks, pipes, pumps, and whatever else I decide to add.
 - An <b>inventory</b> where you store your items.
-- A <b>world</b> where you place items.
+- A <b>world</b> where you place your items.
 - The ability to sort various liquids, by chemical properties
 
 
