@@ -41,31 +41,37 @@ function Inventory(player, position, width, height)
 	});
 
 }
+
+
+Inventory.prototype.createSlot = function (i) {
+	var newSlot = new Slot(
+		{
+			x: this.rect.position.x,
+			y: this.rect.position.y + i * this.slotHeight
+		}, this.rect.width, 80)
+
+	newSlot.setTextFill({color: "black"});
+	newSlot.setFill({color: "blue", opacity: 0.5});
+	newSlot.setName(this.objs[i].getName());
+	newSlot.setDimensions(this.objs[i].getWidth(), this.objs[i].getHeight());
+	newSlot.setLiquidType(this.objs[i].getLiquidType());
+	newSlot.setStroke({color: "black", width: 10});
+	newSlot.index = i;
+
+	newSlot.createSVG();
+
+	return newSlot;
+};
+
 Inventory.prototype.createSVG = function() {
 	var self = this;
-
 
 	var svg = document.querySelector("svg");
 	this.rect.createSVG();
 
-
 	// create the slots
 	for(var i = 0; i < this.objs.length; i++) {
-		this.slots.push(
-			new Slot(
-				{
-					x: this.rect.position.x,
-					y: this.rect.position.y + i * this.slotHeight
-				}, this.rect.width, 80));
-		this.slots[i].setTextFill({color: "black"});
-		this.slots[i].setFill({color: "blue", opacity: 0.5});
-		this.slots[i].setName(this.objs[i].getName());
-		this.slots[i].setDimensions(this.objs[i].getWidth(), this.objs[i].getHeight());
-		this.slots[i].setLiquidType(this.objs[i].getLiquidType());
-		this.slots[i].setStroke({color: "black", width: 10});
-		this.slots[i].index = i;
-
-		this.slots[i].createSVG();
+		this.slots.push(this.createSlot(i))
 		this.slots[i].setOnClickWithParam(function(button) {
 			// move the object to the player's hand
 

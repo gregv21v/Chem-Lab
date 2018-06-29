@@ -19,7 +19,6 @@
 
 function Faucet(position, width, height, diameter) {
   GameObject.call(this, position)
-
   // order helps determine visual appearance, so don't
   // mess with the order
   var mainSVG = d3.select("body").select("svg")
@@ -37,11 +36,11 @@ function Faucet(position, width, height, diameter) {
     x: position.x + width/2,
     y: position.y + height/2
   }
-  this.tooltip = new ToolTip(
+  /*this.tooltip = new ToolTip(
     center,
     20, // radius of hover circle
     "Faucet can be attached to a tank, and will release liquid into the world");
-
+  */
 
 
 
@@ -84,6 +83,8 @@ Faucet.prototype.close = function () {
 
 
 
+
+
 Faucet.prototype.createSVG = function () {
 
 	this.updateSVG();
@@ -95,10 +96,6 @@ Faucet.prototype.createSVG = function () {
 
 
 Faucet.prototype.updateSVG = function () {
-
-
-  this.tooltip.createSVG();
-
   this.svg.upperPipeWalls.attr("x", this.position.x)
                 .attr("y", this.position.y)
                 .attr("width", this.width)

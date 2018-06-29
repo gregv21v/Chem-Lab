@@ -24,15 +24,23 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 
 
 <strong> TODO:</strong>
-- Snap Pipes to the edge of tanks 
+- Snap Pipes to the edge of tanks
   - there are some issues with the snapping mechanics
-- Snap valves to the edge of tanks 
+    pipes snap to tanks, but the reverse is sometimes messed up
+- Snap valves to the edge of tanks
 - Create the liquid distributor pipe
-- Create the liquid sorter pipe
-- Create a class for the sell tank
-- Create the store interface
-- Design the store interface
+- Create the liquid sorter pipe 
+- Create a class for the sell tank (extra)
+- Create the store interface (priority)
+* Design the store interface
 - Connect pipes together
+- Overflow mechanic: tanks spill drops over the edges
+  when they have been filled too much. (extra)
+- Create snappable class that allows you to create generic snappable objects (extra)
+- Display a miniturized graphic of the actual world object on the icons
+  for an each item (extra)
+- Display opening in tank when pipes are attached. (extra)
+
 
 
 <strong>Where did I leave off?</strong>

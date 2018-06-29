@@ -13,22 +13,19 @@ function GameObject(center) {
 
   this.center = center
 
+
   /*********
     Visuals
   **********/
+  var mainSVG = d3.select("body").select("svg")
   this.svg = {
-    default: {
-      type: "circle",
-      properties: {
-        radius: 20,
-        fill: "blue",
-        x: this.center.x,
-        y: this.center.y
-      }
-    }
-  } // TODO: set graphic attributes within this object
-  // each object looks like this: { type: "", properties: {} }
-  // then creating the object looks like this: svg.data(properties).enter().append(type)
+    default: mainSVG.append("circle")
+  }
+
+  this.tooltip = new ToolTip(
+    center,
+    20, // radius of hover circle
+    "");
 
   // Open sides that appear visually open
   this.openSides = {
@@ -44,6 +41,10 @@ function GameObject(center) {
 }
 
 
+GameObject.prototype.updateTooltip = function () {
+  this.tooltip.position = this.position;
+};
+
 
 
 
@@ -57,21 +58,16 @@ GameObject.prototype.createSVG = function () {
 	// add all the svg objects to the world
   var obj = mainSVG.append(this.svg.default.type)
 
-  obj.attr("cx", this.svg.default.properties.x)
-    .attr("cy", this.svg.default.properties.y)
-    .attr("r", this.svg.default.properties.radius)
-    .style("fill", this.svg.default.properties.fill)
+  obj.attr("cx", this.position.x)
+    .attr("cy", this.position.y)
+    .attr("r", 5)
+    .style("fill", "red")
 
 };
 
 GameObject.prototype.updateSVG = function () {
 
 };
-
-GameObject.prototype.destroySVG = function () {
-
-};
-
 
 GameObject.prototype.getLiquidType = function () {
   return "";

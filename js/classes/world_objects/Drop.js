@@ -13,7 +13,12 @@ function Drop(position, size, liquid)
 	this.size = size;
   this.liquid = liquid;
 	this.id = lastId;
-	this.svg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  var mainSVG = d3.select("body").select("svg")
+	this.svg = mainSVG.append("rect");
+
+  this.tooltip = new ToolTip(
+    position,
+    "Drop is the most basic unit of liquid");
 
 
 
@@ -23,22 +28,18 @@ function Drop(position, size, liquid)
 	Creates and adds the svg to the main svg object.
 */
 Drop.prototype.createSVG = function() {
-	var svg = document.querySelector("svg");
-
 	this.updateSVG();
-
-	svg.appendChild(this.svg);
 };
 
 /*
 	Updates the svg after its already been added to the main svg object.
 */
 Drop.prototype.updateSVG = function() {
-	this.svg.setAttribute("width", this.size);
-	this.svg.setAttribute("height", this.size);
-	this.svg.setAttribute("x", this.position.x);
-	this.svg.setAttribute("y", this.position.y);
-	this.svg.setAttribute("fill", this.liquid.fill());
+	this.svg.attr("width", this.size);
+	this.svg.attr("height", this.size);
+	this.svg.attr("x", this.position.x);
+	this.svg.attr("y", this.position.y);
+	this.svg.attr("fill", this.liquid.fill());
 };
 
 Drop.prototype.getVolume = function () {

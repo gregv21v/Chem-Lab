@@ -1,11 +1,12 @@
 /*
   The Player object stores all the relavent information about the player
+  including items that he has in the store, and in the world.
 */
 
 function Player()
 {
   var svg = document.querySelector("svg");
-  var height = svg.getAttribute("height");
+  var height = svg.getAttribute("height") - 30;
   var self = this;
 
   this.hand = null;
@@ -79,7 +80,7 @@ function Player()
 
     self.credits.value += liquid.amount * liquid.type.value;
     self.credits.updateText();
-    self.credits.updateSVG();
+    self.credits.createSVG();
 
   })
 
@@ -87,10 +88,10 @@ function Player()
   startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
   startPump.position.y = startPump.getWidth() + startPump.production;
 
-  var testFaucet = new Faucet({
+  /*var testFaucet = new Faucet({
     x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
     y: 50
-  }, 50, 40, 10)
+  }, 50, 40, 10)*/
 
 
 

@@ -37,12 +37,19 @@ function Tank(center, interior, wallWidth)
 	this.wallColor = "green";
 	this.active = false;
 	this.text = "";
+	var mainSVG = d3.select("body").select("svg")
 	this.svg = {
-		walls: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-		liquid: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-		label: document.createElementNS("http://www.w3.org/2000/svg", "text")
+		walls: mainSVG.append("rect"),
+		interior: mainSVG.append("rect"),
+		liquid: mainSVG.append("rect"),
+		label: mainSVG.append("text")
 	};
+
+
+	this.tooltip = new ToolTip(
+    this.position,
+    "Stores liquid");
+
 	this.snapAreas = {
 		bottom: new Rect(),
 		left: new Rect(),
@@ -105,53 +112,60 @@ Tank.prototype.getLiquidY = function() {
 
 Tank.prototype.createSVG = function() {
 
-	var SVGMain = document.getElementById("main");
 
 	this.updateSVG();
 
-	SVGMain.appendChild(this.svg.walls);
-	SVGMain.appendChild(this.svg.interior);
-	SVGMain.appendChild(this.svg.liquid);
-	SVGMain.appendChild(this.svg.label);
 };
 
 Tank.prototype.updateSVG = function() {
+
+	var self = this;
+
+	this.tooltip.createSVG();
+
 	// setup walls svg
-	this.svg.walls.setAttribute("height", this.getHeight());
-	this.svg.walls.setAttribute("width", this.getWidth());
-	this.svg.walls.setAttribute("x", this.position.x);
-	this.svg.walls.setAttribute("y", this.position.y);
-	this.svg.walls.setAttribute("fill", this.wallColor);
+	this.svg.walls.attr("height", this.getHeight());
+	this.svg.walls.attr("width", this.getWidth());
+	this.svg.walls.attr("x", this.position.x);
+	this.svg.walls.attr("y", this.position.y);
+	this.svg.walls.style("fill", this.wallColor);
 
 	// setup interior svg
-	this.svg.interior.setAttribute("height", this.interior.height);
-	this.svg.interior.setAttribute("width", this.interior.width);
-	this.svg.interior.setAttribute("x", this.position.x + this.wallWidth);
-	this.svg.interior.setAttribute("y", this.position.y - this.wallWidth/2);
-	this.svg.interior.setAttribute("fill", "white"); // should be the same as the background
+	this.svg.interior.attr("height", this.interior.height);
+	this.svg.interior.attr("width", this.interior.width);
+	this.svg.interior.attr("x", this.position.x + this.wallWidth);
+	this.svg.interior.attr("y", this.position.y - this.wallWidth/2);
+	this.svg.interior.style("fill", "white")
+		.on("mouseenter", function() {
+			self.tooltip.show();
+		})
+		.on("mouseout", function() {
+			self.tooltip.hide();
+		})
+
 
 	// setup liquid svg
-	this.svg.liquid.setAttribute("width", this.interior.width);
-	this.svg.liquid.setAttribute("height", this.getLiquidHeight());
-	this.svg.liquid.setAttribute("x", this.position.x + this.wallWidth);
-	this.svg.liquid.setAttribute("y", this.getLiquidY());
-	this.svg.liquid.setAttribute("fill", this.liquid.fill());
+	this.svg.liquid.attr("width", this.interior.width);
+	this.svg.liquid.attr("height", this.getLiquidHeight());
+	this.svg.liquid.attr("x", this.position.x + this.wallWidth);
+	this.svg.liquid.attr("y", this.getLiquidY());
+	this.svg.liquid.style("fill", this.liquid.fill());
 
 	// setup label svg
-	this.svg.label.setAttribute("fill", "black");
-	this.svg.label.setAttribute("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-	this.svg.label.setAttribute("y", this.position.y + this.getHeight()/2);
+	this.svg.label.attr("fill", "black");
+	this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+	this.svg.label.attr("y", this.position.y + this.getHeight()/2);
 }
 
 Tank.prototype.updateLiquidSVG = function() {
-	this.svg.liquid.setAttribute("height", this.getLiquidHeight());
-	this.svg.liquid.setAttribute("y", this.getLiquidY());
+	this.svg.liquid.attr("height", this.getLiquidHeight());
+	this.svg.liquid.attr("y", this.getLiquidY());
 
 	if(this.liquid)
-		this.svg.liquid.setAttribute("fill", this.liquid.fill());
+		this.svg.liquid.style("fill", this.liquid.fill());
 
-	this.svg.label.setAttribute("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-	this.svg.label.textContent = this.text;
+	this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+	this.svg.label.text(this.text);
 };
 
 Tank.prototype.destroySVG = function() {

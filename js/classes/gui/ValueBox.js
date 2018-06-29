@@ -7,13 +7,12 @@ function ValueBox(position, width, height) {
 
 	var svgMain = d3.select("body").select("svg");
 	this.svg = {
-		label: svgMain.append("text"),
-		rect: svgMain.append("rect")
+		rect: svgMain.append("rect"),
+		label: svgMain.append("text")
 	};
 
 }
 ValueBox.prototype.createSVG = function() {
-	var svgMain = d3.select("body").select("svg");
 
 
 	// background
@@ -35,36 +34,36 @@ ValueBox.prototype.destroySVG = function() {
 
 ValueBox.prototype.setFill = function(fill) {
 	if(fill.hasOwnProperty("color"))
-		this.svg.rect.attr("fill", fill.color);
+		this.svg.rect.style("fill", fill.color);
 	if(fill.hasOwnProperty("opacity"))
-		this.svg.rect.attr("fill-opacity", fill.opacity);
+		this.svg.rect.style("fill-opacity", fill.opacity);
 };
 
 ValueBox.prototype.setTextFill = function(fill) {
 	if(fill.hasOwnProperty("color"))
-		this.svg.label.attr("fill", fill.color);
+		this.svg.label.style("fill", fill.color);
 	if(fill.hasOwnProperty("opacity"))
-		this.svg.label.attr("fill-opacity", fill.opacity);
+		this.svg.label.style("fill-opacity", fill.opacity);
 };
 
 
 ValueBox.prototype.setStroke = function(stroke) {
 	if(stroke.hasOwnProperty("color"))
-		this.svg.rect.attr("stroke", stroke.color);
+		this.svg.rect.style("stroke", stroke.color);
 	if(stroke.hasOwnProperty("width"))
-		this.svg.rect.attr("stroke-width", stroke.width);
+		this.svg.rect.style("stroke-width", stroke.width);
 };
 
 ValueBox.prototype.setLabel = function(label) {
   this.label = label;
-	this.svg.label.textContent = this.label + ": " + this.value;
+	this.svg.label.text(this.label + ": " + this.value);
 };
 
 ValueBox.prototype.setValue = function (value) {
   this.value = value;
-	this.svg.label.textContent = this.label + ": " + this.value;
+	this.svg.label.text(this.label + ": " + this.value);
 };
 
 ValueBox.prototype.updateText = function () {
-	this.svg.label.textContent = this.label + ": " + this.value;
+	this.svg.label.text(this.label + ": " + this.value);
 };

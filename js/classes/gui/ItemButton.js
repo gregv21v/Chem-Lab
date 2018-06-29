@@ -24,12 +24,13 @@ function ItemButton(position, width, height) {
   this.liquidTypeText = "Water"
   this.isLiquid = false;
 
+  var mainSVG = d3.select("body").select("svg")
   this.svg = {
-    name: document.createElementNS("http://www.w3.org/2000/svg", "text"),
-    dimensions: document.createElementNS("http://www.w3.org/2000/svg", "text"),
-    liquidType: document.createElementNS("http://www.w3.org/2000/svg", "text"),
-		rect: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-		clickBox: document.createElementNS("http://www.w3.org/2000/svg", "rect")
+		rect: mainSVG.append("rect"),
+		clickBox: mainSVG.append("rect"),
+    name: mainSVG.append("text"),
+    dimensions: mainSVG.append("text"),
+    liquidType: mainSVG.append("text")
   }
 }
 
@@ -40,24 +41,21 @@ ItemButton.prototype.constructor = ItemButton
 ItemButton.prototype.createTextSVG = function (svgMain) {
 
   // add name text
-  this.svg.name.setAttribute("x", this.position.x + 10);
-	this.svg.name.setAttribute("y", this.position.y + 20);
-  this.svg.name.textContent = this.nameText
-  svgMain.appendChild(this.svg.name)
+  this.svg.name.attr("x", this.position.x + 10);
+	this.svg.name.attr("y", this.position.y + 20);
+  this.svg.name.text(this.nameText)
 
 
   // add dimensions text
-  this.svg.dimensions.setAttribute("x", this.position.x + 10);
-	this.svg.dimensions.setAttribute("y", this.position.y + 40);
-  this.svg.dimensions.textContent = this.dimensionsText
-  svgMain.appendChild(this.svg.dimensions)
+  this.svg.dimensions.attr("x", this.position.x + 10);
+	this.svg.dimensions.attr("y", this.position.y + 40);
+  this.svg.dimensions.text(this.dimensionsText)
 
   // add liquid type text
   if(this.isLiquid) {
-    this.svg.liquidType.setAttribute("x", this.position.x + 10);
-  	this.svg.liquidType.setAttribute("y", this.position.y + 60);
-    this.svg.liquidType.textContent = this.liquidTypeText
-    svgMain.appendChild(this.svg.liquidType)
+    this.svg.liquidType.attr("x", this.position.x + 10);
+  	this.svg.liquidType.attr("y", this.position.y + 60);
+    this.svg.liquidType.text(this.liquidTypeText)
 
   }
 
@@ -73,29 +71,29 @@ ItemButton.prototype.destroySVG = function() {
 
 ItemButton.prototype.setTextFill = function(fill) {
 	if(fill.hasOwnProperty("color")) {
-		this.svg.name.setAttribute("fill", fill.color);
-    this.svg.dimensions.setAttribute("fill", fill.color);
-    this.svg.liquidType.setAttribute("fill", fill.color);
+		this.svg.name.style("fill", fill.color);
+    this.svg.dimensions.style("fill", fill.color);
+    this.svg.liquidType.style("fill", fill.color);
   }
 	if(fill.hasOwnProperty("opacity")) {
-    this.svg.name.setAttribute("fill-opacity", fill.opacity);
-    this.svg.dimensions.setAttribute("fill-opacity", fill.opacity);
-    this.svg.liquidType.setAttribute("fill-opacity", fill.opacity);
+    this.svg.name.style("fill-opacity", fill.opacity);
+    this.svg.dimensions.style("fill-opacity", fill.opacity);
+    this.svg.liquidType.style("fill-opacity", fill.opacity);
   }
 };
 
 
 ItemButton.prototype.setName = function(name) {
-	this.svg.name.textContent = name;
+	this.svg.name.text(name);
 	this.nameText = name;
 };
 
 ItemButton.prototype.setDimensions = function(width, height) {
-	this.svg.dimensions.textContent = width + "X" + height;
+	this.svg.dimensions.text(width + "X" + height);
 	this.dimensionsText = width + "X" + height;
 };
 
 ItemButton.prototype.setLiquidType = function(liquid) {
-	this.svg.liquidType.textContent = liquid;
+	this.svg.liquidType.text(liquid);
 	this.liquidTypeText = liquid;
 };

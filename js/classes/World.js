@@ -47,8 +47,10 @@ function World(player, position, width, height) {
 
 		// place the object in the world
 		// when you are not in the inventory, and have selected a button
-		if(!self.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
+		if(self.player.hand != null &&
+			!self.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
 		{
+			self.player.hand.updateTooltip();
 			//console.log(self.player.hand);
 			//console.log(self.snappingTo);
 			// Move the object to the world
@@ -94,7 +96,11 @@ World.prototype.createSVG = function() {
 	for(var i = 0; i < this.objs.length; i++)
 		this.objs[i].createSVG();
 
+	//for(var i = 0; i < this.objs.length; i++)
+	//	this.objs[i].tooltip.createSVG();
+
 }
+
 
 /*
 	Add an object (pump, tank... etc) to the world.

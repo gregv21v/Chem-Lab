@@ -21,15 +21,22 @@ function Pump(world, position, production)
 
 	this.production = production;
 	this.position = position;
+
+	var mainSVG = d3.select("body").select("svg")
 	this.svg = {
-		spout: document.createElementNS("http://www.w3.org/2000/svg", "rect"), // where the liquid comes out
-		button: document.createElementNS("http://www.w3.org/2000/svg", "circle") // pressed to get liquid
+		spout: mainSVG.append("rect"), // where the liquid comes out
+		button: mainSVG.append("circle") // pressed to get liquid
 	}
 
+	this.tooltip = new ToolTip(
+    this.position,
+    "Click to produce liquid");
+
+
 	var self = this;
-	this.svg.button.onclick = function() {
+	this.svg.button.on("mousedown", function() {
 		self.produceDrop(world)
-	}
+	})
 }
 
 Pump.prototype = Object.create(GameObject.prototype);
@@ -41,22 +48,29 @@ Pump.prototype.createSVG = function() {
 
 	this.updateSVG();
 
-	SVGMain.appendChild(this.svg.spout);
-	SVGMain.appendChild(this.svg.button);
 };
 
 Pump.prototype.updateSVG = function() {
 	var self = this;
 
-	this.svg.button.setAttribute("r", this.production * 2);
-	this.svg.button.setAttribute("cx", this.position.x);
-	this.svg.button.setAttribute("cy", this.position.y);
-	this.svg.button.setAttribute("fill", "red");
 
-	this.svg.spout.setAttribute("width", this.production);
-	this.svg.spout.setAttribute("height", this.production * 2);
-	this.svg.spout.setAttribute("x", this.position.x - this.production/2);
-	this.svg.spout.setAttribute("y", this.position.y + this.production);
+	this.tooltip.createSVG();
+
+	this.svg.button.attr("r", this.production * 2);
+	this.svg.button.attr("cx", this.position.x);
+	this.svg.button.attr("cy", this.position.y);
+	this.svg.button.style("fill", "red")
+		.on("mouseenter", function() {
+			self.tooltip.show();
+		})
+		.on("mouseout", function() {
+			self.tooltip.hide();
+		});
+
+	this.svg.spout.attr("width", this.production);
+	this.svg.spout.attr("height", this.production * 2);
+	this.svg.spout.attr("x", this.position.x - this.production/2);
+	this.svg.spout.attr("y", this.position.y + this.production);
 }
 
 
@@ -80,6 +94,10 @@ Pump.prototype.produceDrop = function(world) {
 	  )
 	drop.createSVG();
 	world.addDrop(drop);
+};
+
+GameObject.prototype.updateTooltip = function () {
+  this.tooltip.position = this.position;
 };
 
 Pump.prototype.getWidth = function () {

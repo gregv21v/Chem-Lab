@@ -16,15 +16,17 @@ function Pipe(center, width, interiorHeight, wallWidth)
 
 	this.currentLevel = 0;
 	this.drops = [];
+
+	// gui components
 	this.tooltip = new ToolTip(this.position, "Pipes transport liquid")
 
 	//this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
 	//this.snapping = false;
 
-
+	var mainSVG = d3.select("body").select("svg")
 	this.svg = {
-		interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-		walls: document.createElementNS("http://www.w3.org/2000/svg", "rect")
+		walls: mainSVG.append("rect"),
+		interior: mainSVG.append("rect")
 	}
 
 	this.alignment = "vertical";
@@ -167,40 +169,46 @@ Pipe.prototype.updateDrops = function () {
 Pipe.prototype.createSVG = function() {
 	var SVGMain = document.getElementById("main");
 
-	this.tooltip.createSVG();
-
 	this.updateSVG();
 
-	SVGMain.appendChild(this.svg.walls);
-	SVGMain.appendChild(this.svg.interior);
+};
+
+GameObject.prototype.updateTooltip = function () {
+  this.tooltip.position = this.position;
+	this.updatePosition();
 };
 
 Pipe.prototype.updateSVG = function() {
 	this.updatePosition();
 
+	this.tooltip.createSVG();
+
 	if(this.alignment === "horizontal") {
 		// interior
-		this.svg.interior.setAttribute("width", this.width);
-		this.svg.interior.setAttribute("height", this.interiorHeight);
-		this.svg.interior.setAttribute("x", this.position.x);
-		this.svg.interior.setAttribute("y", this.position.y + this.wallWidth);
+		this.svg.interior.attr("width", this.width);
+		this.svg.interior.attr("height", this.interiorHeight);
+		this.svg.interior.attr("x", this.position.x);
+		this.svg.interior.attr("y", this.position.y + this.wallWidth);
 	} else {
 		// interior
-		this.svg.interior.setAttribute("width", this.interiorHeight);
-		this.svg.interior.setAttribute("height", this.width);
-		this.svg.interior.setAttribute("x", this.position.x + this.wallWidth);
-		this.svg.interior.setAttribute("y", this.position.y);
+		this.svg.interior.attr("width", this.interiorHeight);
+		this.svg.interior.attr("height", this.width);
+		this.svg.interior.attr("x", this.position.x + this.wallWidth);
+		this.svg.interior.attr("y", this.position.y);
 	}
 
 	// walls
-	this.svg.walls.setAttribute("width", this.getWidth());
-	this.svg.walls.setAttribute("height", this.getHeight());
-	this.svg.walls.setAttribute("x", this.position.x);
-	this.svg.walls.setAttribute("y", this.position.y);
-	this.svg.walls.setAttribute("fill", "black");
+	this.svg.walls.attr("width", this.getWidth());
+	this.svg.walls.attr("height", this.getHeight());
+	this.svg.walls.attr("x", this.position.x);
+	this.svg.walls.attr("y", this.position.y);
+	this.svg.walls.style("fill", "black")
+								.style("fill-opacity", 1)
+
 
 	// interior
-	this.svg.interior.setAttribute("fill", "white");
+	this.svg.interior.style("fill", "white")
+										.style("fill-opacity", 1)
 
 }
 /*

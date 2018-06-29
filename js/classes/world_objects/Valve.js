@@ -22,15 +22,16 @@ function Valve(center, width, interiorHeight, wallWidth) {
   this.interiorHeight = interiorHeight;
   this.wallWidth = wallWidth;
 
+  var mainSVG = d3.select("body").select("svg")
   this.svg = {
     // indicator if liquid can travel through the pipe.
-    latch: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
+    latch: mainSVG.append("rect"),
     // walls of the valve
-    walls: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
+    walls: mainSVG.append("rect"),
     // inner portion of the pipe.
-    interior: document.createElementNS("http://www.w3.org/2000/svg", "rect"),
+    interior: mainSVG.append("rect"),
     // the rect to toggle the latch open and closed
-    toggle: document.createElementNS("http://www.w3.org/2000/svg", "rect")
+    toggle: mainSVG.append("rect")
   }
 
 }
@@ -44,55 +45,50 @@ Valve.prototype.createSVG = function() {
 
 	this.updateSVG();
 
-
-	SVGMain.appendChild(this.svg.walls);
-  SVGMain.appendChild(this.svg.interior);
-  SVGMain.appendChild(this.svg.latch);
-  SVGMain.appendChild(this.svg.toggle);
 };
 
 Valve.prototype.updateSVG = function() {
 	//this.updatePosition();
   var self = this;
 
-  this.svg.toggle.setAttribute("width", this.getWidth());
-  this.svg.toggle.setAttribute("height", this.getHeight());
-  this.svg.toggle.setAttribute("x", this.position.x);
-  this.svg.toggle.setAttribute("y", this.position.y);
-  this.svg.toggle.setAttribute("fill-opacity", 0);
-  this.svg.toggle.addEventListener("click", function() {
+  this.svg.toggle.attr("width", this.getWidth());
+  this.svg.toggle.attr("height", this.getHeight());
+  this.svg.toggle.attr("x", this.position.x);
+  this.svg.toggle.attr("y", this.position.y);
+  this.svg.toggle.style("fill-opacity", 0);
+  this.svg.toggle.on("click", function() {
     self.toggle();
   });
 
 	if(this.alignment === "horizontal") {
 		// interior
-		this.svg.interior.setAttribute("width", this.width);
-		this.svg.interior.setAttribute("height", this.interiorHeight);
-		this.svg.interior.setAttribute("x", this.position.x);
-		this.svg.interior.setAttribute("y", this.position.y + this.wallWidth);
+		this.svg.interior.attr("width", this.width);
+		this.svg.interior.attr("height", this.interiorHeight);
+		this.svg.interior.attr("x", this.position.x);
+		this.svg.interior.attr("y", this.position.y + this.wallWidth);
 	} else {
 		// interior
-		this.svg.interior.setAttribute("width", this.interiorHeight);
-		this.svg.interior.setAttribute("height", this.width);
-		this.svg.interior.setAttribute("x", this.position.x + this.wallWidth);
-		this.svg.interior.setAttribute("y", this.position.y);
+		this.svg.interior.attr("width", this.interiorHeight);
+		this.svg.interior.attr("height", this.width);
+		this.svg.interior.attr("x", this.position.x + this.wallWidth);
+		this.svg.interior.attr("y", this.position.y);
 	}
 
 	// walls
-	this.svg.walls.setAttribute("width", this.getWidth());
-	this.svg.walls.setAttribute("height", this.getHeight());
-	this.svg.walls.setAttribute("x", this.position.x);
-	this.svg.walls.setAttribute("y", this.position.y);
-	this.svg.walls.setAttribute("fill", "black");
+	this.svg.walls.attr("width", this.getWidth());
+	this.svg.walls.attr("height", this.getHeight());
+	this.svg.walls.attr("x", this.position.x);
+	this.svg.walls.attr("y", this.position.y);
+	this.svg.walls.style("fill", "black").style("fill-opacity", 1);
 
   // latch
-  this.svg.latch.setAttribute("width", 10);
-  this.svg.latch.setAttribute("x", this.position.x + this.width/2 - 5);
-  this.svg.latch.setAttribute("y", this.position.y + this.wallWidth);
-  this.svg.latch.setAttribute("fill", "black");
+  this.svg.latch.attr("width", 10);
+  this.svg.latch.attr("x", this.position.x + this.width/2 - 5);
+  this.svg.latch.attr("y", this.position.y + this.wallWidth);
+  this.svg.latch.style("fill", "black").style("fill-opacity", 1);
 
 	// interior
-	this.svg.interior.setAttribute("fill", "white");
+	this.svg.interior.attr("fill", "white");
 
 }
 
@@ -100,10 +96,10 @@ Valve.prototype.updateSVG = function() {
 Valve.prototype.toggle = function () {
   if(this.opened) {
     this.opened = false;
-    this.svg.latch.setAttribute("height", 0);
+    this.svg.latch.attr("height", 0);
   } else {
     this.opened = true;
-    this.svg.latch.setAttribute("height", this.interiorHeight);
+    this.svg.latch.attr("height", this.interiorHeight);
   }
 };
 
