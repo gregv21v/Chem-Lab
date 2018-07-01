@@ -12,7 +12,7 @@ function Player()
   this.hand = null;
 
   this.world = new World(this, {x: 270, y: 20}, svg.getAttribute("width") - (270 + 400), height);
-  this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25);
+  this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25 - 20);
   this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
   this.credits.setFill({color: "red"})
   this.credits.setTextFill({color: "black"})
@@ -39,20 +39,6 @@ function Player()
     5
   ));
 
-
-  this.sellBtn = new Button(
-    {
-      x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button */,
-      y: this.world.getHeight() - 35 /* Space for the button */
-    },
-    208,
-    30
-  );
-  this.sellBtn.setText("Sell");
-  this.sellBtn.setFill({color: "red"});
-  this.sellBtn.setStroke({color: "blue", width: 2})
-
-
   // positioned sell tank at center of world.
   var sellTank = new Tank(
     {
@@ -68,21 +54,25 @@ function Player()
   sellTank.wallColor = "red";
 
 
-  this.sellBtn.setOnClick(function() {
-    console.log("Sold");
+  this.sellBtn = new SellButton(
+    {
+      x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button */,
+      y: this.world.getHeight() - 35 /* Space for the button */
+    },
+    208,
+    30,
+    this.credits,
+    sellTank
+  );
+  this.sellBtn.setText("Sell");
+  this.sellBtn.setFill({color: "red"});
+  this.sellBtn.setStroke({color: "blue", width: 2})
 
-    // get the liquid from the tank
-    var liquid = sellTank.getLiquid();
-    console.log(liquid);
 
-    // empty the tank
-    sellTank.empty();
 
-    self.credits.value += liquid.amount * liquid.type.value;
-    self.credits.updateText();
-    self.credits.createSVG();
 
-  })
+
+
 
   var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
   startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;

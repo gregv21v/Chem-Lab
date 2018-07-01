@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Progressive ARIA tabs with D3</title>
+    <script src="d3.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div id="container1">
+        <ul role="tablist">
+          <li><a role="tab" href="#game" aria-selected="true">Game</a></li>
+          <li><a role="tab" href="#store">Store</a></li>
+          <li><a role="tab" href="#help">Help</a></li>
+        </ul>
+        <section role="tabpanel" id="game">
+          <ul id="inventory">
+
+          </ul>
+          <svg id="game">
+
+          </svg>
+        </section>
+        <section role="tabpanel" id="store">
+          <ul>
+            <div class="">
+
+            </div>
+          </ul>
+        </section>
+        <section role="tabpanel" id="help">
+          <h2>Help</h2>
+        </section>
+      </div>
+    </div>
+  </body>
+  <script src="aria-tabs.js"></script>
+</html>

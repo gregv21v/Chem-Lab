@@ -9,6 +9,7 @@
 
   <!-- Buttons -->
   <script src="js/classes/gui/buttons/Button.js"></script>
+  <script src="js/classes/gui/buttons/SellButton.js" charset="utf-8"></script>
   <script src="js/classes/gui/buttons/BorderedButton.js"></script>
 
 
@@ -64,17 +65,43 @@
 			-Rect.contains
 			-Rect.intersects
 	-->
-   <script type="text/javascript">
-    var game = null;
+  <script type="text/javascript">
+   var game = null;
 
-		$(document).ready(function() {
-      game = new Game();
+   $(document).ready(function() {
+     game = new Game();
 
-		});
-   </script>
+   });
+  </script>
  </head>
  <body>
-  <svg id="main" height="600" width="1750">
-  </svg>
+   <div class="container">
+     <div id="container1">
+       <ul role="tablist">
+         <li><a role="tab" href="#game" aria-selected="true">Game</a></li>
+         <li><a role="tab" href="#store">Store</a></li>
+         <li><a role="tab" href="#help">Help</a></li>
+       </ul>
+       <section role="tabpanel" id="game">
+         <ul id="inventory">
+         </ul>
+         <svg x="0" y="0" id="game">
+
+         </svg>
+       </section>
+       <section role="tabpanel" id="store">
+         <ul>
+           <div class="">
+
+           </div>
+         </ul>
+       </section>
+       <section role="tabpanel" id="help">
+         <h2>Help</h2>
+       </section>
+     </div>
+   </div>
  </body>
+ <script src="lib/aria-tabs.js"></script>
+
 </html>

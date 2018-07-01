@@ -22,6 +22,8 @@ function Button(position, width, height) {
 */
 Button.prototype.createOverlaySVG = function () {
 
+	var self = this;
+
 	// click overlay
 	this.svg.clickBox.attr("x", this.position.x);
 	this.svg.clickBox.attr("y", this.position.y);
@@ -29,6 +31,11 @@ Button.prototype.createOverlaySVG = function () {
 	this.svg.clickBox.attr("height", this.height);
 	this.svg.clickBox.style("fill", "white");
 	this.svg.clickBox.style("fill-opacity", 0);
+	this.svg.clickBox.on("click", function() {
+		if(self.enabled) {
+			self.onClick();
+		}
+	})
 
 };
 
@@ -76,6 +83,14 @@ Button.prototype.destroySVG = function() {
 	this.svg.clickBox.remove();
 }
 
+Button.prototype.enable = function () {
+	this.enabled = true;
+};
+
+Button.prototype.disable = function () {
+	this.enabled = false;
+};
+
 
 
 Button.prototype.setFill = function(fill) {
@@ -107,10 +122,18 @@ Button.prototype.setText = function(text) {
 
 Button.prototype.setOnClickWithParam = function(onClick, param) {
 	this.svg.clickBox.on('click', function() {
-		onClick(param);
+		if(this.enabled)
+			onClick(param);
 	});
 };
 
 Button.prototype.setOnClick = function(onClick) {
-	this.svg.clickBox.on('click', onClick);
+	this.svg.clickBox.on('click', function() {
+		if(this.enabled)
+			onClick()
+	});
+};
+
+Button.prototype.onClick = function () {
+	// do nothing by default
 };
