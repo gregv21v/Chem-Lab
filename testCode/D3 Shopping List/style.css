@@ -1,0 +1,51 @@
+.ctrl {
+    display:inline-block;
+    float:right;
+}
+.ctrl button , .ctrl a {
+    margin:0 3px;
+}
+ul.list {
+    margin:0;
+}
+ul.list li {
+    line-height:33px;
+    padding:0 5px;
+    border-bottom:1px ridge #aaa;
+    margin:0;
+}
+ul.list li:last-child {
+    border:none;
+}
+.group:last-child  {
+    border-bottom:1px ridge #aaa;
+}
+
+p.empty {
+    color:#888;
+    font-size:14px;
+    font-style: italic;
+    line-height:33px;
+    padding:0 5px;
+    margin:0;
+}
+ul.list li:nth-child(2n) {
+}
+.grouphd {
+    line-height:33px;
+    color:white;
+    background:#444;
+    margin:0;
+    padding:0 5px;
+    font-size:16px;
+    font-weight:100;
+}
+.list-name {
+}
+.list-len {
+    color:#aaa;
+    font-style: italic;
+}
+.grouphd .glyphicon {
+    margin-right:10px;
+}

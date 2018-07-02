@@ -11,25 +11,25 @@ function Player()
 
   this.hand = null;
 
-  this.world = new World(this, {x: 270, y: 20}, svg.getAttribute("width") - (270 + 400), height);
-  this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25 - 20);
-  this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
-  this.credits.setFill({color: "red"})
-  this.credits.setTextFill({color: "black"})
-  this.credits.setStroke({color: "black", width: 10})
-  this.credits.setLabel("Coins");
-  this.credits.setValue(0)
+  this.world = new World(this, {x: 0, y: 20}, svg.getAttribute("width") - (270 + 400), height);
+  //this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25 - 20);
+  //this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
+  //this.credits.setFill({color: "red"})
+  //this.credits.setTextFill({color: "black"})
+  //this.credits.setStroke({color: "black", width: 10})
+  //this.credits.setLabel("Coins");
+  //this.credits.setValue(0)
 
   // add example items to the players inventory
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  //this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  //this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  //this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  //this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
 
-  var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
-  this.inventory.add(newPipe);
+  //var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
+  //this.inventory.add(newPipe);
 
-  this.inventory.add(new Valve(
+  /*this.inventory.add(new Valve(
     {
       x: this.inventory.getWidth() + this.world.getWidth()/2,
       y: this.world.getHeight()/2
@@ -37,13 +37,13 @@ function Player()
     20,
     10,
     5
-  ));
+  ));*/
 
   // positioned sell tank at center of world.
   var sellTank = new Tank(
     {
-      x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
-      y: this.inventory.getHeight() - 50 - 5 /* Space for the button */
+      x: this.world.getWidth()/2 - 100,
+      y: height - 50 - 5 /* Space for the button */
     },
     {
       width: 200,
@@ -56,7 +56,7 @@ function Player()
 
   this.sellBtn = new SellButton(
     {
-      x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button */,
+      x:  this.world.getWidth()/2 - 99 /* half the width of button */,
       y: this.world.getHeight() - 35 /* Space for the button */
     },
     208,
@@ -75,7 +75,7 @@ function Player()
 
 
   var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
-  startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
+  startPump.position.x = this.world.getWidth()/2 - startPump.getWidth()/2;
   startPump.position.y = startPump.getWidth() + startPump.production;
 
   /*var testFaucet = new Faucet({
@@ -101,10 +101,10 @@ Player.prototype.update = function () {
 
 Player.prototype.createSVG = function () {
 
-  this.inventory.createSVG();
+  //this.inventory.createSVG();
   this.world.createSVG();
   this.sellBtn.createSVG();
-  this.credits.createSVG();
+  //this.credits.createSVG();
 
   // show-hide snap areas
   //this.world.showSnapAreas();

@@ -1,0 +1,158 @@
+<!doctype html>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Shoplist</title>
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="style.css">
+<div id="lists" class=""></div>
+<script src="d3.min.js" charset="utf-8"></script>
+<script>
+
+    var listspecs =
+        [ {n:'resupply', s:1, wf:['later','incart'],    label:'Buyable Items', icon:'refresh'       }
+        , {n:'later',    s:2, wf:['incart'],            label:'Sellable Items',                  icon:'time'          }
+        , {n:'incart',   s:3, wf:['resupply','athome'], label:'',                  icon:'shopping-cart' }
+        , {n:'athome',   s:4, wf:['resupply'],          label:'',                  icon:'home'          }
+        ];
+
+    var allItems = [ {s: 1, n: 'Pipe'}
+                   , {s: 1, n: 'Tank'}
+                   , {s: 4, n: 'Tank 200u'}
+                   , {s: 2, n: 'Grapes'}
+                   , {s: 2, n: 'Pears'}
+                   , {s: 4, n: 'Bananas'}
+                   , {s: 1, n: 'Potatoes'}
+                   , {s: 1, n: 'Ice Cream'}
+                   , {s: 1, n: 'a new Laptop'}
+                   ];
+
+    var lists = {};
+
+    var getListSpec = (function(){
+        var listReg = {};
+        listspecs.forEach(function(ls,i){
+            listReg[ls.s] = i;
+            listReg[ls.n] = i;
+        });
+        return function(x) {
+            return listspecs[listReg[x]];
+        }
+    }());
+
+    function getList(x) {
+        var n = x.n || getListSpec(x).n;
+        return lists[n];
+    }
+
+    var Item = function(itemSpec) {
+        this.s = itemSpec.s;
+        this.n = itemSpec.n;
+        this.list = undefined;
+        this.addTo(itemSpec.s);
+    };
+    Item.prototype.degroup = function(){
+        if(this.list) {
+            this.list.splice(this.list.indexOf(this),1);
+        }
+    };
+    Item.prototype.addTo = function(s){
+        var list = getList(s);
+        this.list = list;
+        list.push(this);
+    };
+
+    listspecs.forEach(function(ls){
+        lists[ls.n] = [];
+        lists[ls.n].spec = ls;
+        Item.prototype[ls.n] = function(){
+            this.degroup();
+            this.addTo(ls.s);
+        };
+    });
+
+    function moveAll(from,to) {
+        var listFrom = getList(from);
+        var i = listFrom.length;
+        // Moving the items once at a time. Good enough ?
+        while(i--) {
+            listFrom[i][to]();
+        }
+    }
+
+    allItems.map(function(spec){
+        new Item(spec);
+    });
+
+    var group = d3.select('#lists')
+        .selectAll('div.group')
+        .data(listspecs);
+
+    var newgroup = group.enter().append('div').attr('class','group');
+
+    var grouphead = newgroup.append('div').attr('class','grouphd');
+    grouphead.append('span')
+        .text('')
+        .attr('class',function(ls){ return clicon(ls.icon) })
+    grouphead.append('span')
+        .text(function(ls){ return ls.label || ls.n })
+        .attr('class', 'list-name')
+    grouphead.append('span')
+        .attr('class', 'list-len')
+
+    newgroup.append('ul')
+        .attr('id', function(ls){ return ls.n })
+        .attr('class','list list-unstyled');
+
+    render();
+
+    function render() {
+
+        group.selectAll('.list-len')
+            .text(function(ls){ return ' ('+getList(ls).length+')' });
+        group.each(function(ls){
+
+            var items = getList(ls);
+
+            var li = d3.select(this).select('ul').selectAll('li')
+                .data(items, function(d) { return d.n });
+
+            li.exit().remove();
+
+            d3.select(this).select('p.empty').remove();
+
+            if (items.length === 0) {
+                d3.select(this).append('p')
+                    .attr('class','empty')
+                    .text('Nothing here');
+                return;
+            }
+
+            var newli = li.enter().append('li');
+            newli.append('span')
+                .text(function(d,x){ return d.n });
+
+            newli.append('div')
+                .attr('class','ctrl')
+                .call(function (wrapper) {
+
+                    ls.wf.forEach(function(n){
+                        wrapper.append('button')
+                            .attr('class','btn btn-primary btn-xs')
+                            .on('click',function(d){
+                                d3.event.preventDefault();
+                                d[n]();
+                                render();
+                            })
+                            .append('span')
+                                .text('')
+                                .attr('class',clicon(getListSpec(n).icon))
+                    });
+                });
+        })
+    }
+
+    function clicon(i) {
+        return 'glyphicon glyphicon-'+i;
+    }
+
+</script>
