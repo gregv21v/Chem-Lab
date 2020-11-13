@@ -84,3 +84,7 @@ GameObject.prototype.getHeight = function () {
 GameObject.prototype.getName = function () {
   return "";
 };
+
+GameObject.prototype.getRect = function () {
+  return new Rect();
+};

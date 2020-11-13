@@ -20,7 +20,7 @@ function World(player, position, width, height) {
 	var mainSVG = document.querySelector("svg");
 	var self = this;
 	/*****************************************************
-								     Mouse Interactions
+								Mouse Interactions
 	*****************************************************/
 	/*
 		Mouse Movement
@@ -35,8 +35,7 @@ function World(player, position, width, height) {
       } else if(self.player.hand instanceof Tank) {
 				self.snapTank(self.player.hand, mousePos);
 			} else if(self.player.hand instanceof Valve) {
-				console.log("Valve on hand.");
-				self.snapValve(self.player.hand, mousePos);
+				self.snapValve(self.player.hand, mousePos)
 			}
     }
   });
@@ -48,10 +47,8 @@ function World(player, position, width, height) {
 
 		// place the object in the world
 		// when you are not in the inventory, and have selected a button
-		if(self.player.hand != null &&
-			!self.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
+		if(!self.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
 		{
-			self.player.hand.updateTooltip();
 			//console.log(self.player.hand);
 			//console.log(self.snappingTo);
 			// Move the object to the world
@@ -97,18 +94,15 @@ World.prototype.createSVG = function() {
 	for(var i = 0; i < this.objs.length; i++)
 		this.objs[i].createSVG();
 
-	//for(var i = 0; i < this.objs.length; i++)
-	//	this.objs[i].tooltip.createSVG();
-
 }
-
 
 /*
 	Add an object (pump, tank... etc) to the world.
 */
 World.prototype.add = function (obj) {
-	if(obj instanceof Tank) {
+	if(!(obj instanceof Pump)) {
 		obj.updateSnapAreas();
+		//obj.showSnapAreas();
 	}
 	this.objs.push(obj);
 };
@@ -153,7 +147,7 @@ World.prototype.update = function() {
 
 
 			// drops enter pipe.
-			if(true /* side === "right" || side === "down" */) {
+			if(side === "right" || side === "down") {
 				// only get the drop if the pipe is at or
 				// below the tanks liquid level.
 				var drop;
@@ -163,22 +157,22 @@ World.prototype.update = function() {
 					drop = null;
 				}
 				if(drop) {
-					if(side === "left") {
+					/*if(side === "left") {
 						drop.position = {
 							x: pipe.position.x + pipe.getWidth() - drop.size/2,
 							y: pipe.center.y - drop.size/2
 						}
-					} else if(side === "right") {
+					} else */ if(side === "right") {
 						drop.position = {
 							x: pipe.position.x,
 							y: pipe.center.y - drop.size/2
 						}
-					} else if(side === "up") {
+					} /*else if(side === "up") {
 						drop.position = {
 							x: pipe.position.x + drop.size/2,
 							y: pipe.position.y
 						}
-					} else if(side === "down") {
+					} */ else if(side === "down") {
 						drop.position = {
 							x: pipe.position.x + drop.size/2,
 							y: pipe.position.y
@@ -275,24 +269,66 @@ World.prototype.snapPipe = function (pipe, mousePos) {
 	var snapping = false
 	pipe.center = mousePos;
 
-	// find an object to snap to
 	for(var i = 0; i < tanks.length; i++) {
-		var side = pipe.snapTo(tanks[i])
-		if(side !== "") {
-			this.objectOn = side;
-			this.snappingTo = tanks[i];
+		/*
+			Left snapping region check.
+			Pipe is snapping to left side of tank
+		*/
+		if(tanks[i].snapAreas.left.intersects(pipe.getRect())) {
 			snapping = true;
+			pipe.setAlignment("horizontal");
+			this.snappingTo = tanks[i];
+
+			// Tank (snappingTo) is on the right.
+			this.objectOn = "right";
+
+			// set the snapping position to the left edge of the
+			// tank closes to the pipe.
+			pipe.snapCenter.x = tanks[i].position.x	- pipe.getWidth()/2;
+			pipe.snapCenter.y = pipe.center.y;
+		}
+
+		/*
+			Right snapping region check.
+		*/
+		if(tanks[i].snapAreas.right.intersects(pipe.getRect())) {
+			snapping = true;
+			pipe.setAlignment("horizontal");
+			this.snappingTo = tanks[i];
+
+			// Tank (snappingTo) is on the left.
+			this.objectOn = "left";
+
+			// set the snapping position to the right edge of the
+			// tank closes to the pipe.
+			pipe.snapCenter.x = tanks[i].position.x + tanks[i].getWidth()	+ pipe.getWidth()/2;
+			pipe.snapCenter.y = pipe.center.y;
+		}
+
+		/*
+			Bottom snapping region check.
+		*/
+		if(tanks[i].snapAreas.bottom.intersects(pipe.getRect())) {
+			snapping = true;
+			pipe.setAlignment("vertical");
+			this.snappingTo = tanks[i];
+
+			// Tank (snappingTo) is on the top.
+			this.objectOn = "up";
+
+			// set the snapping position to the bottom edge of the
+			// tank closes to the pipe.
+			pipe.snapCenter.x = pipe.center.x;
+			pipe.snapCenter.y = tanks[i].position.y + tanks[i].getHeight() + pipe.getHeight()/2;
 		}
 	}
-
 	if (!snapping) {
-		// the object is no longer snapping, so place it
-		// where it belongs.
+		//console.log("Not Snapping");
 		pipe.center = mousePos
 		pipe.snapCenter = pipe.center;
 		pipe.snapping = false;
 	} else {
-		// the object is snapping again
+		//console.log("Snapping");
 		pipe.snapping = true;
 	}
 
@@ -300,33 +336,81 @@ World.prototype.snapPipe = function (pipe, mousePos) {
 	pipe.updateSVG();
 };
 
+/*
+	Handles snapping of pipes to tanks.
+*/
 World.prototype.snapValve = function (valve, mousePos) {
-	var pipes = this.findPipes()
-	var snapping = false;
 
+	var tanks = this.findTanks(); // the tanks to snap to
+	var snapping = false // currently snapping
+	valve.center = mousePos;
 
-	for(var i = 0; i < pipes.length; i++) {
-		// check to see if the pipe and valve intersect.
-		if(valve.getRect().intersects(pipes[i].getRect())) {
-			// axis align them
-			console.log("intersects");
-			valve.position.y = pipes[i].center.y;
+	for(var i = 0; i < tanks.length; i++) {
+		/*
+			Left snapping region check.
+			Pipe is snapping to left side of tank
+		*/
+		if(tanks[i].snapAreas.left.intersects(pipe.getRect())) {
 			snapping = true;
+			pipe.setAlignment("horizontal");
+			this.snappingTo = tanks[i];
+
+			// Tank (snappingTo) is on the right.
+			this.objectOn = "right";
+
+			// set the snapping position to the left edge of the
+			// tank closes to the pipe.
+			pipe.snapCenter.x = tanks[i].position.x	- pipe.getWidth()/2;
+			pipe.snapCenter.y = pipe.center.y;
+		}
+
+		/*
+			Right snapping region check.
+		*/
+		if(tanks[i].snapAreas.right.intersects(pipe.getRect())) {
+			snapping = true;
+			pipe.setAlignment("horizontal");
+			this.snappingTo = tanks[i];
+
+			// Tank (snappingTo) is on the left.
+			this.objectOn = "left";
+
+			// set the snapping position to the right edge of the
+			// tank closes to the pipe.
+			pipe.snapCenter.x = tanks[i].position.x + tanks[i].getWidth()	+ pipe.getWidth()/2;
+			pipe.snapCenter.y = pipe.center.y;
+		}
+
+		/*
+			Bottom snapping region check.
+		*/
+		if(tanks[i].snapAreas.bottom.intersects(pipe.getRect())) {
+			snapping = true;
+			pipe.setAlignment("vertical");
+			this.snappingTo = tanks[i];
+
+			// Tank (snappingTo) is on the top.
+			this.objectOn = "up";
+
+			// set the snapping position to the bottom edge of the
+			// tank closes to the pipe.
+			pipe.snapCenter.x = pipe.center.x;
+			pipe.snapCenter.y = tanks[i].position.y + tanks[i].getHeight() + pipe.getHeight()/2;
 		}
 	}
-
-	if(!snapping) {
-		valve.center = mousePos
-		valve.snapCenter = valve.center;
-		valve.snapping = false;
+	if (!snapping) {
+		//console.log("Not Snapping");
+		pipe.center = mousePos
+		pipe.snapCenter = pipe.center;
+		pipe.snapping = false;
 	} else {
-		valve.snapping = true;
+		//console.log("Snapping");
+		pipe.snapping = true;
 	}
 
-	//valve.updatePosition();
-	valve.updateSVG();
+	pipe.updatePosition();
+	pipe.updateSVG();
 };
-
 
 
 /*
@@ -425,79 +509,6 @@ World.prototype.snapTankAtAreaToPipe = function (area, pipe, tank, mousePos, are
 	}
 	return false;
 };
-/*
-	There are 4 possible configurations
-	to the snap areas of the pipe.
-
-		Left - Right
-		Right - Left
-
-		Top - Bottom
-		Bottom - Top
-
-	Each configuration of the snap areas will
-	effect differently where an object snapping
-	to the pipe will go.
-
-	[]==========[]
-*/
-World.prototype.determineSnapAreaOrientation = function (area, pipe, tank, mousePos, areaLabel) {
-	if(pipe.alignment === "horizontal") {
-		// which side of the tank is is the first snap area closest to
-		var dx1 = area.position.x - tank.snapPosition.x; // distance from snap area to left tank wall
-		var dx2 = area.position.x - (tank.snapPosition.x + tank.getWidth()); // distance from snap area to right tank wall
-
-		if(dx1 < dx2) { // snap area is closer to **Left** tank wall
-			//console.log("LEFT WALL");
-			tank.snapPosition.x = pipe.center.x;
-			tank.snapPosition.y = mousePos.y;
-
-			// Pipe (snappingTo) is on the left.
-			this.objectOn = "left";
-
-			tank.snapping = true;
-			return true;
-		} else { // snap area is closer to **Right** tank wall
-			//console.log("RIGHT WALL");
-			if(areaLabel === "first") {
-				tank.snapPosition.x = pipe.center.x - pipe.getWidth()/2 - tank.getWidth();
-				tank.snapPosition.y = mousePos.y;
-
-				// Pipe (snappingTo) is on the right.
-				this.objectOn = "right";
-			} else {
-				tank.snapPosition.x = pipe.center.x + pipe.getWidth()/2;
-				tank.snapPosition.y = mousePos.y;
-
-				// Pipe (snappingTo) is on the right.
-				this.objectOn = "left";
-			}
-
-
-
-			tank.snapping = true;
-			return true;
-		}
-	} else {
-		// which side of the tank is is the first snap area closest to
-		var dy1 = area.position.y - tank.snapPosition.y; // distance from snap area to the top of the tank
-		var dy2 = area.position.y - (tank.snapPosition.y + tank.getHeight()); // distance from snap area to bottom of the tank
-
-		if(dy1 < dy2) { // snap area is closer to **Bottom** tank wall
-			//console.log("BOTTOM WALL");
-			tank.snapPosition.x = mousePos.x;
-			tank.snapPosition.y = pipe.center.y - pipe.getWidth() - tank.getHeight();
-
-			// Pipe (snappingTo) is on the bottom.
-			this.objectOn = "down";
-
-			tank.snapping = true;
-			return true;
-		}
-	}
-	return false;
-};
-
 
 /*
 	Show the snap areas of all objects in the world.

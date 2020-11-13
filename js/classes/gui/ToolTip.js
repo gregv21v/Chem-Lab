@@ -6,6 +6,7 @@ function ToolTip(position, tip) {
 
   this.tip = tip
   this.position = position
+  this.visible = false
 
   var mainSVG = d3.select("body").select("svg")
   this.svg = {
@@ -23,6 +24,7 @@ ToolTip.prototype.createSVG = function () {
   this.svg.tipText.attr("x", this.position.x)
                   .attr("y", this.position.y)
                   .text("")
+                  .style("display", "none")
 
   this.svg.tipRect.attr("x", this.position.x)
                   .attr("y", this.position.y - 20)
@@ -30,6 +32,10 @@ ToolTip.prototype.createSVG = function () {
                   .attr("height", 50)
                   .style("fill", "white")
                   .style("fill-opacity", 0.7)
+                  .style("display", "none")
+
+
+
 
 };
 

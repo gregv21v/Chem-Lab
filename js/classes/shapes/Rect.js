@@ -18,10 +18,10 @@ function Rect()
 
 Rect.prototype.contains = function (point) {
 	return (
-			this.position.x <= point.x
-	 && this.position.x + this.width >= point.x
-	 && this.position.y <= point.y
-	 && this.position.y + this.height >= point.y
+			(this.position.x <= point.x
+	 && this.position.x + this.width >= point.x)
+	 && (this.position.y <= point.y
+	 && this.position.y + this.height >= point.y)
  );
 };
 
@@ -32,12 +32,12 @@ Rect.prototype.contains = function (point) {
 Rect.prototype.intersects = function(rect) {
 	// if at least one corner of the rect is in the other rect
 	return (
-		// this intersects rect
+		// this.rect intersects rect
 		this.contains({x: rect.position.x, y: rect.position.y}) || // top left
 		this.contains({x: rect.position.x + rect.width, y: rect.position.y}) || // top right
 		this.contains({x: rect.position.x, y: rect.position.y + rect.height}) || // bottom left
 		this.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height}) || // bottom right
-		// rect intersects this
+		// rect intersects this.rect
 		rect.contains({x: this.position.x, y: this.position.y}) || // top left
 		rect.contains({x: this.position.x + this.width, y: this.position.y}) || // top right
 		rect.contains({x: this.position.x, y: this.position.y + this.height}) || // bottom left
