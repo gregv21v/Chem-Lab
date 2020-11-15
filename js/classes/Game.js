@@ -3,7 +3,6 @@
 */
 
 function Game() {
-  this.player = new Player(); // contains inventory
 
   //this.world = new World(this.player);
   this.store = new Store();
@@ -18,12 +17,8 @@ function Game() {
     50, 50, 2
   )
 
-  //testBtn.createSVG();
 
-  this.player.createSVG();
-  this.player.update();
 
-  //testTradeItem.createSVG();
   //this.gui = new GUI();
 
 
