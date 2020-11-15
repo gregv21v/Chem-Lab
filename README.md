@@ -4,6 +4,8 @@
 An idle game about mixing chemicals. <br>
 Inspired by Minecraft's Buildcraft Mod
 
+[Play Here](http://gregv21v.github.io/Chem-Lab/)
+
 <strong>Objective:</strong>
 Mix chemicals togther. Create a network of connecting pipes and tanks to seperate tanks individually to create higher value liquids to cell.
 
