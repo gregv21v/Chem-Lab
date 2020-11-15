@@ -33,21 +33,16 @@ function Inventory(player, position, width, height)
 	var self = this;
 
 	document.addEventListener('keypress', function(evnt) {
-		// add the item back into the inventory if the escape key is pressed
+		// add the item back into the inventory
 		// esc = 27
 		if(evnt.keyCode == 27) {
 			self.add(self.player.hand);
-			self.player.hand = null;
 		}
 	});
 
 }
 
-/**
-	createSlot()
-	@description Create a new slot for the inventory
-	@param i the index of the new slot
-*/
+
 Inventory.prototype.createSlot = function (i) {
 	var newSlot = new Slot(
 		{
@@ -59,7 +54,7 @@ Inventory.prototype.createSlot = function (i) {
 	newSlot.setFill({color: "blue", opacity: 0.5});
 	newSlot.setName(this.objs[i].getName());
 	newSlot.setDimensions(this.objs[i].getWidth(), this.objs[i].getHeight());
-	//newSlot.setLiquidType(this.objs[i].getLiquidType());
+	newSlot.setLiquidType(this.objs[i].getLiquidType());
 	newSlot.setStroke({color: "black", width: 10});
 	newSlot.index = i;
 
@@ -68,10 +63,6 @@ Inventory.prototype.createSlot = function (i) {
 	return newSlot;
 };
 
-/**
-	createSVG()
-	@description create the SVG graphics for the inventory
-*/
 Inventory.prototype.createSVG = function() {
 	var self = this;
 
@@ -87,7 +78,6 @@ Inventory.prototype.createSVG = function() {
 			// pickup item
 			self.player.hand = self.objs[button.index];
 			self.player.hand.createSVG();
-
 
 			// remove the object from the inventory
 			self.objs.splice(button.index, 1);

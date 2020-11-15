@@ -35,7 +35,6 @@ function World(player, position, width, height) {
       } else if(self.player.hand instanceof Tank) {
 				self.snapTank(self.player.hand, mousePos);
 			} else if(self.player.hand instanceof Valve) {
-				console.log("Valve on hand.");
 				self.snapValve(self.player.hand, mousePos);
 			}
     }
@@ -300,34 +299,6 @@ World.prototype.snapPipe = function (pipe, mousePos) {
 	pipe.updateSVG();
 };
 
-World.prototype.snapValve = function (valve, mousePos) {
-	var pipes = this.findPipes()
-	var snapping = false;
-
-
-	for(var i = 0; i < pipes.length; i++) {
-		// check to see if the pipe and valve intersect.
-		if(valve.getRect().intersects(pipes[i].getRect())) {
-			// axis align them
-			console.log("intersects");
-			valve.position.y = pipes[i].center.y;
-			snapping = true;
-		}
-	}
-
-	if(!snapping) {
-		valve.center = mousePos
-		valve.snapCenter = valve.center;
-		valve.snapping = false;
-	} else {
-		valve.snapping = true;
-	}
-
-	//valve.updatePosition();
-	valve.updateSVG();
-};
-
-
 
 /*
 	Handles snapping of tanks to pipes.
@@ -361,69 +332,6 @@ World.prototype.snapTank = function (tank, mousePos) {
 	}
 	tank.updateSVG();
 
-};
-
-
-/*
-	Snaps a tank to a snap area of a pipe.
-
-	[]==========[]
-*/
-World.prototype.snapTankAtAreaToPipe = function (area, pipe, tank, mousePos, areaLabel) {
-	if(pipe.alignment === "horizontal") {
-		// which side of the tank is is the first snap area closest to
-		var dx1 = area.position.x - tank.snapPosition.x; // distance from snap area to left tank wall
-		var dx2 = area.position.x - (tank.snapPosition.x + tank.getWidth()); // distance from snap area to right tank wall
-
-		if(dx1 < dx2) { // snap area is closer to **Left** tank wall
-			//console.log("LEFT WALL");
-			tank.snapPosition.x = pipe.center.x;
-			tank.snapPosition.y = mousePos.y;
-
-			// Pipe (snappingTo) is on the left.
-			this.objectOn = "left";
-
-			tank.snapping = true;
-			return true;
-		} else { // snap area is closer to **Right** tank wall
-			//console.log("RIGHT WALL");
-			if(areaLabel === "first") {
-				tank.snapPosition.x = pipe.center.x - pipe.getWidth()/2 - tank.getWidth();
-				tank.snapPosition.y = mousePos.y;
-
-				// Pipe (snappingTo) is on the right.
-				this.objectOn = "right";
-			} else {
-				tank.snapPosition.x = pipe.center.x + pipe.getWidth()/2;
-				tank.snapPosition.y = mousePos.y;
-
-				// Pipe (snappingTo) is on the right.
-				this.objectOn = "left";
-			}
-
-
-
-			tank.snapping = true;
-			return true;
-		}
-	} else {
-		// which side of the tank is is the first snap area closest to
-		var dy1 = area.position.y - tank.snapPosition.y; // distance from snap area to the top of the tank
-		var dy2 = area.position.y - (tank.snapPosition.y + tank.getHeight()); // distance from snap area to bottom of the tank
-
-		if(dy1 < dy2) { // snap area is closer to **Bottom** tank wall
-			//console.log("BOTTOM WALL");
-			tank.snapPosition.x = mousePos.x;
-			tank.snapPosition.y = pipe.center.y - pipe.getWidth() - tank.getHeight();
-
-			// Pipe (snappingTo) is on the bottom.
-			this.objectOn = "down";
-
-			tank.snapping = true;
-			return true;
-		}
-	}
-	return false;
 };
 /*
 	There are 4 possible configurations
@@ -498,6 +406,18 @@ World.prototype.determineSnapAreaOrientation = function (area, pipe, tank, mouse
 	return false;
 };
 
+World.prototype.snapValve = function (valve, mousePos) {
+	var pipes = this.findPipes()
+
+	for(var i = 0; i < pipes.length; i++) {
+		// check to see if the pipe and valve intersect.
+		if(pipes[i].getRect().intersects(valve.getRect())) {
+			// axis align them
+			valve.position.y = pipes.center.y;
+		}
+
+	}
+};
 
 /*
 	Show the snap areas of all objects in the world.

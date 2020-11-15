@@ -21,6 +21,13 @@ function Player()
   this.credits.setValue(0)
 
   // add example items to the players inventory
+  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+
+  var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
+  this.inventory.add(newPipe);
 
   this.inventory.add(new Valve(
     {
@@ -31,14 +38,6 @@ function Player()
     10,
     5
   ));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-
-  var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
-  this.inventory.add(newPipe);
-
 
 
   this.sellBtn = new Button(
