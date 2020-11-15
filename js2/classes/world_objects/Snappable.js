@@ -14,8 +14,9 @@ class Snappable extends GameObject {
   constructor(center) {
     super(center)
 
-    this.center = center
+    this.position = {x: 0, y: 0}
     this.orientation = "horizontal"
+    this.attachments = {}
 
     // snap areas are the regions around a given game object
     // that will cause a another object to snap with this object
@@ -45,7 +46,7 @@ class Snappable extends GameObject {
       of what type of object it is
   */
   getWidth() {
-    return 100
+    return -1;
   };
 
   /**
@@ -54,14 +55,19 @@ class Snappable extends GameObject {
       of what type of object it is
   */
   getHeight() {
-    return 100;
+    return -1;
   };
 
+  /**
+    getRect()
+    @description get a rectangle representing
+      the area of the valve
+  */
   getRect() {
   	var newRect = new Rect();
   	newRect.position = this.position
-    rect.width = this.getWidth(); // horizontal dimension
-    rect.height = this.getHeight(); //   vertical dimension
+    newRect.width = this.getWidth(); // horizontal dimension
+    newRect.height = this.getHeight(); //   vertical dimension
   	return newRect;
   };
 
@@ -71,8 +77,8 @@ class Snappable extends GameObject {
     topArea.fill.color = "red"
     topArea.width = this.getWidth()
     topArea.height = this.snapRadius
-    topArea.position.x = this.center.x - this.getWidth() / 2
-    topArea.position.y = this.center.y - this.getHeight() / 2 - this.snapRadius
+    topArea.position.x = this.position.x
+    topArea.position.y = this.position.y - this.snapRadius
 
     return topArea
   };
@@ -82,8 +88,8 @@ class Snappable extends GameObject {
     bottomArea.fill.color = "green"
     bottomArea.width = this.getWidth()
     bottomArea.height = this.snapRadius
-    bottomArea.position.x = this.center.x - this.getWidth() / 2
-    bottomArea.position.y = this.center.y - this.getHeight() / 2 + this.snapRadius
+    bottomArea.position.x = this.position.x
+    bottomArea.position.y = this.position.y + this.getHeight()
 
     return bottomArea
   };
@@ -94,8 +100,8 @@ class Snappable extends GameObject {
     leftArea.fill.color = "blue"
     leftArea.width = this.snapRadius
     leftArea.height = this.getHeight()
-    leftArea.position.x = this.center.x - this.getWidth() / 2 - this.snapRadius
-    leftArea.position.y = this.center.y - this.getHeight() / 2
+    leftArea.position.x = this.position.x - this.snapRadius
+    leftArea.position.y = this.position.y
 
     return leftArea
   };
@@ -106,8 +112,8 @@ class Snappable extends GameObject {
     rightArea.fill.color = "yellow"
     rightArea.width = this.snapRadius
     rightArea.height = this.getHeight()
-    rightArea.position.x = this.center.x + this.getWidth() / 2
-    rightArea.position.y = this.center.y - this.getHeight() / 2
+    rightArea.position.x = this.position.x + this.getWidth()
+    rightArea.position.y = this.position.y
 
     //console.log("Right Area: " + JSON.stringify(rightArea));
 
@@ -115,6 +121,7 @@ class Snappable extends GameObject {
   };
 
   getSnapAreas() {
+    //this.updatePosition()
     return {
       top: this.getTopArea(),
       bottom: this.getBottomArea(),
@@ -123,11 +130,32 @@ class Snappable extends GameObject {
     }
   };
 
+  /**
+    moveTo()
+    @description moves to a given point, where the center of the Snappable is
+      fixed at the given point
+    @param point the point to center on
+  */
+  moveTo(point) {
+    this.position.x = point.x
+    this.position.y = point.y
+  }
+
+  /**
+   * moveRelativeToCenter()
+   * @description moves the Snappable relative to it's center
+   * @param point point to move to
+   */
+  moveRelativeToCenter(point) {
+    this.position.x = point.x - this.getWidth() / 2
+    this.position.y = point.y - this.getHeight() / 2
+  }
+
+
   showSnapAreas() {
     var snapAreas = this.getSnapAreas()
     for(var key of Object.keys(snapAreas)) {
-      console.log(key);
-
+      //console.log(key)
       snapAreas[key].fill.opacity = 0.5
       snapAreas[key].createSVG()
     }
@@ -140,47 +168,140 @@ class Snappable extends GameObject {
     }
   };
 
+  /**
+    leftSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the left of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  leftSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+    // match this object with the left edge of
+    // the other object
+    if(this.orientation === "vertical") {
+      this.orientation = "horizontal"
+    }
+    this.moveRelativeToCenter({
+        x: snappable.center.x - thisRect.width / 2,
+        y: mousePos.y
+    })
+  }
+
+  /**
+    rightSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the right of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  rightSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+
+    if(this.orientation === "vertical") {
+      this.orientation = "horizontal"
+    }
+    // match the right edge
+    this.moveRelativeToCenter({
+        x: snappable.center.x + otherRect.width + thisRect.width / 2,
+        y: mousePos.y
+    })
+  }
+
+  /**
+    topSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the top of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  topSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+
+    if(this.orientation === "horizontal") {
+      this.orientation = "vertical"
+    }
+    this.moveRelativeToCenter({
+      y: snappable.center.y - thisRect.height / 2,
+      x: mousePos.x
+    })
+  }
+
+
+
+  /**
+    bottomSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the botttom of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  bottomSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+
+    if(this.orientation === "horizontal") {
+      this.orientation = "vertical"
+    }
+    this.moveRelativeToCenter({
+      y: snappable.center.y + otherRect.height + thisRect.height / 2,
+      x: mousePos.x
+    })
+  }
 
 
   snapTo(snappable, mousePos) {
     var snapAreas = snappable.getSnapAreas()
-    snappable.showSnapAreas();
+    var closestSide = "";
+    var closestDistance = 2000;
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
 
-    for(var snapArea of Object.keys(snapAreas)) {
-      var thisRect = this.getRect()
-      var otherRect = snappable.getRect()
+    //console.log("Snap Areas: ");
+    //console.log(snapAreas);
 
-      //thisRect.createSVG()
 
-      // if this object intersects with the snap area of the
-      // other object then match the edges of the two objects
-
-      //console.log(snapAreas[snapArea]);
-      if(thisRect.intersects(snapAreas[snapArea])) {
-        console.log("found intersection");
-        if(snapArea === "left") {
-          // match this object with the left edge of
-          // the other object
-          this.snapCenter.x = snappable.center.x - otherRect.getWidth() / 2 - thisRect.getWidth() / 2
-          this.snapCenter.y = mousePos.y
-          return "left"
-        } else if(snapArea === "right") {
-          // match the right edge
-          this.snapCenter.x = snappable.center.x - otherRect.getWidth() / 2 - thisRect.getWidth() / 2
-          this.snapCenter.y = mousePos.y
-          return "right"
-        } else if(snapArea === "top") {
-          this.snapCenter.y = snappable.center.y + snappable.getHeight() / 2 - this.getHeight() / 2
-          this.snapCenter.x = mousePos.x
-          return "top"
-        } else if(snapArea === "bottom") {
-          this.snapCenter.y = snappable.center.y - snappable.getHeight() / 2 + this.getHeight() / 2
-          this.snapCenter.x = mousePos.x
-          return "bottom"
-        }
+    // find the closest snappable region that
+    // intersects
+    for(var side of Object.keys(snapAreas)) {
+      var distance = Distance(snapAreas[side].getCenter(), mousePos)
+      // find the closest intersecting snap area
+      if(distance < closestDistance && thisRect.intersects(snapAreas[side])) {
+        closestDistance = distance
+        closestSide = side
+        this.snapping = true;
       }
     }
-    return "";
+
+    if(closestSide === "left") {
+      this.leftSnapBehaviour(snappable, mousePos)
+    } else if(closestSide === "right") {
+      this.rightSnapBehaviour(snappable, mousePos)
+    } else if(closestSide === "top") {
+      this.topSnapBehaviour(snappable, mousePos)
+    } else if(closestSide === "bottom") {
+      this.bottomSnapBehaviour(snappable, mousePos)
+    }
+    return closestSide;
+  };
+
+  /**
+    attachTo()
+    @description attaches to snappables together on a particular side
+    @param side the side to attach to
+    @param snappable the snappable to attach this one to
+
+  */
+  attachTo(snappable, side) {
+  	if(this.attachments[side] === undefined) {
+      this.attachments[side] = [snappable]
+      //console.log(this.attachments);
+    } else {
+      this.attachments[side].push(snappable)
+    }
   };
 
 }

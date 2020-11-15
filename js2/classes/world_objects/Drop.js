@@ -100,7 +100,7 @@ class Drop {
 
   /*
     Causes the drop to flow through a pipe.
-    Th is called every update.
+    This called every update.
     directions: up, down, left, right
   */
   flow(pipe, direction) {

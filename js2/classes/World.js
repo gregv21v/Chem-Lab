@@ -4,6 +4,7 @@
 class World {
 	constructor(player, position, width, height) {
 		this.player = player;
+		this.snapSide = "";
 		this.snappingTo = null;
 
 		// The side that the given object (snappingTo) is on.
@@ -31,15 +32,29 @@ class World {
 
 			if(self.player.hand != null) {
 
-				// snap following pipe to tank if pipe is within the tanks snapping radius
+
+				self.player.hand.moveRelativeToCenter(mousePos)
+
+				// find the closest snappable object to the mouse
+				// then try to snap to that.
+				//
+				var closestSnappable = null
+				var closestDistance = 1000
 				for(var obj of self.objs) {
-					var side = self.player.hand.snapTo(obj, mousePos);
-					console.log(side);
-					if(side === "") {
-						self.player.hand.center = mousePos
+					if(obj instanceof Snappable) {
+						let distance = Distance(obj.getCenter(), mousePos);
+						if(distance < closestDistance) {
+							closestDistance = distance
+							closestSnappable = obj
+						}
 					}
-					self.player.hand.updateSVG()
 				}
+
+				if(closestSnappable != null) {
+					self.snapSide = self.player.hand.snapTo(closestSnappable, mousePos);
+					self.snappingTo = closestSnappable;
+				}
+				self.player.hand.updateSVG()
 			}
 		});
 
@@ -59,16 +74,13 @@ class World {
 				// Move the object to the world
 				if(self.player.hand) {
 					if(self.snappingTo) {
-						self.player.hand.attachTo(self.snappingTo, self.objectOn);
-						self.snappingTo.attachTo(self.player.hand, getOpposite(self.objectOn));
+						self.player.hand.attachTo(self.snappingTo, self.snapSide);
+						self.snappingTo.attachTo(self.player.hand, getOpposite(self.snapSide));
 					}
 					self.add(self.player.hand);
-					if(self.player.hand instanceof Pipe) {
-						self.player.hand.center = self.player.hand.snapCenter;
-					}
-					self.player.hand = null;
+					self.player.hand = null; // empty hand
 					self.snappingTo = null;
-					self.objectOn = "";
+					self.snapSide = "";
 				}
 
 			}
@@ -134,82 +146,17 @@ class World {
 			this.drops[i].fall(this);
 		}
 
-		var tanks = this.findTanks();
 		var pipes = this.findPipes();
 
 		// Move fluid drops through pipes
-		for(var x in pipes) {
-			pipes[x].updateDrops();
+		for(var pipe of pipes) {
+			pipe.updateDrops();
 		}
 
-		// TODO: ====> this
-		for(var x in tanks) {
-			var tank = tanks[x];
-			for(var y in tank.connectedPipes) {
-				var pipe = tank.connectedPipes[y].pipe;
-				var side = tank.connectedPipes[y].side;
-
-
-				// drops enter pipe.
-				if(true /* side === "right" || side === "down" */) {
-					// only get the drop if the pipe is at or
-					// below the tanks liquid level.
-					var drop;
-					if (tank.pipeCanAccessLiquid(pipe)) {
-						drop = tank.getDrop(pipe.getDropSize());
-					} else {
-						drop = null;
-					}
-					if(drop) {
-						if(side === "left") {
-							drop.position = {
-								x: pipe.position.x + pipe.getWidth() - drop.size/2,
-								y: pipe.center.y - drop.size/2
-							}
-						} else if(side === "right") {
-							drop.position = {
-								x: pipe.position.x,
-								y: pipe.center.y - drop.size/2
-							}
-						} else if(side === "up") {
-							drop.position = {
-								x: pipe.position.x + drop.size/2,
-								y: pipe.position.y
-							}
-						} else if(side === "down") {
-							drop.position = {
-								x: pipe.position.x + drop.size/2,
-								y: pipe.position.y
-							}
-						}
-						drop.createSVG();
-						pipe.addDrop(drop, side);
-					}
-				}
-
-
-				// drops exit pipe
-				var otherTank = null;
-				for(var z in pipe.connectedTanks) {
-					if(pipe.connectedTanks[z].side === side) {
-						otherTank = pipe.connectedTanks[z].tank;
-					}
-				}
-
-				if(otherTank) {
-					var drops = pipe.spout();
-					for(var z in drops) {
-						if(!otherTank.addDrop(drops[z].drop)) {
-							pipe.addDropBack(drops[z]);
-						} else {
-							drops[z].drop.destroySVG();
-							otherTank.updateLiquidSVG();
-						}
-					}
-				}
-			}
+		for(var obj of this.objs) {
+			if(obj instanceof Pipe || obj instanceof Tank)
+				obj.transferLiquid();
 		}
-
 
 	};
 

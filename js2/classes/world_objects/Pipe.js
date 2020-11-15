@@ -21,7 +21,7 @@ class Pipe extends Snappable {
 
   	this.position = {x: 0, y: 0};
   	this.rect = this.getRect();
-  	this.updatePosition();
+  	//this.updatePosition();
 
   }
 
@@ -44,7 +44,7 @@ class Pipe extends Snappable {
   	Here is where the liquid comes out of the Pipe
   	and can be collected by another tank or something else.
   */
-  spout () {
+  spout() {
   	// search for available drops
   	var leakingDrops = []; // drops at their exit.
   	var keptDrops = [];
@@ -82,11 +82,11 @@ class Pipe extends Snappable {
 
   updateTooltip () {
     this.tooltip.position = this.position;
-  	this.updatePosition();
+  	//this.updatePosition();
   };
 
   updateSVG() {
-  	this.updatePosition();
+  	//this.updatePosition();
 
   	this.tooltip.createSVG();
 
@@ -124,18 +124,8 @@ class Pipe extends Snappable {
 
   setOrientation (orientation) {
   	this.orientation = orientation;
-  	this.updatePosition();
+  	//this.updatePosition();
   };
-
-  updatePosition() {
-  	if(!this.snapping) {
-  		this.position.x = this.center.x - this.getWidth()/2;
-  		this.position.y = this.center.y - this.getHeight()/2;
-  	} else {
-  		this.position.x = this.snapCenter.x - this.getWidth()/2;
-  		this.position.y = this.snapCenter.y - this.getHeight()/2;
-  	}
-  }
 
 
   /*
@@ -174,24 +164,25 @@ class Pipe extends Snappable {
   	return "Pipe";
   };
 
-  getRect() {
-  	this.updatePosition();
-  	var newRect = new Rect();
-  	newRect.position = this.position
-    newRect.width = this.getWidth(); // horizontal dimension
-    newRect.height = this.getHeight(); // vertical dimension
+  /**
+    transferLiquid()
+    @description transfers liquid to attached Snappables
+  */
+  transferLiquid() {
+    for(var side of Object.keys(this.attachments)) {
+			for(var tank of this.attachments[side]) {
+        var drops = this.spout();
+        for(var drop of drops) {
+          if(tank.addDrop(drop.drop, getOpposite(side))) {
+            this.addDropBack(drop)
+          } else {
+            drop.drop.destroySVG();
+            tank.updateLiquidSVG();
+          }
+        }
+      }
+    }
+  }
 
-  	return newRect;
-  };
-
-
-
-
-  attachTo(tank, side) {
-  	this.connectedTanks.push({
-  		tank: tank,
-  		side: side
-  	});
-  };
 
 }

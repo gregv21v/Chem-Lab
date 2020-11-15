@@ -79,8 +79,21 @@ class GameObject {
     return 0;
   }
 
+
+
   getName() {
     return "";
+  }
+
+  /**
+    getCenter()
+    @description get the center point of this Snappable
+  */
+  getCenter() {
+    return {
+      x: this.position.x + this.getWidth() / 2,
+      y: this.position.y + this.getHeight() / 2
+    }
   }
 
   getRect() {

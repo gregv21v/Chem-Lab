@@ -4,7 +4,7 @@
 
 
 */
-class Valve extends Snappable {
+class Valve extends Pipe {
   constructor(center, width, interiorHeight, wallWidth) {
     super(center)
 
@@ -44,7 +44,6 @@ class Valve extends Snappable {
   };
 
   updateSVG() {
-  	this.updatePosition();
     var self = this;
 
     this.svg.toggle.attr("width", this.getWidth());
@@ -123,92 +122,6 @@ class Valve extends Snappable {
   	} else {
   		return this.interiorHeight + this.wallWidth * 2;
   	}
-  };
-
-  updatePosition() {
-  	if(!this.snapping) {
-  		this.position.x = this.center.x - this.getWidth()/2;
-  		this.position.y = this.center.y - this.getHeight()/2;
-  	} else {
-  		this.position.x = this.snapCenter.x - this.getWidth()/2;
-  		this.position.y = this.snapCenter.y - this.getHeight()/2;
-  	}
-  }
-
-  /**
-    getRect()
-    @description get a rectangle representing
-      the area of the valve
-  */
-  getRect() {
-    this.updatePosition(); // make sure position is up to date
-    var rect = new Rect()
-    rect.position = this.position
-    rect.width = this.getWidth(); // horizontal dimension
-    rect.height = this.getHeight(); // vertical dimension
-    return rect;
-  };
-
-  /*
-  	Checks to see if this pipe snaps to a tank, and return
-  	the side the tank is on.
-
-  	Returns: side that the tank is on
-  */
-  snapTo(tank) {
-  	/*
-  		Left snapping region check.
-  	*/
-  	if(tank.snapAreas.left.intersects(this.getRect())) {
-  		this.setOrientation("horizontal");
-
-  		// set the snapping position to the left edge of the
-  		// tank closest to the pipe.
-  		this.snapCenter.x = tank.position.x	- this.getWidth()/2;
-  		this.snapCenter.y = this.center.y;
-
-  		// tank is one the right side
-  		return "right";
-  	}
-
-  	/*
-  		Right snapping region check.
-  	*/
-  	if(tank.snapAreas.right.intersects(this.getRect())) {
-  		this.setOrientation("horizontal");
-
-  		// set the snapping position to the right edge of the
-  		// tank closest to the pipe.
-  		this.snapCenter.x = tank.position.x + tank.getWidth()	+ this.getWidth()/2;
-  		this.snapCenter.y = this.center.y;
-
-  		// tank is one the left side
-  		return "left";
-  	}
-
-  	/*
-  		Bottom snapping region check.
-  	*/
-  	if(tank.snapAreas.bottom.intersects(this.getRect())) {
-  		this.setOrientation("vertical");
-
-  		// set the snapping position to the bottom edge of the
-  		// tank closest to the this.
-  		this.snapCenter.x = this.center.x;
-  		this.snapCenter.y = tank.position.y + tank.getHeight() + this.getHeight()/2;
-
-  		// tank is one the up side
-  		return "up";
-  	}
-
-  	return "";
-  };
-
-  /*
-  	Info used for creating a tooltip
-  */
-  getName() {
-  	return "Valve";
   };
 
 }

@@ -42,13 +42,6 @@ class Tank extends Snappable {
 		};
 	}
 
-	attachTo (pipe, side) {
-		this.connectedPipes.push({
-			pipe: pipe,
-			side: side
-		});
-	};
-
 	centerAt (point) {
 		this.position.x = point.x - this.getWidth()/2;
 		this.position.y = point.y - this.getHeight()/2;
@@ -65,15 +58,12 @@ class Tank extends Snappable {
 	};
 
 	createSVG() {
-
-
 		this.updateSVG();
-
 	};
 
 	updateSVG() {
-		this.position.x = this.center.x - this.getWidth()/2;
-		this.position.y = this.center.y - this.getHeight()/2;
+		//this.position.x = this.center.x - this.getWidth()/2;
+		//this.position.y = this.center.y - this.getHeight()/2;
 
 		var self = this;
 
@@ -130,6 +120,59 @@ class Tank extends Snappable {
 		this.svg.liquid.remove();
 	}
 
+	/**
+		transferLiquid()
+		@description transfers liquid to attachments
+	*/
+	transferLiquid() {
+		for(var side of Object.keys(this.attachments)) {
+			for(var pipe of this.attachments[side]) {
+				if(pipe instanceof Pipe) {
+
+
+					var drop;
+
+					// get a drop from the tank
+					if(this.pipeCanAccessLiquid(pipe)) {
+						drop = this.getDrop(pipe.getDropSize())
+					} else {
+						drop = null;
+					}
+
+
+
+					if(drop) {
+						//console.log(.size);
+						// position drop at front of pipe
+						if(side === "left") {
+							drop.position = {
+								x: pipe.position.x + pipe.getWidth() - drop.size/2,
+								y: pipe.getCenter().y - drop.size/2
+							}
+						} else if(side === "right") {
+							drop.position = {
+								x: pipe.position.x,
+								y: pipe.getCenter().y - drop.size/2
+							}
+						} else if(side === "top") {
+							drop.position = {
+								x: pipe.position.x + drop.size/2,
+								y: pipe.position.y
+							}
+						} else if(side === "bottom") {
+							drop.position = {
+								x: pipe.position.x + drop.size/2,
+								y: pipe.position.y
+							}
+						}
+						drop.createSVG();
+						pipe.addDrop(drop, side);
+					}
+				}
+			}
+		}
+	}
+
 	/*
 		Checks to see if a given pipe can access the
 		liquid in the tank.
@@ -137,7 +180,7 @@ class Tank extends Snappable {
 	pipeCanAccessLiquid (pipe) {
 		// the opening of the pipe is even with the
 		// tanks liquid or above it.
-		var pipeY = pipe.center.y + pipe.interiorHeight/2; // y bottom interior wall of pipe.
+		var pipeY = pipe.getCenter().y + pipe.interiorHeight/2; // y bottom interior wall of pipe.
 		if(pipeY > this.getLiquidY()) {
 			return true;
 		} else {
@@ -232,27 +275,13 @@ class Tank extends Snappable {
 		return this.interior.height + this.wallWidth;
 	}
 
-	/*
-		Get a rectangle representing the tank.
-	*/
-	getRect() {
-		var newRect = new Rect();
-		newRect.position = this.position;
-		newRect.width = this.getWidth();
-		newRect.height = this.getHeight();
-		return newRect;
-	};
-
-	/*
-		Gets the center of the tank
-	*/
-	getCenter () {
+	getSnapAreas() {
 		return {
-			x: this.position.x + (this.getWidth()) / 2,
-			y: this.position.y + (this.getHeight()) / 2,
-		};
-	};
-
+			left: this.getLeftArea(),
+			right: this.getRightArea(),
+			bottom: this.getBottomArea()
+		}
+	}
 
 	/*
 		Get the liquid in the tank.

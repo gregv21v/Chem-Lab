@@ -16,6 +16,13 @@ class Rect {
 		this.svg = mainSVG.append("rect");
 	}
 
+	getCenter() {
+		return {
+			x: this.position.x + this.width / 2,
+			y: this.position.y + this.height / 2
+		}
+	}
+
 	contains (point) {
 		return (
 				(this.position.x <= point.x
@@ -88,6 +95,6 @@ class Rect {
 	};
 
 	updateSVG() {
-	};
+	}
 
-} 
+}
