@@ -4,7 +4,11 @@
 
 function Game() {
 
-  //this.world = new World(this.player);
+  this.player = new Player();
+
+  this.player.createSVG()
+  this.player.update();
+  this.world = new World(this.player);
   this.store = new Store();
 
 
