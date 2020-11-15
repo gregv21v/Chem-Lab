@@ -21,7 +21,7 @@
 
 function Tank(center, interior, wallWidth)
 {
-	GameObject.call(this, center);
+	Snappable.call(this, center);
 
 	this.connectedPipes = [];
 	this.currentLevel = 0;
@@ -46,47 +46,13 @@ function Tank(center, interior, wallWidth)
 	};
 
 
-	this.tooltip = new ToolTip(
-    this.position,
-    "Stores liquid");
-
-	this.snapAreas = {
-		bottom: new Rect(),
-		left: new Rect(),
-		right: new Rect()
-	}
-
-	// color bottom snap area
-	this.snapAreas.bottom.stroke.width = 1;
-	this.snapAreas.bottom.stroke.color = "black";
-	this.snapAreas.bottom.fill.color = "green";
-	this.snapAreas.bottom.fill.opacity = 0.5;
-
-	// color left snap area
-	this.snapAreas.left.stroke.width = 1;
-	this.snapAreas.left.stroke.color = "black";
-	this.snapAreas.left.fill.color = "green";
-	this.snapAreas.left.fill.opacity = 0.5;
-
-	// color right snap area
-	this.snapAreas.right.stroke.width = 1;
-	this.snapAreas.right.stroke.color = "black";
-	this.snapAreas.right.fill.color = "green";
-	this.snapAreas.right.fill.opacity = 0.5;
 
 
-
-
-	// initial update
-	this.updateSnapAreas();
 }
 
-Tank.prototype = Object.create(GameObject.prototype);
+Tank.prototype = Object.create(Snappable.prototype);
 Tank.prototype.constructor = Tank;
 
-Tank.prototype.snapTo = function (pipe) {
-
-};
 
 Tank.prototype.attachTo = function (pipe, side) {
 	this.connectedPipes.push({
@@ -118,6 +84,8 @@ Tank.prototype.createSVG = function() {
 };
 
 Tank.prototype.updateSVG = function() {
+	this.position.x = this.center.x - this.getWidth()/2;
+	this.position.y = this.center.y - this.getHeight()/2;
 
 	var self = this;
 
@@ -332,66 +300,4 @@ Tank.prototype.empty = function () {
 	this.text = ""
 
 	this.updateLiquidSVG();
-};
-
-
-
-/*
-	Updates the areas around the tank and inside the tank that will be used for attaching
-	pipes to tanks.
-
-	(note: maybe combining solution 2, with the phantom pipe)
-	There are two possible alternatives to the snap areas.
-
-	A circlular snap area.
-	A a bunch of rectanglar snap areas
-*/
-Tank.prototype.updateSnapAreas = function() {
-	var externalWidth = 15;
-
-	// left
-	this.snapAreas.left.position = {x: this.position.x - externalWidth, y: this.position.y};
-	this.snapAreas.left.width = externalWidth;
-	this.snapAreas.left.height = this.getHeight();
-
-	// right
-	this.snapAreas.right.position = {x: this.position.x + this.getWidth(), y: this.position.y};
-	this.snapAreas.right.width = externalWidth;
-	this.snapAreas.right.height = this.getHeight();
-
-	// bottom
-	this.snapAreas.bottom.position = {x: this.position.x, y: this.position.y + this.getHeight()};
-	this.snapAreas.bottom.width = this.getWidth();
-	this.snapAreas.bottom.height = externalWidth;
-
-};
-
-
-/*
-	Update the snap area SVG's
-*/
-Tank.prototype.updateSnapAreasSVG = function () {
-	this.snapAreas.left.updateSVG();
-	this.snapAreas.right.updateSVG();
-	this.snapAreas.bottom.updateSVG();
-};
-
-/*
-	Shows the snap area for the tank. Used
-	for debugging purposes.
-*/
-Tank.prototype.showSnapAreas = function () {
-	this.snapAreas.left.createSVG();
-	this.snapAreas.right.createSVG();
-	this.snapAreas.bottom.createSVG();
-};
-
-/*
-	Hides the snap area for the tank. Used
-	for debugging purposes.
-*/
-Tank.prototype.hideSnapAreas = function () {
-	this.snapAreas.left.destroySVG();
-	this.snapAreas.right.destroySVG();
-	this.snapAreas.bottom.destroySVG();
 };

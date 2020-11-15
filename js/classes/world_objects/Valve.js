@@ -12,12 +12,8 @@ function Valve(center, width, interiorHeight, wallWidth) {
 
   this.width = width;
   this.opened = false;
-  this.alignment = "horizontal";
   this.pipe = null; // the pipe that this valve is connected to.
   this.position = center;
-
-  this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
-  this.snapping = false;
 
   this.interiorHeight = interiorHeight;
   this.wallWidth = wallWidth;
@@ -67,26 +63,27 @@ Valve.prototype.updateSVG = function() {
     self.toggle();
   });
 
-	if(this.alignment === "horizontal") {
+	if(this.orientation === "horizontal") {
 		// interior
 		this.svg.interior.attr("width", this.width);
 		this.svg.interior.attr("height", this.interiorHeight);
-		this.svg.interior.attr("x", this.position.x);
-		this.svg.interior.attr("y", this.position.y + this.wallWidth);
 	} else {
 		// interior
 		this.svg.interior.attr("width", this.interiorHeight);
 		this.svg.interior.attr("height", this.width);
-		this.svg.interior.attr("x", this.position.x + this.wallWidth);
-		this.svg.interior.attr("y", this.position.y);
 	}
+
+  this.svg.interior.attr("x", this.position.x);
+  this.svg.interior.attr("y", this.position.y + this.wallWidth);
+  this.svg.interior.style("fill-opacity", 0.5)
+
 
 	// walls
 	this.svg.walls.attr("width", this.getWidth());
 	this.svg.walls.attr("height", this.getHeight());
 	this.svg.walls.attr("x", this.position.x);
 	this.svg.walls.attr("y", this.position.y);
-	this.svg.walls.style("fill", "black").style("fill-opacity", 1);
+	this.svg.walls.style("fill", "black").style("fill-opacity", 0.5);
 
   // latch
   this.svg.latch.attr("width", 10);
@@ -115,8 +112,12 @@ Valve.prototype.toggle = function () {
   }
 };
 
+/**
+  getHeight()
+  @description referes to height of the actual object in the world
+*/
 Valve.prototype.getHeight = function() {
-	if(this.alignment === "horizontal") {
+	if(this.orientation === "horizontal") {
 		return this.interiorHeight + this.wallWidth * 2;
 	} else {
 		return this.width;
@@ -124,7 +125,7 @@ Valve.prototype.getHeight = function() {
 };
 
 Valve.prototype.getWidth = function() {
-	if(this.alignment === "horizontal") {
+	if(this.orientation === "horizontal") {
 		return this.width;
 	} else {
 		return this.interiorHeight + this.wallWidth * 2;
@@ -147,12 +148,17 @@ Valve.prototype.updatePosition = function() {
     the area of the valve
 */
 Valve.prototype.getRect = function () {
-  this.updatePosition();
+  this.updatePosition(); // make sure position is up to date
   var rect = new Rect()
   rect.position = this.position
-  rect.width = this.getWidth();
-  rect.height = this.getHeight();
 
+  if(this.orientation === "horizontal") {
+    rect.width = this.getHeight(); // horizontal dimension
+    rect.height = this.getWidth(); // vertical dimension
+  } else if(this.orientation === "vertical") {
+    rect.width = this.getWidth(); // horizontal dimension
+    rect.height = this.getHeight(); // vertical dimension
+  }
   return rect;
 };
 
@@ -167,7 +173,7 @@ Valve.prototype.snapTo = function (tank) {
 		Left snapping region check.
 	*/
 	if(tank.snapAreas.left.intersects(this.getRect())) {
-		this.setAlignment("horizontal");
+		this.setOrientation("horizontal");
 
 		// set the snapping position to the left edge of the
 		// tank closest to the pipe.
@@ -182,7 +188,7 @@ Valve.prototype.snapTo = function (tank) {
 		Right snapping region check.
 	*/
 	if(tank.snapAreas.right.intersects(this.getRect())) {
-		this.setAlignment("horizontal");
+		this.setOrientation("horizontal");
 
 		// set the snapping position to the right edge of the
 		// tank closest to the pipe.
@@ -197,7 +203,7 @@ Valve.prototype.snapTo = function (tank) {
 		Bottom snapping region check.
 	*/
 	if(tank.snapAreas.bottom.intersects(this.getRect())) {
-		this.setAlignment("vertical");
+		this.setOrientation("vertical");
 
 		// set the snapping position to the bottom edge of the
 		// tank closest to the this.

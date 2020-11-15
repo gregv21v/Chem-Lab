@@ -33,8 +33,8 @@ function Player()
   ));
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
   this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-  this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  //this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+  //this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
 
   var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
   this.inventory.add(newPipe);
@@ -58,7 +58,7 @@ function Player()
   var sellTank = new Tank(
     {
       x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
-      y: this.inventory.getHeight() - 50 - 5 /* Space for the button */
+      y: this.inventory.getHeight() - 50 - 5 // Space for the button
     },
     {
       width: 200,
@@ -85,9 +85,17 @@ function Player()
 
   })
 
-  var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
-  startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
-  startPump.position.y = startPump.getWidth() + startPump.production;
+//  var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
+  //startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
+  //startPump.position.y = startPump.getWidth() + startPump.production;
+
+  var testValve = new Valve(
+    {x: this.world.getWidth() / 2, y: this.world.getHeight() / 2},
+    100, // width
+    10, // interiorHeight
+    5  // wallWidth
+  )
+  testValve.showSnapAreas();
 
   /*var testFaucet = new Faucet({
     x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
@@ -96,8 +104,9 @@ function Player()
 
 
 
-  this.world.add(sellTank);
-  this.world.add(startPump);
+  //this.world.add(sellTank);
+  //this.world.add(startPump);
+  this.world.add(testValve)
   //this.world.add(testFaucet);
 
 

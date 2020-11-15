@@ -76,7 +76,7 @@ function World(player, position, width, height) {
 	document.addEventListener('keypress', function(evnt) {
 		// rotate the pipe in the players hand
 		// 'r' = 114
-		if(evnt.keyCode == 114 && self.player.hand instanceof Pipe) {
+		if(evnt.keyCode == 114) {
 			self.player.hand.rotate();
 			self.player.hand.updateSVG();
 		}

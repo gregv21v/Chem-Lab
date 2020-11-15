@@ -6,7 +6,7 @@
 
 function Pipe(center, width, interiorHeight, wallWidth)
 {
-	GameObject.call(this, center);
+	Snappable.call(this, center);
 	this.connectedTanks = [];
 	this.wallWidth = wallWidth;
 	this.interiorHeight = interiorHeight;
@@ -18,7 +18,7 @@ function Pipe(center, width, interiorHeight, wallWidth)
 	this.drops = [];
 
 	// gui components
-	this.tooltip = new ToolTip(this.position, "Pipes transport liquid")
+	//this.tooltip = new ToolTip(this.position, "Pipes transport liquid")
 
 	//this.snapCenter = {x: 0, y: 0}; // position of pipe when in the snapping region.
 	//this.snapping = false;
@@ -29,92 +29,20 @@ function Pipe(center, width, interiorHeight, wallWidth)
 		interior: mainSVG.append("rect")
 	}
 
-	this.alignment = "vertical";
-	this.snapAreas = {
-		first: new Rect(), // the
-		second: new Rect() // also the
-	};
-
-	// color first snap areas
-	this.snapAreas.first.stroke.width = 1;
-	this.snapAreas.first.stroke.color = "black";
-	this.snapAreas.first.fill.color = "orange";
-	this.snapAreas.first.fill.opacity = 0.5;
-
-	// color second snap area
-	this.snapAreas.second.stroke.width = 1;
-	this.snapAreas.second.stroke.color = "black";
-	this.snapAreas.second.fill.color = "orange";
-	this.snapAreas.second.fill.opacity = 0.5;
-
 
 	this.position = {x: 0, y: 0};
 	this.rect = this.getRect();
 	this.updatePosition();
-	this.updateSnapAreas();
 
 	// call the constructor of the base class
 	//console.log("Pipe Constructor");
 
 }
 
-Pipe.prototype = Object.create(GameObject.prototype);
+Pipe.prototype = Object.create(Snappable.prototype);
 Pipe.prototype.constructor = Pipe;
 
-/*
-	Checks to see if this pipe snaps to a tank, and return
-	the side the tank is on.
 
-	Returns: side that the tank is on
-*/
-Pipe.prototype.snapTo = function (tank) {
-	/*
-		Left snapping region check.
-	*/
-	if(tank.snapAreas.left.intersects(this.getRect())) {
-		this.setAlignment("horizontal");
-
-		// set the snapping position to the left edge of the
-		// tank closest to the pipe.
-		this.snapCenter.x = tank.position.x	- this.getWidth()/2;
-		this.snapCenter.y = this.center.y;
-
-		// tank is one the right side
-		return "right";
-	}
-
-	/*
-		Right snapping region check.
-	*/
-	if(tank.snapAreas.right.intersects(this.getRect())) {
-		this.setAlignment("horizontal");
-
-		// set the snapping position to the right edge of the
-		// tank closest to the pipe.
-		this.snapCenter.x = tank.position.x + tank.getWidth()	+ this.getWidth()/2;
-		this.snapCenter.y = this.center.y;
-
-		// tank is one the left side
-		return "left";
-	}
-
-	/*
-		Bottom snapping region check.
-	*/
-	if(tank.snapAreas.bottom.intersects(this.getRect())) {
-		this.setAlignment("vertical");
-
-		// set the snapping position to the bottom edge of the
-		// tank closest to the this.
-		this.snapCenter.x = this.center.x;
-		this.snapCenter.y = tank.position.y + tank.getHeight() + this.getHeight()/2;
-
-		// tank is one the up side
-		return "up";
-	}
-
-	return "";
-};
 
 
 
@@ -183,7 +111,7 @@ Pipe.prototype.updateSVG = function() {
 
 	this.tooltip.createSVG();
 
-	if(this.alignment === "horizontal") {
+	if(this.orientation === "horizontal") {
 		// interior
 		this.svg.interior.attr("width", this.width);
 		this.svg.interior.attr("height", this.interiorHeight);
@@ -215,8 +143,8 @@ Pipe.prototype.updateSVG = function() {
 	==========================================
 */
 
-Pipe.prototype.setAlignment = function (alignment) {
-	this.alignment = alignment;
+Pipe.prototype.setOrientation = function (orientation) {
+	this.orientation = orientation;
 	this.updateSnapAreas();
 	this.updatePosition();
 };
@@ -232,13 +160,13 @@ Pipe.prototype.updatePosition = function() {
 }
 
 /*
-	Switch the pipe too and from horizontal and vertical alignment.
+	Switch the pipe too and from horizontal and vertical orientation.
 */
 Pipe.prototype.rotate = function() {
-	if(this.alignment === "horizontal") {
-		this.setAlignment("vertical");
+	if(this.orientation === "horizontal") {
+		this.setOrientation("vertical");
 	} else {
-		this.setAlignment("horizontal");
+		this.setOrientation("horizontal");
 	}
 }
 
@@ -248,7 +176,7 @@ Pipe.prototype.rotate = function() {
 	Physical Properties
 ************************************************/
 Pipe.prototype.getHeight = function() {
-	if(this.alignment === "horizontal") {
+	if(this.orientation === "horizontal") {
 		return this.interiorHeight + this.wallWidth * 2;
 	} else {
 		return this.width;
@@ -256,7 +184,7 @@ Pipe.prototype.getHeight = function() {
 };
 
 Pipe.prototype.getWidth = function() {
-	if(this.alignment === "horizontal") {
+	if(this.orientation === "horizontal") {
 		return this.width;
 	} else {
 		return this.interiorHeight + this.wallWidth * 2;
@@ -281,103 +209,24 @@ Pipe.prototype.getName = function () {
 Pipe.prototype.getRect = function() {
 	this.updatePosition();
 	var newRect = new Rect();
-	newRect.position = {
-		x: this.position.x,
-		y: this.position.y
-	};
-	newRect.width =	this.getWidth();
- 	newRect.height = this.getHeight();
+	newRect.position = this.position
+
+	if(this.orientation === "horizontal") {
+		newRect.width = this.getHeight(); // horizontal dimension
+		newRect.height = this.getWidth(); // vertical dimension
+	} else if(this.orientation === "vertical") {
+		newRect.width = this.getWidth(); // horizontal dimension
+		newRect.height = this.getHeight(); // vertical dimension
+	}
 	return newRect;
 };
 
 
-/************************************************
-	Snapping
-************************************************/
-Pipe.prototype.updateSnapAreas = function () {
-	var externalWidth = 15;
 
-	if(this.alignment === "horizontal") {
-		this.snapAreas.first.width = externalWidth;
-		this.snapAreas.first.height = this.getHeight();
-
-		this.snapAreas.second.width = externalWidth;
-		this.snapAreas.second.height = this.getHeight();
-
-		// left
-		this.snapAreas.first.position = {
-				x: this.position.x - externalWidth,
-				y: this.position.y
-		};
-
-
-		// right
-		this.snapAreas.second.position = {
-				x: this.position.x + this.getWidth(),
-				y: this.position.y
-		};
-
-	} else if(this.alignment === "vertical") {
-		this.snapAreas.first.width = this.getWidth();
-		this.snapAreas.first.height = externalWidth;
-
-		this.snapAreas.second.width =	this.getWidth();
-		this.snapAreas.second.height = externalWidth;
-
-		// top
-		this.snapAreas.first.position = {
-				x: this.position.x,
-				y: this.position.y - externalWidth
-		};
-
-		// bottom
-		this.snapAreas.second.position = {
-				x: this.position.x,
-				y: this.position.y + this.getHeight()
-		};
-
-	}
-};
-
-
-/*
-	Gets the orientation of the pipe:
-		Left - Right
-
-*/
-Pipe.prototype.getOrientation = function () {
-
-};
 
 Pipe.prototype.attachTo = function (tank, side) {
 	this.connectedTanks.push({
 		tank: tank,
 		side: side
 	});
-};
-
-/*
-	Update the snap area SVG's
-*/
-Pipe.prototype.updateSnapAreasSVG = function () {
-	this.snapAreas.first.updateSVG();
-	this.snapAreas.second.updateSVG();
-};
-
-/*
-	Shows the snap area for the pipe. Used
-	for debugging purposes.
-*/
-Pipe.prototype.showSnapAreas = function () {
-	this.snapAreas.first.createSVG();
-	this.snapAreas.second.createSVG();
-};
-
-/*
-	Hides the snap area for the pipe. Used
-	for debugging purposes.
-*/
-Pipe.prototype.hideSnapAreas = function () {
-	this.snapAreas.first.destroySVG();
-	this.snapAreas.second.destroySVG();
 };

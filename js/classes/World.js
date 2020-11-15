@@ -29,14 +29,15 @@ function World(player, position, width, height) {
 		var mousePos = {x: evnt.clientX, y: evnt.clientY};
 
     if(self.player.hand != null) {
+
       // snap following pipe to tank if pipe is within the tanks snapping radius
-      if(self.player.hand instanceof Pipe) {
-				self.snapPipe(self.player.hand, mousePos);
-      } else if(self.player.hand instanceof Tank) {
-				self.snapTank(self.player.hand, mousePos);
-			} else if(self.player.hand instanceof Valve) {
-				console.log("Valve on hand.");
-				self.snapValve(self.player.hand, mousePos);
+			for(var obj of self.objs) {
+				var side = self.player.hand.snapTo(obj, mousePos);
+				console.log(side);
+				if(side === "") {
+					self.player.hand.center = mousePos
+				}
+				self.player.hand.updateSVG()
 			}
     }
   });
@@ -51,7 +52,7 @@ function World(player, position, width, height) {
 		if(self.player.hand != null &&
 			!self.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
 		{
-			self.player.hand.updateTooltip();
+			//self.player.hand.updateTooltip();
 			//console.log(self.player.hand);
 			//console.log(self.snappingTo);
 			// Move the object to the world
@@ -107,9 +108,6 @@ World.prototype.createSVG = function() {
 	Add an object (pump, tank... etc) to the world.
 */
 World.prototype.add = function (obj) {
-	if(obj instanceof Tank) {
-		obj.updateSnapAreas();
-	}
 	this.objs.push(obj);
 };
 
@@ -301,7 +299,7 @@ World.prototype.snapPipe = function (pipe, mousePos) {
 };
 
 World.prototype.snapValve = function (valve, mousePos) {
-	var pipes = this.findPipes()
+
 	var snapping = false;
 
 
@@ -310,6 +308,7 @@ World.prototype.snapValve = function (valve, mousePos) {
 		if(valve.getRect().intersects(pipes[i].getRect())) {
 			// axis align them
 			console.log("intersects");
+
 			valve.position.y = pipes[i].center.y;
 			snapping = true;
 		}

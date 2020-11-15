@@ -2,14 +2,14 @@ function Rect()
 {
 	this.width = 0;
 	this.height = 0;
-	this.position = {x: 0, y: 0};
+	this.position = {x: 0, y: 0}; // top left corner
 	this.fill = {
 		opacity: 1.0,
 		color: "white"
 	};
 	this.stroke = {
 		color: "blue",
-		width: 10
+		width: 1
 	};
 
 	var mainSVG = d3.select("body").select("svg")
