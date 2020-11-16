@@ -3,7 +3,6 @@ class Pipe extends Snappable {
   constructor(center, width, interiorHeight, wallWidth) {
     super(center)
 
-    this.connectedTanks = [];
   	this.wallWidth = wallWidth;
   	this.interiorHeight = interiorHeight;
   	this.position = {x: 0, y: 0}
@@ -19,7 +18,6 @@ class Pipe extends Snappable {
   		interior: mainSVG.append("rect")
   	}
 
-  	this.position = {x: 0, y: 0};
   	this.rect = this.getRect();
   	//this.updatePosition();
 
@@ -48,13 +46,13 @@ class Pipe extends Snappable {
   	// search for available drops
   	var leakingDrops = []; // drops at their exit.
   	var keptDrops = [];
-  	for(var x in this.drops) {
+  	for(var drop of this.drops) {
   		// if a drop can no longer flow in the direction it was
   		// flowing, give it is at its spout, and ready to leak.
-  		if(!this.drops[x].drop.canFlow(this, this.drops[x].direction)) {
-  			leakingDrops.push(this.drops[x]);
+  		if(!drop.drop.canFlow(this, drop.direction)) {
+  			leakingDrops.push(drop);
   		} else {
-  			keptDrops.push(this.drops[x]);
+  			keptDrops.push(drop);
   		}
   	}
   	this.drops = keptDrops;
@@ -158,6 +156,20 @@ class Pipe extends Snappable {
   	return this.interiorHeight;
   };
 
+  getSnapAreas() {
+    if(this.orientation === "horizontal") {
+      return {
+        left: this.getLeftArea(),
+        right: this.getRightArea()
+      }
+    } else if(this.orientation === "vertical") {
+      return {
+        top: this.getTopArea(),
+        bottom: this.getBottomArea()
+      }
+    }
+
+  }
 
 
   getName() {
@@ -166,18 +178,20 @@ class Pipe extends Snappable {
 
   /**
     transferLiquid()
-    @description transfers liquid to attached Snappables
+    @description transfers liquid to connected tanks
   */
   transferLiquid() {
     for(var side of Object.keys(this.attachments)) {
 			for(var tank of this.attachments[side]) {
-        var drops = this.spout();
-        for(var drop of drops) {
-          if(tank.addDrop(drop.drop, getOpposite(side))) {
-            this.addDropBack(drop)
-          } else {
-            drop.drop.destroySVG();
-            tank.updateLiquidSVG();
+        if(tank instanceof Tank) {
+          var drops = this.spout();
+          for(var drop of drops) {
+            if(tank.addDrop(drop.drop)) {
+              this.addDropBack(drop)
+            } else {
+              drop.drop.destroySVG();
+              tank.updateLiquidSVG();
+            }
           }
         }
       }

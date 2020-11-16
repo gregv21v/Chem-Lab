@@ -370,7 +370,7 @@ World.prototype.snapTank = function (tank, mousePos) {
 */
 World.prototype.snapTankAtAreaToPipe = function (area, pipe, tank, mousePos, areaLabel) {
 	if(pipe.alignment === "horizontal") {
-		// which side of the tank is is the first snap area closest to
+		// which side of the tank is the first snap area closest to
 		var dx1 = area.position.x - tank.snapPosition.x; // distance from snap area to left tank wall
 		var dx2 = area.position.x - (tank.snapPosition.x + tank.getWidth()); // distance from snap area to right tank wall
 

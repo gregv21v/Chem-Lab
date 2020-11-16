@@ -37,7 +37,6 @@ class Snappable extends GameObject {
     } else if(this.orientation === "vertical"){
       this.orientation = "horizontal"
     }
-
   };
 
   /**
@@ -180,9 +179,7 @@ class Snappable extends GameObject {
     var otherRect = snappable.getRect()
     // match this object with the left edge of
     // the other object
-    if(this.orientation === "vertical") {
-      this.orientation = "horizontal"
-    }
+    this.orientation = "horizontal"
     this.moveRelativeToCenter({
         x: snappable.center.x - thisRect.width / 2,
         y: mousePos.y
@@ -200,9 +197,7 @@ class Snappable extends GameObject {
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    if(this.orientation === "vertical") {
-      this.orientation = "horizontal"
-    }
+    this.orientation = "horizontal"
     // match the right edge
     this.moveRelativeToCenter({
         x: snappable.center.x + otherRect.width + thisRect.width / 2,
@@ -221,9 +216,7 @@ class Snappable extends GameObject {
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    if(this.orientation === "horizontal") {
-      this.orientation = "vertical"
-    }
+    this.orientation = "vertical"
     this.moveRelativeToCenter({
       y: snappable.center.y - thisRect.height / 2,
       x: mousePos.x
@@ -243,29 +236,29 @@ class Snappable extends GameObject {
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    if(this.orientation === "horizontal") {
-      this.orientation = "vertical"
-    }
+    this.orientation = "vertical"
     this.moveRelativeToCenter({
       y: snappable.center.y + otherRect.height + thisRect.height / 2,
       x: mousePos.x
     })
   }
 
+  /**
+    findClosestSnapArea()
+    @description find the closest snap area to the mouse position
+    @param mousePos position of mouse
+  */
+  findClosestSnapArea(snappable, mousePos) {
+    // find the closest snappable region that
+    // intersects
 
-  snapTo(snappable, mousePos) {
-    var snapAreas = snappable.getSnapAreas()
     var closestSide = "";
     var closestDistance = 2000;
+    var snapAreas = snappable.getSnapAreas()
+    snappable.showSnapAreas();
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    //console.log("Snap Areas: ");
-    //console.log(snapAreas);
-
-
-    // find the closest snappable region that
-    // intersects
     for(var side of Object.keys(snapAreas)) {
       var distance = Distance(snapAreas[side].getCenter(), mousePos)
       // find the closest intersecting snap area
@@ -276,6 +269,14 @@ class Snappable extends GameObject {
       }
     }
 
+    return closestSide;
+  }
+
+
+  snapTo(snappable, mousePos) {
+
+    let closestSide = this.findClosestSnapArea(snappable, mousePos);
+
     if(closestSide === "left") {
       this.leftSnapBehaviour(snappable, mousePos)
     } else if(closestSide === "right") {
@@ -285,6 +286,7 @@ class Snappable extends GameObject {
     } else if(closestSide === "bottom") {
       this.bottomSnapBehaviour(snappable, mousePos)
     }
+
     return closestSide;
   };
 

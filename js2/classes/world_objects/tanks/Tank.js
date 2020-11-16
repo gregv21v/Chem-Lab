@@ -19,16 +19,16 @@
 class Tank extends Snappable {
 	constructor(center, interior, wallWidth) {
 		super(center)
-		this.connectedPipes = [];
 		this.currentLevel = 0;
 		this.maxLevel = interior.width * interior.height;
 		this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
 		this.interior = interior;
 		this.wallWidth = wallWidth;
 		this.position = center;
+		this.orientation = "vertical"
 
-		this.snapPosition = {x: 0, y: 0};
-		this.snapping = false;
+		//this.snapPosition = {x: 0, y: 0};
+		//this.snapping = false;
 
 		this.wallColor = "green";
 		this.active = false;
@@ -60,6 +60,19 @@ class Tank extends Snappable {
 	createSVG() {
 		this.updateSVG();
 	};
+
+	/**
+		topSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+			the top of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	topSnapBehaviour(snappable, mousePos) {
+		// Do Nothing
+	}
+
+
 
 	updateSVG() {
 		//this.position.x = this.center.x - this.getWidth()/2;
@@ -122,7 +135,7 @@ class Tank extends Snappable {
 
 	/**
 		transferLiquid()
-		@description transfers liquid to attachments
+		@description transfers liquid from the tank to its connecting pipes
 	*/
 	transferLiquid() {
 		for(var side of Object.keys(this.attachments)) {
@@ -165,8 +178,12 @@ class Tank extends Snappable {
 								y: pipe.position.y
 							}
 						}
+
+						// create the drop in the world and add it to the respective pipe
 						drop.createSVG();
 						pipe.addDrop(drop, side);
+
+
 					}
 				}
 			}
@@ -268,7 +285,7 @@ class Tank extends Snappable {
 
 
 	getWidth() {
-		return this.interior.width + this.wallWidth*2;
+		return this.interior.width + this.wallWidth * 2;
 	}
 
 	getHeight() {

@@ -18,6 +18,9 @@ class World {
 		this.rect.stroke.color = "black";
 		this.drops = [];
 		this.objs = [];
+		this.lines = []
+
+
 
 		var mainSVG = document.querySelector("svg");
 		var self = this;
@@ -28,62 +31,14 @@ class World {
 			Mouse Movement
 		*/
 		mainSVG.addEventListener('mousemove', function(evnt) {
-			var mousePos = {x: evnt.clientX, y: evnt.clientY};
-
-			if(self.player.hand != null) {
-
-
-				self.player.hand.moveRelativeToCenter(mousePos)
-
-				// find the closest snappable object to the mouse
-				// then try to snap to that.
-				//
-				var closestSnappable = null
-				var closestDistance = 1000
-				for(var obj of self.objs) {
-					if(obj instanceof Snappable) {
-						let distance = Distance(obj.getCenter(), mousePos);
-						if(distance < closestDistance) {
-							closestDistance = distance
-							closestSnappable = obj
-						}
-					}
-				}
-
-				if(closestSnappable != null) {
-					self.snapSide = self.player.hand.snapTo(closestSnappable, mousePos);
-					self.snappingTo = closestSnappable;
-				}
-				self.player.hand.updateSVG()
-			}
+			self.mouseMoveHandler(evnt);
 		});
 
 		/*
 			Mouse Down
 		*/
 		mainSVG.addEventListener('mousedown', function(evnt) {
-
-			// place the object in the world
-			// when you are not in the inventory, and have selected a button
-			if(self.player.hand != null &&
-				!self.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
-			{
-				//self.player.hand.updateTooltip();
-				//console.log(self.player.hand);
-				//console.log(self.snappingTo);
-				// Move the object to the world
-				if(self.player.hand) {
-					if(self.snappingTo) {
-						self.player.hand.attachTo(self.snappingTo, self.snapSide);
-						self.snappingTo.attachTo(self.player.hand, getOpposite(self.snapSide));
-					}
-					self.add(self.player.hand);
-					self.player.hand = null; // empty hand
-					self.snappingTo = null;
-					self.snapSide = "";
-				}
-
-			}
+			self.mouseDownHandler(evnt);
 		});
 
 
@@ -100,8 +55,94 @@ class World {
 		})
 	}
 
-	/*
-		Create the SVG for the tank.
+
+	/**
+		mouseDownHandler()
+		@description handles the mouse down event
+		@param evnt the mouse down event
+	*/
+	mouseDownHandler(evnt) {
+		// place the object in the world
+		// when you are not in the inventory, and have selected a button
+		if(this.player.hand != null &&
+			!this.player.inventory.contains({x: evnt.clientX, y: evnt.clientY}))
+		{
+			//this.player.hand.updateTooltip();
+			//console.log(this.player.hand);
+			//console.log(this.snappingTo);
+			// Move the object to the world
+			if(this.player.hand) {
+				if(this.snappingTo) {
+					this.player.hand.attachTo(this.snappingTo, getOpposite(this.snapSide));
+					this.snappingTo.attachTo(this.player.hand, this.snapSide);
+				}
+				this.add(this.player.hand);
+				this.player.hand = null; // empty hand
+				this.snappingTo = null;
+				this.snapSide = "";
+			}
+
+		}
+	}
+
+	/**
+		mouseMoveHandler()
+		@description handles the movement of the mouse in the world
+		@param evnt the mouse event
+	*/
+	mouseMoveHandler(evnt) {
+		var mousePos = {x: evnt.clientX, y: evnt.clientY};
+
+		if(this.player.hand != null) {
+
+			for (var i = 0; i < this.lines.length; i++) {
+				var objCenter = this.objs[i].getCenter()
+				this.lines[i]
+					.style("stroke", "orange")
+					.attr("x1", objCenter.x)
+					.attr("y1", objCenter.y)
+					.attr("x2", mousePos.x)
+					.attr("y2", mousePos.y)
+			}
+
+
+			this.player.hand.moveRelativeToCenter(mousePos)
+			let closestSnappable = this.findClosestSnappable(mousePos)
+			console.log(closestSnappable);
+			if(closestSnappable != null) {
+				this.snapSide = this.player.hand.snapTo(closestSnappable, mousePos);
+				if(this.snapSide !== "")
+					this.snappingTo = closestSnappable;
+			}
+			this.player.hand.updateSVG()
+		}
+
+	}
+
+	/**
+		findClosestSnappable()
+		@description find the snappable object closest to the mouse position
+		@param mousePos the position of the mouse
+	*/
+	findClosestSnappable(mousePos) {
+		// find the closest snappable object to the mouse
+		// then try to snap to that.
+		let closestSnappable = null
+		let closestDistance = 100000
+		for(var obj of this.objs) {
+			if(obj instanceof Snappable) {
+				let distance = Distance(obj.getCenter(), mousePos);
+				if(distance < closestDistance) {
+					closestDistance = distance
+					closestSnappable = obj
+				}
+			}
+		}
+		return closestSnappable;
+	}
+	/**
+		createSVG()
+		@description create svg's for all the world objects
 	*/
 	createSVG() {
 		this.rect.createSVG();
@@ -116,29 +157,41 @@ class World {
 	}
 
 
-	/*
-		Add an object (pump, tank... etc) to the world.
+	/**
+		add()
+		@description Add an object (pump, tank... etc) to the world.
+		@param obj the GameObject to add to the world
 	*/
 	add (obj) {
 		this.objs.push(obj);
+
+		// for debugging purposes
+		var mainSVG = d3.select("body").select("svg")
+		this.lines.push(mainSVG.append("line"))
 	};
 
+	/**
+		addDrop()
+		@description add a drop to the world
+		@param drop the drop to add to the world
+	*/
 	addDrop (drop) {
 		this.drops.push(drop);
 	};
 
-	/*
-		Remove a given drop of liquid from the world.
-		Used for adding liquid drops to a tank.
+	/**
+		removeDrop()
+		@description Remove a given drop of liquid from the world.
+			Used for adding liquid drops to a tank.
 	*/
 	removeDrop(drop) {
 		this.drops = this.drops.filter(function(obj) {
 			return obj.id != drop.id;
 		});
 	};
-	/*
-		Update the liquid drops that are currently in the
-		world.
+	/**
+		update()
+		@description Updates all the objects currently in the world
 	*/
 	update() {
 		for(var i = 0; i < this.drops.length; i++)
@@ -163,8 +216,9 @@ class World {
 
 
 
-	/*
-		Check to see if a rectangler {position, width, height} object is within the world
+	/**
+		within()
+		@description Check to see if a rectangler is entriely in the world
 	*/
 	within(rect) {
 		// if all 4 corners of the rect are in the world
@@ -177,8 +231,9 @@ class World {
 	};
 
 
-	/*
-		Find all the tanks in the world.
+	/**
+		findTanks()
+		@description Find all the tanks in the world.
 	*/
 	findTanks() {
 		var tanks = [];
@@ -190,16 +245,9 @@ class World {
 		return tanks;
 	};
 
-	getWidth () {
-		return this.rect.width + 20;
-	};
-
-	getHeight () {
-		return this.rect.height + 20;
-	};
-
-	/*
-		Find all the pipes in the world.
+	/**
+		findPipes()
+		@description Find all the pipes in the world.
 	*/
 	findPipes() {
 		var pipes = [];
@@ -211,67 +259,28 @@ class World {
 		return pipes;
 	};
 
-	/*
-		Handles snapping of pipes to tanks.
+
+	/**
+		getWidth()
+		@description Get the width of the world
 	*/
-	snapPipe (pipe, mousePos) {
-
-		var tanks = this.findTanks();
-		var snapping = false
-		pipe.center = mousePos;
-
-		// find an object to snap to
-		for(var i = 0; i < tanks.length; i++) {
-			var side = pipe.snapTo(tanks[i])
-			if(side !== "") {
-				this.objectOn = side;
-				this.snappingTo = tanks[i];
-				snapping = true;
-			}
-		}
-
-		if (!snapping) {
-			// the object is no longer snapping, so place it
-			// where it belongs.
-			pipe.center = mousePos
-			pipe.snapCenter = pipe.center;
-			pipe.snapping = false;
-		} else {
-			// the object is snapping again
-			pipe.snapping = true;
-		}
-
-		pipe.updatePosition();
-		pipe.updateSVG();
+	getWidth () {
+		return this.rect.width + 20;
 	};
 
-	snapValve (valve, mousePos) {
-
-		var snapping = false;
-
-
-		for(var i = 0; i < pipes.length; i++) {
-			// check to see if the pipe and valve intersect.
-			if(valve.getRect().intersects(pipes[i].getRect())) {
-				// axis align them
-				console.log("intersects");
-
-				valve.position.y = pipes[i].center.y;
-				snapping = true;
-			}
-		}
-
-		if(!snapping) {
-			valve.center = mousePos
-			valve.snapCenter = valve.center;
-			valve.snapping = false;
-		} else {
-			valve.snapping = true;
-		}
-
-		//valve.updatePosition();
-		valve.updateSVG();
+	/**
+		getHeight()
+		@description Get the height of the world
+	*/
+	getHeight () {
+		return this.rect.height + 20;
 	};
+
+
+
+
+
+
 
 
 
