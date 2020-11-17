@@ -3,23 +3,11 @@
   items.
 
 */
-function Store() {
+class Store {
+  constructor() {
+    this.forSaleItems = []; // the items available that the player can
+                            // buy
+    this.sellableItems = []; // the players own items that he or she can sell
 
-  this.forSaleItems = []; // the items available that the player can
-                          // buy
-  this.sellableItems = []; // the players own items that he or she can sell
-
-
+  }
 }
-
-Inventory.prototype = Object.create(Inventory.prototype)
-Inventory.prototype.constructor = Inventory
-
-
-Store.prototype.createSVG = function () {
-
-  // display the buyable items
-
-
-  // display the sellable items
-};

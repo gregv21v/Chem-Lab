@@ -1,13 +1,12 @@
 /*
   A single slot of the inventory
 */
+class Slot extends ItemButton {
+  constructor(position, width, height) {
+      super(position, width, height)
 
-function Slot(position, width, height) {
-  ItemButton.call(this, position, width, height);
-  this.empty = false;
-  this.index = 0;
+      this.empty = false;
+      this.index = 0;
+  }
 
 }
-
-Slot.prototype = Object.create(ItemButton.prototype)
-Slot.prototype.constructor = Slot
