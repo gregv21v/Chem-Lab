@@ -108,7 +108,7 @@ class World {
 
 			this.player.hand.moveRelativeToCenter(mousePos)
 			let closestSnappable = this.findClosestSnappable(mousePos)
-			console.log(closestSnappable);
+			//console.log(closestSnappable);
 			if(closestSnappable != null) {
 				this.snapSide = this.player.hand.snapTo(closestSnappable, mousePos);
 				if(this.snapSide !== "")

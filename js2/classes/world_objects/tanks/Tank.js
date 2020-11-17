@@ -42,13 +42,6 @@ class Tank extends Snappable {
 		};
 	}
 
-	centerAt (point) {
-		this.position.x = point.x - this.getWidth()/2;
-		this.position.y = point.y - this.getHeight()/2;
-
-		this.updateSVG();
-	};
-
 	getLiquidHeight () {
 		return this.interior.height * this.currentLevel / this.maxLevel;
 	};
@@ -73,6 +66,67 @@ class Tank extends Snappable {
 	}
 
 
+	/**
+    leftSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the left of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  leftSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+    // match this object with the left edge of
+    // the other object
+    this.moveRelativeToCenter({
+        x: snappable.center.x - thisRect.width / 2,
+        y: mousePos.y
+    })
+  }
+
+  /**
+    rightSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the right of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  rightSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+
+		console.log("This Rect: ");
+		console.log(thisRect);
+		console.log("Other Rect: ");
+		console.log(otherRect);
+
+    // match the right edge
+    this.moveRelativeToCenter({
+        x: snappable.center.x + otherRect.width + thisRect.width / 2,
+        y: mousePos.y
+    })
+  }
+
+
+
+
+  /**
+    bottomSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the botttom of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  bottomSnapBehaviour(snappable, mousePos) {}
+
+
+	getSnapAreas() {
+		return {
+			left: this.getLeftArea(),
+			right: this.getRightArea(),
+			bottom: this.getBottomArea()
+		}
+	}
 
 	updateSVG() {
 		//this.position.x = this.center.x - this.getWidth()/2;
@@ -292,13 +346,7 @@ class Tank extends Snappable {
 		return this.interior.height + this.wallWidth;
 	}
 
-	getSnapAreas() {
-		return {
-			left: this.getLeftArea(),
-			right: this.getRightArea(),
-			bottom: this.getBottomArea()
-		}
-	}
+
 
 	/*
 		Get the liquid in the tank.

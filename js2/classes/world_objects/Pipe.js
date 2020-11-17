@@ -5,7 +5,7 @@ class Pipe extends Snappable {
 
   	this.wallWidth = wallWidth;
   	this.interiorHeight = interiorHeight;
-  	this.position = {x: 0, y: 0}
+  	this.position = center
   	//this.center = center; // position of pipe
   	this.width = width;
 
@@ -18,7 +18,7 @@ class Pipe extends Snappable {
   		interior: mainSVG.append("rect")
   	}
 
-  	this.rect = this.getRect();
+  	//this.rect = this.getRect();
   	//this.updatePosition();
 
   }
@@ -75,7 +75,6 @@ class Pipe extends Snappable {
   	var SVGMain = document.getElementById("main");
 
   	this.updateSVG();
-
   };
 
   updateTooltip () {

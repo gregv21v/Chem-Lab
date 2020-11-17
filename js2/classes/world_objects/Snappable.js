@@ -67,6 +67,8 @@ class Snappable extends GameObject {
   	newRect.position = this.position
     newRect.width = this.getWidth(); // horizontal dimension
     newRect.height = this.getHeight(); //   vertical dimension
+
+    //newRect.createSVG()
   	return newRect;
   };
 
@@ -255,7 +257,7 @@ class Snappable extends GameObject {
     var closestSide = "";
     var closestDistance = 2000;
     var snapAreas = snappable.getSnapAreas()
-    snappable.showSnapAreas();
+    //snappable.showSnapAreas();
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
@@ -286,6 +288,9 @@ class Snappable extends GameObject {
     } else if(closestSide === "bottom") {
       this.bottomSnapBehaviour(snappable, mousePos)
     }
+
+    //console.log(closestSide);
+    //console.log(snappable);
 
     return closestSide;
   };

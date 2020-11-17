@@ -128,24 +128,24 @@ class Drop {
   canFlow(pipe, direction) {
     if(direction === "up") {
       // make sure the drop is below the pipes upper edge
-      if(this.position.y - 1 < pipe.center.y - pipe.getHeight()/2 - this.size) {
+      if(this.position.y - 1 < pipe.getCenter().y - pipe.getHeight()/2 - this.size) {
         return false;
       }
     }
     if(direction === "down") {
       // make sure the drop is below the pipes lower edge
-      if(this.position.y + 1 > pipe.center.y + pipe.getHeight()/2 - this.size) {
+      if(this.position.y + 1 > pipe.getCenter().y + pipe.getHeight()/2 - this.size) {
         return false;
       }
     } else if(direction === "left") {
       // make sure the drop is below the pipes left edge
-      if(this.position.x - 1 < pipe.center.x - pipe.getWidth()/2) {
+      if(this.position.x - 1 < pipe.getCenter().x - pipe.getWidth()/2) {
         return false;
       }
     }
     else if(direction === "right") {
       // make sure the drop is below the pipes right edge
-      if(this.position.x + 1 > pipe.center.x + pipe.getWidth()/2 - this.size) {
+      if(this.position.x + 1 > pipe.getCenter().x + pipe.getWidth()/2 - this.size) {
         return false;
       }
     }

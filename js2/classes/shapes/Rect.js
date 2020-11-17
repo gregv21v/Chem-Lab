@@ -4,7 +4,7 @@ class Rect {
 		this.height = 0;
 		this.position = {x: 0, y: 0}; // top left corner
 		this.fill = {
-			opacity: 1.0,
+			opacity: 0.5,
 			color: "white"
 		};
 		this.stroke = {
