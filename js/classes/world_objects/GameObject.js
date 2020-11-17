@@ -8,79 +8,96 @@
     snapTo --> snaps one object to another
 
 */
+class GameObject {
+  constructor(center) {
+    this.center = center
 
-function GameObject(center) {
 
-  this.center = center
+    /*********
+      Visuals
+    **********/
+    var mainSVG = d3.select("body").select("svg")
+    this.svg = {
+      default: mainSVG.append("circle")
+    }
 
+    this.tooltip = new ToolTip(
+      center,
+      20, // radius of hover circle
+      "");
 
-  /*********
-    Visuals
-  **********/
-  var mainSVG = d3.select("body").select("svg")
-  this.svg = {
-    default: mainSVG.append("circle")
+    // Open sides that appear visually open
+    this.openSides = {
+      top: false,
+      bottom: false,
+      left: false,
+      right: false
+    }
+
+    // snap parts
+    this.snapCenter = {x: 0, y: 0}
+    this.snapping = false;
   }
 
-  this.tooltip = new ToolTip(
-    center,
-    20, // radius of hover circle
-    "");
+  updateTooltip() {
+    this.tooltip.position = this.position;
+  };
 
-  // Open sides that appear visually open
-  this.openSides = {
-    top: false,
-    bottom: false,
-    left: false,
-    right: false
+
+
+
+  createSVG() {
+    var mainSVG = d3.select("body").select("svg")
+
+    //console.log(mainSVG);
+
+  	this.updateSVG();
+
+  	// add all the svg objects to the world
+    var obj = mainSVG.append(this.svg.default.type)
+
+    obj.attr("cx", this.position.x)
+      .attr("cy", this.position.y)
+      .attr("r", 5)
+      .style("fill", "red")
+
   }
 
-  // snap parts
-  this.snapCenter = {x: 0, y: 0}
-  this.snapping = false;
+  updateSVG() {
+
+  }
+
+  getLiquidType() {
+    return "";
+  };
+
+  getWidth() {
+    return 0;
+  };
+
+  getHeight() {
+    return 0;
+  }
+
+
+
+  getName() {
+    return "";
+  }
+
+  /**
+    getCenter()
+    @description get the center point of this Snappable
+  */
+  getCenter() {
+    return {
+      x: this.position.x + this.getWidth() / 2,
+      y: this.position.y + this.getHeight() / 2
+    }
+  }
+
+  getRect() {
+    return new Rect();
+  }
+
 }
-
-
-GameObject.prototype.updateTooltip = function () {
-  this.tooltip.position = this.position;
-};
-
-
-
-
-GameObject.prototype.createSVG = function () {
-  var mainSVG = d3.select("body").select("svg")
-
-  console.log(mainSVG);
-
-	this.updateSVG();
-
-	// add all the svg objects to the world
-  var obj = mainSVG.append(this.svg.default.type)
-
-  obj.attr("cx", this.position.x)
-    .attr("cy", this.position.y)
-    .attr("r", 5)
-    .style("fill", "red")
-
-};
-
-GameObject.prototype.updateSVG = function () {
-
-};
-
-GameObject.prototype.getLiquidType = function () {
-  return "";
-};
-
-GameObject.prototype.getWidth = function () {
-  return 0;
-};
-
-GameObject.prototype.getHeight = function () {
-  return 0;
-};
-
-GameObject.prototype.getName = function () {
-  return "";
-};

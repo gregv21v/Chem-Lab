@@ -2,40 +2,42 @@
   This is where the game starts
 */
 
-function Game() {
+class Game {
+  constructor() {
+    this.player = new Player(); // contains inventory
 
-  this.player = new Player();
-
-  this.player.createSVG()
-  this.player.update();
-  this.world = new World(this.player);
-  this.store = new Store();
+    //this.world = new World(this.player);
+    this.store = new Store();
 
 
-  var testTradeItem = new TradeItem(
-    {x: 30, y: 30},
-    50, 50, "Player", 100, 50);
+    var testTradeItem = new TradeItem(
+      {x: 30, y: 30},
+      50, 50, "Player", 100, 50);
 
-  var testBtn = new BorderedButton(
-    {x: 100, y: 100},
-    50, 50, 2
-  )
+    var testBtn = new BorderedButton(
+      {x: 100, y: 100},
+      50, 50, 2
+    )
 
+    //testBtn.createSVG();
 
+    this.player.createSVG();
+    this.player.update();
 
-  //this.gui = new GUI();
-
-
-  // setup the player
-
-
-  // setup the world
+    //testTradeItem.createSVG();
+    //this.gui = new GUI();
 
 
-  // setup the store
+    // setup the player
+
+
+    // setup the world
+
+
+    // setup the store
 
 
 
-  // setup the gui
-
+    // setup the gui
+  }
 }
