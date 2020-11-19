@@ -18,6 +18,7 @@ Mix chemicals togther. Create a network of connecting pipes and tanks to seperat
 - Sell Tank               --> Allows you to sell liquids
 - Liquid Distributor Pipe --> Distributes liquids evenly among connecting tanks
 - Liquid Sorter Pipe      --> Sorts liquids by color
+- Elbow Pipe              --> Pipe that goes at an angle.
 
 
 
@@ -28,16 +29,6 @@ Mix chemicals togther. Create a network of connecting pipes and tanks to seperat
 - The ability to sort various liquids, by chemical properties
 
 
-<strong> TODO:</strong>
-- Snap Pipes to the edge of tanks 
-  - there are some issues with the snapping mechanics
-- Snap valves to the edge of tanks 
-- Create the liquid distributor pipe
-- Create the liquid sorter pipe
-- Create a class for the sell tank
-- Create the store interface
-- Design the store interface
-- Connect pipes together
 
 
 
