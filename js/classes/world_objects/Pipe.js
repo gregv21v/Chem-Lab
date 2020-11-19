@@ -38,18 +38,19 @@ class Pipe extends Snappable {
   	this.drops.push(drop);
   };
 
-  /*
-  	Here is where the liquid comes out of the Pipe
-  	and can be collected by another tank or something else.
+  /**
+    spout()
+    @description gets the drops available at the specified side
+      of the pipe
   */
-  spout() {
+  spout(side) {
   	// search for available drops
   	var leakingDrops = []; // drops at their exit.
   	var keptDrops = [];
   	for(var drop of this.drops) {
   		// if a drop can no longer flow in the direction it was
   		// flowing, give it is at its spout, and ready to leak.
-  		if(!drop.drop.canFlow(this, drop.direction)) {
+  		if(!drop.drop.canFlow(this, drop.direction) && drop.direction === side) {
   			leakingDrops.push(drop);
   		} else {
   			keptDrops.push(drop);
@@ -183,14 +184,11 @@ class Pipe extends Snappable {
     for(var side of Object.keys(this.attachments)) {
 			for(var tank of this.attachments[side]) {
         if(tank instanceof Tank) {
-          var drops = this.spout();
+          var drops = this.spout(side);
           for(var drop of drops) {
-            if(tank.addDrop(drop.drop)) {
-              this.addDropBack(drop)
-            } else {
-              drop.drop.destroySVG();
-              tank.updateLiquidSVG();
-            }
+            tank.addDrop(drop.drop);
+            drop.drop.destroySVG();
+            tank.updateLiquidSVG();
           }
         }
       }

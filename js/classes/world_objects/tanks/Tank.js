@@ -221,12 +221,12 @@ class Tank extends Snappable {
 								x: pipe.position.x,
 								y: pipe.getCenter().y - drop.size/2
 							}
-						} else if(side === "top") {
+						} else if(side === "up") {
 							drop.position = {
 								x: pipe.position.x + drop.size/2,
 								y: pipe.position.y
 							}
-						} else if(side === "bottom") {
+						} else if(side === "down") {
 							drop.position = {
 								x: pipe.position.x + drop.size/2,
 								y: pipe.position.y

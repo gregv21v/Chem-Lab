@@ -283,9 +283,9 @@ class Snappable extends GameObject {
       this.leftSnapBehaviour(snappable, mousePos)
     } else if(closestSide === "right") {
       this.rightSnapBehaviour(snappable, mousePos)
-    } else if(closestSide === "top") {
+    } else if(closestSide === "up") {
       this.topSnapBehaviour(snappable, mousePos)
-    } else if(closestSide === "bottom") {
+    } else if(closestSide === "down") {
       this.bottomSnapBehaviour(snappable, mousePos)
     }
 

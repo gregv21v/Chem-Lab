@@ -5,15 +5,26 @@
 
 class Player {
   constructor() {
-    var svg = document.querySelector("svg");
-    var height = svg.getAttribute("height") - 30;
+    var svg = d3.select("body").select("svg")
+    svg
+      .attr("width", window.innerWidth)
+      .attr("height", window.innerHeight)
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+    var margin = 20
+    var borderWidth = 5
+
+
+
     var self = this;
 
     this.hand = null;
 
-    this.world = new World(this, {x: 270, y: 20}, svg.getAttribute("width") - (270 + 400), height);
-    this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25);
-    this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
+    this.world = new World(
+      this, {x: 250 + margin, y: margin}, width - (250 + margin * 2), height - 2*(margin));
+    this.inventory = new Inventory(
+      this, {x: margin, y: margin * 2 + borderWidth}, 250, height - 2*(margin + 10));
+    this.credits = new ValueBox({x: margin, y: margin}, 250, 25);
     this.credits.setFill({color: "red"})
     this.credits.setTextFill({color: "black"})
     this.credits.setStroke({color: "black", width: 10})
@@ -58,7 +69,7 @@ class Player {
     var sellTank = new Tank(
       {
         x: this.inventory.getWidth() + this.world.getWidth()/2 - 100, /* border width of sell button */
-        y: this.inventory.getHeight() - 50 - 6 // Space for the button
+        y: this.world.getHeight() - 85 // Space for the button
       },
       {
         width: 200,

@@ -69,7 +69,6 @@ class Valve extends Pipe {
     this.svg.interior.attr("y", this.position.y + this.wallWidth);
     this.svg.interior.style("fill-opacity", 0.5)
 
-
   	// walls
   	this.svg.walls.attr("width", this.getWidth());
   	this.svg.walls.attr("height", this.getHeight());

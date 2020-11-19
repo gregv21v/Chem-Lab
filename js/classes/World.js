@@ -95,7 +95,7 @@ class World {
 
 		if(this.player.hand != null) {
 
-			for (var i = 0; i < this.lines.length; i++) {
+			/*for (var i = 0; i < this.lines.length; i++) {
 				var objCenter = this.objs[i].getCenter()
 				this.lines[i]
 					.style("stroke", "orange")
@@ -103,7 +103,7 @@ class World {
 					.attr("y1", objCenter.y)
 					.attr("x2", mousePos.x)
 					.attr("y2", mousePos.y)
-			}
+			}*/
 
 
 			this.player.hand.moveRelativeToCenter(mousePos)
@@ -166,8 +166,8 @@ class World {
 		this.objs.push(obj);
 
 		// for debugging purposes
-		var mainSVG = d3.select("body").select("svg")
-		this.lines.push(mainSVG.append("line"))
+		//var mainSVG = d3.select("body").select("svg")
+		//this.lines.push(mainSVG.append("line"))
 	};
 
 	/**
