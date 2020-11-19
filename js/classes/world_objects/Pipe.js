@@ -1,4 +1,4 @@
-class Pipe extends Snappable {
+class Pipe extends LiquidContainer {
 
   constructor(center, width, interiorHeight, wallWidth) {
     super(center)
@@ -18,16 +18,39 @@ class Pipe extends Snappable {
   		interior: mainSVG.append("rect")
   	}
 
-  	//this.rect = this.getRect();
-  	//this.updatePosition();
-
   }
 
-  addDrop (drop, direction) {
+  addDrop(drop, side) {
+
+    // set the drops start position
+    if(side === "left") {
+      drop.position = {
+        x: this.position.x + this.getWidth() - drop.size/2,
+        y: this.getCenter().y - drop.size/2
+      }
+    } else if(side === "right") {
+      drop.position = {
+        x: this.position.x,
+        y: this.getCenter().y - drop.size/2
+      }
+    } else if(side === "up") {
+      drop.position = {
+        x: this.position.x + drop.size/2,
+        y: this.position.y
+      }
+    } else if(side === "down") {
+      drop.position = {
+        x: this.position.x + drop.size/2,
+        y: this.position.y
+      }
+    }
+
   	this.drops.push({
   		drop: drop,
-  		direction: direction
+  		direction: side
   	})
+
+    drop.createSVG()
   };
 
   /*
@@ -182,14 +205,11 @@ class Pipe extends Snappable {
   */
   transferLiquid() {
     for(var side of Object.keys(this.attachments)) {
-			for(var tank of this.attachments[side]) {
-        if(tank instanceof Tank) {
-          var drops = this.spout(side);
-          for(var drop of drops) {
-            tank.addDrop(drop.drop);
-            drop.drop.destroySVG();
-            tank.updateLiquidSVG();
-          }
+			for(var object of this.attachments[side]) {
+        var drops = this.spout(side);
+        for(var drop of drops) {
+          object.addDrop(drop.drop, side);
+          
         }
       }
     }

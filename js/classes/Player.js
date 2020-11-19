@@ -50,6 +50,9 @@ class Player {
     var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
     this.inventory.add(newPipe);
 
+    var newPipe2 = new Pipe({x: 500, y: 500}, 100, 10, 5)
+    this.inventory.add(newPipe2);
+
 
 
     this.sellBtn = new Button(

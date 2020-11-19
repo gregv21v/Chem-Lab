@@ -6,7 +6,7 @@
 */
 class Valve extends Pipe {
   constructor(center, width, interiorHeight, wallWidth) {
-    super(center)
+    super(center, width, interiorHeight, wallWidth)
 
     this.width = width;
     this.opened = false;

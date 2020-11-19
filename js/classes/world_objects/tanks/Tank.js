@@ -16,7 +16,7 @@
 		When an object is on the mouse it has particular interactions with the rest of the world
 		objects.
 */
-class Tank extends Snappable {
+class Tank extends LiquidContainer {
 	constructor(center, interior, wallWidth) {
 		super(center)
 		this.currentLevel = 0;
@@ -195,49 +195,12 @@ class Tank extends Snappable {
 		for(var side of Object.keys(this.attachments)) {
 			for(var pipe of this.attachments[side]) {
 				if(pipe instanceof Pipe) {
-
-
 					var drop;
 
 					// get a drop from the tank
 					if(this.pipeCanAccessLiquid(pipe)) {
 						drop = this.getDrop(pipe.getDropSize())
-					} else {
-						drop = null;
-					}
-
-
-
-					if(drop) {
-						//console.log(.size);
-						// position drop at front of pipe
-						if(side === "left") {
-							drop.position = {
-								x: pipe.position.x + pipe.getWidth() - drop.size/2,
-								y: pipe.getCenter().y - drop.size/2
-							}
-						} else if(side === "right") {
-							drop.position = {
-								x: pipe.position.x,
-								y: pipe.getCenter().y - drop.size/2
-							}
-						} else if(side === "up") {
-							drop.position = {
-								x: pipe.position.x + drop.size/2,
-								y: pipe.position.y
-							}
-						} else if(side === "down") {
-							drop.position = {
-								x: pipe.position.x + drop.size/2,
-								y: pipe.position.y
-							}
-						}
-
-						// create the drop in the world and add it to the respective pipe
-						drop.createSVG();
 						pipe.addDrop(drop, side);
-
-
 					}
 				}
 			}
@@ -260,15 +223,17 @@ class Tank extends Snappable {
 
 	};
 
-	addDrop(drop) {
-		console.log("Adding Drop");
 
+	addDrop(drop, side = "") {
 		// Handle liquid coloring and value
 		if(this.currentLevel == 0) {
 			this.liquid = drop.liquid;
 		} else if(this.currentLevel + drop.getVolume() <= this.maxLevel) {
 			this.liquid = Liquid.mix(this.liquid, drop.liquid);
 		}
+
+		drop.destroySVG();
+		this.updateLiquidSVG();
 
 		// Handle liquid level
 		if(this.currentLevel + drop.getVolume() <= this.maxLevel) {
