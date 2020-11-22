@@ -9,77 +9,57 @@
 
 */
 class GameObject {
-  constructor(center) {
-    this.center = center
+  constructor(position) {
+    this.position = position
+    this.rotation = 0
+  }
 
-
+  createSVG() {
     /*********
       Visuals
     **********/
     var mainSVG = d3.select("body").select("svg")
+    this.group = mainSVG.append("g")
     this.svg = {
-      default: mainSVG.append("circle")
+      default: this.group.append("circle")
     }
-
-    this.tooltip = new ToolTip(
-      center,
-      20, // radius of hover circle
-      "");
-
-    // Open sides that appear visually open
-    this.openSides = {
-      top: false,
-      bottom: false,
-      left: false,
-      right: false
-    }
-
-    // snap parts
-    this.snapCenter = {x: 0, y: 0}
-    this.snapping = false;
-  }
-
-  updateTooltip() {
-    this.tooltip.position = this.position;
-  };
-
-
-
-
-  createSVG() {
-    var mainSVG = d3.select("body").select("svg")
-
-    //console.log(mainSVG);
-
-  	this.updateSVG();
-
-  	// add all the svg objects to the world
-    var obj = mainSVG.append(this.svg.default.type)
-
-    obj.attr("cx", this.position.x)
-      .attr("cy", this.position.y)
-      .attr("r", 5)
-      .style("fill", "red")
-
   }
 
   updateSVG() {
-
+    obj
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", 5)
+      .style("fill", "red")
   }
 
-  getLiquidType() {
-    return "";
-  };
+  /**
+    rotate()
+    @description rotates the GameObject 90 degrees
+  */
+  rotate() {
+    this.rotation = (this.rotation + 90) % 360
+    this.updateSVG()
+  }
 
+
+  /**
+    getShapeHeight()
+    @description the width of the shape of the object irregadless of
+      of what type of object it is
+  */
   getWidth() {
-    return 0;
+    return -1;
   };
 
+  /**
+    getShapeHeight()
+    @description the height of the shape of the object irregadless of
+      of what type of object it is
+  */
   getHeight() {
-    return 0;
-  }
-
-
+    return -1;
+  };
 
   getName() {
     return "";
@@ -96,8 +76,45 @@ class GameObject {
     }
   }
 
-  getRect() {
-    return new Rect();
+  /**
+    moveTo()
+    @description moves to a given point, where the center of the Snappable is
+      fixed at the given point
+    @param point the point to center on
+  */
+  moveTo(point) {
+    this.position.x = point.x
+    this.position.y = point.y
+
+    this.updateSVG()
   }
+
+  /**
+   * moveRelativeToCenter()
+   * @description moves the Snappable relative to it's center
+   * @param point point to move to
+   */
+  moveRelativeToCenter(point) {
+    this.position.x = point.x - this.getWidth() / 2
+    this.position.y = point.y - this.getHeight() / 2
+
+    this.updateSVG()
+  }
+
+  /**
+    getRect()
+    @description get a rectangle representing
+      the area of the GameObject
+  */
+  getRect() {
+    var newRect = new Rect();
+    newRect.position = this.position
+    newRect.width = this.getWidth(); // horizontal dimension
+    newRect.height = this.getHeight(); //   vertical dimension
+
+    //newRect.createSVG()
+    return newRect;
+  };
+
 
 }

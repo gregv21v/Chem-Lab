@@ -16,26 +16,9 @@
 
 */
 class Faucet extends Snappable {
-  constructor(position, width, height, diameter) {
+  constructor(position, width, height, wallWidth) {
     super(position)
-
-    // order helps determine visual appearance, so don't
-    // mess with the order
-    var mainSVG = d3.select("body").select("svg")
-    this.svg = {
-      downwardPipeWalls: mainSVG.append("rect"),
-      upperPipeWalls: mainSVG.append("rect"),
-      downwardPipeInterior: mainSVG.append("rect"),
-      upperPipeInterior: mainSVG.append("rect"),
-      nob: mainSVG.append("rect"),
-      valve: mainSVG.append("rect")
-    }
-
-    var center = {
-      x: position.x + width/2,
-      y: position.y + height/2
-    }
-
+    
     this.opened = false;
     this.position = position;
     this.width = width;
@@ -71,18 +54,30 @@ class Faucet extends Snappable {
 
 
   createSVG() {
-
-  	this.updateSVG();
-
-    // Create the upper rectangle that makes
-    // up the outer walls of the faucet.
-
+    // order helps determine visual appearance, so don't
+    // mess with the order
+    var mainSVG = d3.select("body").select("svg")
+    this.group = mainSVG.append("g")
+    this.svg = {
+      downwardPipeWalls: this.group.append("rect"),
+      upperPipeWalls: this.group.append("rect"),
+      downwardPipeInterior: this.group.append("rect"),
+      upperPipeInterior: this.group.append("rect"),
+      nob: this.group.append("rect"),
+      valve: this.group.append("rect")
+    }
   };
 
 
   updateSVG() {
-    this.svg.upperPipeWalls.attr("x", this.position.x)
-                  .attr("y", this.position.y)
+    let rotationX = this.getWidth() / 2
+    let rotationY = this.getHeight() / 2
+    let transformStr = "translate(" + this.position.x + "," + this.position.y + ") "
+    transformStr += "rotate(" + this.rotation + "," + rotationX + "," + rotationY + ")"
+
+    this.svg.upperPipeWalls
+                  .attr("x", 0)
+                  .attr("y", 0)
                   .attr("width", this.width)
                   .attr("height", this.diameter + 2 * this.wallThickness)
                   .style("fill", "black")

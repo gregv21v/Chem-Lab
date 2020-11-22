@@ -1,6 +1,6 @@
 class LiquidContainer extends Snappable {
-  constructor(center) {
-    super(center)
+  constructor(position) {
+    super(position)
   }
 
 
@@ -24,5 +24,9 @@ class LiquidContainer extends Snappable {
   addDrop(drop, side = "") {
 
   }
+
+  getLiquidType() {
+    return "";
+  };
 
 }

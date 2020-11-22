@@ -16,13 +16,8 @@ class Drop {
     this.liquid = liquid;
   	this.id = lastId;
     var mainSVG = d3.select("body").select("svg")
-  	this.svg = mainSVG.append("rect");
-
-    this.tooltip = new ToolTip(
-      position,
-      "Drop is the most basic unit of liquid");
-
-
+    this.group = mainSVG.append("g")
+  	this.svg = this.group.append("rect");
 
   	lastId += 1;
   }
@@ -151,6 +146,15 @@ class Drop {
     }
     return true;
   };
+
+  getRect() {
+    var newRect = new Rect()
+    newRect.width = this.size
+    newRect.height = this.size
+    newRect.position = this.position
+
+    return newRect;
+  }
 
 
 }

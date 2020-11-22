@@ -5,27 +5,30 @@
 
 */
 class Valve extends Pipe {
-  constructor(center, width, interiorHeight, wallWidth) {
-    super(center, width, interiorHeight, wallWidth)
+  constructor(position, width, interiorHeight, wallWidth) {
+    super(position, width, interiorHeight, wallWidth)
 
     this.width = width;
     this.opened = false;
     this.pipe = null; // the pipe that this valve is connected to.
-    this.position = center;
+    this.position = position;
 
     this.interiorHeight = interiorHeight;
     this.wallWidth = wallWidth;
+  }
 
+  createSVG() {
     var mainSVG = d3.select("body").select("svg")
+    this.group = mainSVG.append("g")
     this.svg = {
       // walls of the valve
-      walls: mainSVG.append("rect"),
+      walls: this.group.append("rect"),
       // inner portion of the pipe.
-      interior: mainSVG.append("rect"),
+      interior: this.group.append("rect"),
       // indicator if liquid can travel through the pipe.
-      latch: mainSVG.append("rect"),
+      latch: this.group.append("rect"),
       // the rect to toggle the latch open and closed
-      toggle: mainSVG.append("rect")
+      toggle: this.group.append("rect")
     }
 
     var self = this
@@ -34,26 +37,22 @@ class Valve extends Pipe {
       self.toggle();
       //self.updateSVG();
     })
-  }
-
-  createSVG() {
-  	var SVGMain = document.getElementById("main");
 
   	this.updateSVG();
-
   };
 
   updateSVG() {
     var self = this;
 
-    this.svg.toggle.attr("width", this.getWidth());
-    this.svg.toggle.attr("height", this.getHeight());
-    this.svg.toggle.attr("x", this.position.x);
-    this.svg.toggle.attr("y", this.position.y);
-    this.svg.toggle.style("fill-opacity", 0);
-    this.svg.toggle.on("click", function() {
-      self.toggle();
-    });
+    this.svg.toggle
+      .attr("width", this.getWidth())
+      .attr("height", this.getHeight())
+      .attr("x", this.position.x)
+      .attr("y", this.position.y)
+      .style("fill-opacity", 0)
+      .on("click", function() {
+        self.toggle()
+      })
 
   	if(this.orientation === "horizontal") {
   		// interior

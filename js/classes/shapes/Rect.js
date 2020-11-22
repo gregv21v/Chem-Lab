@@ -5,7 +5,7 @@ class Rect {
 		this.position = {x: 0, y: 0}; // top left corner
 		this.fill = {
 			opacity: 0.5,
-			color: "white"
+			color: "orange"
 		};
 		this.stroke = {
 			color: "blue",
@@ -23,6 +23,11 @@ class Rect {
 		}
 	}
 
+	centerAt(point) {
+		this.position.x = point.x - this.width / 2
+		this.position.y = point.y - this.height / 2
+	}
+
 	contains (point) {
 		return (
 				(this.position.x <= point.x
@@ -32,31 +37,73 @@ class Rect {
 	 );
 	};
 
+	getCorners() {
+		return {
+			topLeft: {
+				x: this.position.x,
+				y: this.position.y
+			},
+			bottomRight: {
+				x: this.position.x + this.width,
+				y: this.position.y + this.height
+			}
+		}
+	}
+
+	breakIntoLines() {
+		return [
+			new Line(
+				new Point(this.position.x, this.position.y),
+				new Point(this.position.x + this.width, this.position.x)
+			),
+			new Line(
+				new Point(this.position.x, this.position.y + this.height),
+				new Point(this.position.x + this.width, this.position.y)
+			),
+			new Line(
+				new Point(this.position.x, this.position.y),
+				new Point(this.position.x, this.position.y + this.height)
+			),
+			new Line(
+				new Point(this.position.x + this.width, this.position.y),
+				new Point(this.position.x + this.width, this.position.y + this.height)
+			)
+		]
+	}
 
 	/*
-		Determines if two rectangles intersect
+		Determines if two rectangles are intersecting
 	*/
 	intersects(rect) {
-		// if at least one corner of the rect is in the other rect
-		return (
-			// this.rect intersects rect
-			this.contains({x: rect.position.x, y: rect.position.y}) || // top left
-			this.contains({x: rect.position.x + rect.width, y: rect.position.y}) || // top right
-			this.contains({x: rect.position.x, y: rect.position.y + rect.height}) || // bottom left
-			this.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height}) || // bottom right
-			// rect intersects this.rect
-			rect.contains({x: this.position.x, y: this.position.y}) || // top left
-			rect.contains({x: this.position.x + this.width, y: this.position.y}) || // top right
-			rect.contains({x: this.position.x, y: this.position.y + this.height}) || // bottom left
-			rect.contains({x: this.position.x + this.width, y: this.position.y + this.height}) // bottom right
-		);
+		var linesFromThis = this.breakIntoLines()
+		var linesFromRect = rect.breakIntoLines()
+
+		// compare the lines of the rectangle against
+		// each other
+		// if any line intersects with another, then
+		// the two rectangles intersect
+		for (var lineThis of linesFromThis) {
+			for (var lineRect of linesFromRect) {
+				if(lineThis.intersects(lineRect)) {
+					return true;
+				}
+			}
+		}
+		return false
 	};
 
-	snapTo (object) {
-		// TODO: Implement rect snapping to other rectangles
-	};
 
+	rotate(degrees) {
+		var center = this.getCenter();
+		var radians = degrees * Math.PI / 180
+		var x = center.x * Math.cos(radians) - center.y * Math.sin(radians)
+		var y = center.x * Math.sin(radians) + center.y * Math.cos(radians)
 
+		this.position = {
+			x: x,
+			y: y
+		}
+	}
 
 	/*
 		Constructs a rectangle from two points.
@@ -80,14 +127,15 @@ class Rect {
 
 
 	createSVG() {
-		this.svg.attr("width", this.width);
-		this.svg.attr("height", this.height);
-		this.svg.attr("x", this.position.x);
-		this.svg.attr("y", this.position.y);
-		this.svg.attr("stroke-width", this.stroke.width);
-		this.svg.attr("stroke", this.stroke.color);
-		this.svg.attr("fill", this.fill.color);
-		this.svg.attr("fill-opacity", this.fill.opacity);
+		this.svg
+			.attr("width", this.width)
+			.attr("height", this.height)
+			.attr("x", this.position.x)
+			.attr("y", this.position.y)
+			.attr("stroke-width", this.stroke.width)
+			.attr("stroke", this.stroke.color)
+			.attr("fill", this.fill.color)
+			.attr("fill-opacity", this.fill.opacity)
 	};
 
 	destroySVG() {

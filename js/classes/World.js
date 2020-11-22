@@ -105,8 +105,8 @@ class World {
 					.attr("y2", mousePos.y)
 			}*/
 
-
 			this.player.hand.moveRelativeToCenter(mousePos)
+			//this.player.hand.updateSVG();
 			let closestSnappable = this.findClosestSnappable(mousePos)
 			//console.log(closestSnappable);
 			if(closestSnappable != null) {

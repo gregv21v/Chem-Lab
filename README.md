@@ -7,6 +7,8 @@ Inspired by Minecraft's Buildcraft Mod
 <strong>Objective:</strong>
 Mix chemicals together. Create a network of connecting pipes and tanks to separate tanks individually.
 
+Developed with JavaScript/HTML, JQuery, and D3.
+
 <strong> Items </strong>
 - Valves                  --> Pipes that you can open and close
 - Tank                    --> Stores liquid
@@ -29,7 +31,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
     ~~pipes snap to tanks, but the reverse is sometimes messed up~~
 - ~~Snap valves to the edge of tanks~~
 - Create the liquid distributor pipe
-- Create the liquid sorter pipe 
+- Create the liquid sorter pipe
 - Create a class for the sell tank (extra)
 - Create the store interface
 * Design the store interface

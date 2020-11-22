@@ -10,6 +10,7 @@
   <script src="js/classes/shapes/Circle.js"></script>
   <script src="js/classes/shapes/Point.js"></script>
   <script src="js/classes/shapes/Rect.js"></script>
+  <script src="js/classes/shapes/Line.js"></script>
 
   <!-- Buttons -->
   <script src="js/classes/gui/buttons/Button.js"></script>
@@ -27,13 +28,18 @@
   <script src="js/classes/world_objects/GameObject.js"></script>
   <script src="js/classes/world_objects/Snappable.js"></script>
   <script src="js/classes/world_objects/LiquidContainer.js"></script>
-  <script src="js/classes/world_objects/Pipe.js"></script>
+
+  <script src="js/classes/world_objects/pipes/Pipe.js"></script>
+  <script src="js/classes/world_objects/pipes/ElbowPipe.js"></script>
+  <script src="js/classes/world_objects/pipes/Valve.js"></script>
+  <script src="js/classes/world_objects/pipes/Faucet.js"></script>
+
   <script src="js/classes/world_objects/Pump.js"></script>
-  <script src="js/classes/world_objects/Valve.js"></script>
-  <script src="js/classes/world_objects/Faucet.js"></script>
+
+  <script src="js/classes/world_objects/tanks/Tank.js"></script>
   <script src="js/classes/world_objects/tanks/SellTank.js"></script>
   <script src="js/classes/world_objects/tanks/SidedTank.js"></script>
-  <script src="js/classes/world_objects/tanks/Tank.js"></script>
+
   <script src="js/classes/Liquid.js"></script>
   <script src="js/classes/Player.js"></script>
   <script src="js/classes/World.js"></script>
@@ -60,12 +66,8 @@
 	-->
   <link charset="utf-8" href="css/style.css" media="screen" rel="stylesheet" title="no title"></link>
    <script src="lib/jquery-1.11.3.min.js"></script>
+   <script src="lib/math.js" charset="utf-8"></script>
    <script charset="utf-8" src="lib/util.js"></script>
-   <!--
-		Tests
-			-Rect.contains
-			-Rect.intersects
-	-->
    <script type="text/javascript">
     var game = null;
 

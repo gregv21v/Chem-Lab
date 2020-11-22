@@ -17,41 +17,101 @@
 		objects.
 */
 class Tank extends LiquidContainer {
-	constructor(center, interior, wallWidth) {
-		super(center)
+	constructor(position, width, height, wallWidth) {
+		super(position)
 		this.currentLevel = 0;
-		this.maxLevel = interior.width * interior.height;
+		this.maxLevel = (width - wallWidth * 2) * (height - wallWidth);
 		this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
-		this.interior = interior;
+		this.width = width;
+		this.height = height;
 		this.wallWidth = wallWidth;
-		this.position = center;
-		this.orientation = "vertical"
+		this.position = position;
 
-		//this.snapPosition = {x: 0, y: 0};
-		//this.snapping = false;
 
 		this.wallColor = "green";
 		this.active = false;
 		this.text = "";
-		var mainSVG = d3.select("body").select("svg")
-		this.svg = {
-			walls: mainSVG.append("rect"),
-			interior: mainSVG.append("rect"),
-			liquid: mainSVG.append("rect"),
-			label: mainSVG.append("text")
-		};
+	}
+
+	getPercentFull() {
+		return this.currentLevel / this.maxLevel;
 	}
 
 	getLiquidHeight () {
-		return this.interior.height * this.currentLevel / this.maxLevel;
+		return (this.height - this.wallWidth) * this.getPercentFull();
 	};
 
 	getLiquidY() {
-		return this.position.y + this.interior.height - this.getLiquidHeight();
+		return (this.height - this.wallWidth) * (1 - this.getPercentFull());
 	};
 
+	getLiquidWorldY() {
+		return this.position.y + (this.height - this.wallWidth) * (1 - this.getPercentFull())
+	}
+
 	createSVG() {
-		this.updateSVG();
+		var mainSVG = d3.select("body").select("svg")
+		this.group = mainSVG.append("g")
+		this.svg = {
+			walls: this.group.append("rect"),
+			interior: this.group.append("rect"),
+			liquid: this.group.append("rect"),
+			label: this.group.append("text")
+		};
+	};
+
+	updateSVG() {
+		let rotationX = this.getWidth() / 2
+		let rotationY = this.getHeight() / 2
+    let transformStr = "translate(" + this.position.x + "," + this.position.y + ") "
+    transformStr += "rotate(" + this.rotation + "," + rotationX + "," + rotationY + ")"
+
+		this.group.attr("transform", transformStr)
+
+		// setup walls svg
+		this.svg.walls
+			.attr("height", this.height)
+			.attr("width", this.width)
+			.attr("x", 0)
+			.attr("y", 0)
+			.style("fill", this.wallColor)
+
+		// setup interior svg
+		this.svg.interior
+			.attr("height", (this.height - this.wallWidth) )
+			.attr("width", (this.width - this.wallWidth * 2) )
+			.attr("x", this.wallWidth)
+			.attr("y", 0)
+			.style("fill", "white")
+
+
+		// setup liquid svg
+		this.svg.liquid
+			.attr("width", this.width - this.wallWidth * 2)
+			.attr("height", this.getLiquidHeight())
+			.attr("x", this.wallWidth)
+			.attr("y", this.getLiquidY())
+			.style("fill", this.liquid.fill())
+
+		// setup label svg
+		this.svg.label
+			.attr("fill", "black")
+			.attr("x", this.width/2 - (this.text.length * 6)/2)
+			.attr("y", this.height/2)
+	}
+
+	updateLiquidSVG() {
+		this.svg.liquid
+			.attr("height", this.getLiquidHeight())
+			.attr("y", this.getLiquidY())
+
+		if(this.liquid)
+			this.svg.liquid
+				.style("fill", this.liquid.fill());
+
+		this.svg.label
+			.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2)
+			.text(this.text)
 	};
 
 	/**
@@ -66,60 +126,6 @@ class Tank extends LiquidContainer {
 	}
 
 
-	/**
-    leftSnapBehaviour()
-    @description determines what happens when an Snappable snaps to
-      the left of another snappable
-    @param snappable the Snappable being snapped to
-    @param mousePos the current position of the mouse
-  */
-  leftSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
-    // match this object with the left edge of
-    // the other object
-    this.moveRelativeToCenter({
-        x: snappable.center.x - thisRect.width / 2,
-        y: mousePos.y
-    })
-  }
-
-  /**
-    rightSnapBehaviour()
-    @description determines what happens when an Snappable snaps to
-      the right of another snappable
-    @param snappable the Snappable being snapped to
-    @param mousePos the current position of the mouse
-  */
-  rightSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
-
-		console.log("This Rect: ");
-		console.log(thisRect);
-		console.log("Other Rect: ");
-		console.log(otherRect);
-
-    // match the right edge
-    this.moveRelativeToCenter({
-        x: snappable.center.x + otherRect.width + thisRect.width / 2,
-        y: mousePos.y
-    })
-  }
-
-
-
-
-  /**
-    bottomSnapBehaviour()
-    @description determines what happens when an Snappable snaps to
-      the botttom of another snappable
-    @param snappable the Snappable being snapped to
-    @param mousePos the current position of the mouse
-  */
-  bottomSnapBehaviour(snappable, mousePos) {}
-
-
 	getSnapAreas() {
 		return {
 			left: this.getLeftArea(),
@@ -128,58 +134,7 @@ class Tank extends LiquidContainer {
 		}
 	}
 
-	updateSVG() {
-		//this.position.x = this.center.x - this.getWidth()/2;
-		//this.position.y = this.center.y - this.getHeight()/2;
 
-		var self = this;
-
-		this.tooltip.createSVG();
-
-		// setup walls svg
-		this.svg.walls.attr("height", this.getHeight());
-		this.svg.walls.attr("width", this.getWidth());
-		this.svg.walls.attr("x", this.position.x);
-		this.svg.walls.attr("y", this.position.y);
-		this.svg.walls.style("fill", this.wallColor);
-
-		// setup interior svg
-		this.svg.interior.attr("height", this.interior.height);
-		this.svg.interior.attr("width", this.interior.width);
-		this.svg.interior.attr("x", this.position.x + this.wallWidth);
-		this.svg.interior.attr("y", this.position.y - this.wallWidth/2);
-		this.svg.interior.style("fill", "white")
-			.on("mouseenter", function() {
-				self.tooltip.show();
-			})
-			.on("mouseout", function() {
-				self.tooltip.hide();
-			})
-
-
-		// setup liquid svg
-		this.svg.liquid.attr("width", this.interior.width);
-		this.svg.liquid.attr("height", this.getLiquidHeight());
-		this.svg.liquid.attr("x", this.position.x + this.wallWidth);
-		this.svg.liquid.attr("y", this.getLiquidY());
-		this.svg.liquid.style("fill", this.liquid.fill());
-
-		// setup label svg
-		this.svg.label.attr("fill", "black");
-		this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-		this.svg.label.attr("y", this.position.y + this.getHeight()/2);
-	}
-
-	updateLiquidSVG() {
-		this.svg.liquid.attr("height", this.getLiquidHeight());
-		this.svg.liquid.attr("y", this.getLiquidY());
-
-		if(this.liquid)
-			this.svg.liquid.style("fill", this.liquid.fill());
-
-		this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-		this.svg.label.text(this.text);
-	};
 
 	destroySVG() {
 		this.svg.walls.remove();
@@ -195,11 +150,9 @@ class Tank extends LiquidContainer {
 		for(var side of Object.keys(this.attachments)) {
 			for(var pipe of this.attachments[side]) {
 				if(pipe instanceof Pipe) {
-					var drop;
-
 					// get a drop from the tank
-					if(this.pipeCanAccessLiquid(pipe)) {
-						drop = this.getDrop(pipe.getDropSize())
+					if(pipe.canAccessLiquid(this)) {
+						var drop = this.getDrop(pipe.getDropSize())
 						pipe.addDrop(drop, side);
 					}
 				}
@@ -207,21 +160,7 @@ class Tank extends LiquidContainer {
 		}
 	}
 
-	/*
-		Checks to see if a given pipe can access the
-		liquid in the tank.
-	*/
-	pipeCanAccessLiquid (pipe) {
-		// the opening of the pipe is even with the
-		// tanks liquid or above it.
-		var pipeY = pipe.getCenter().y + pipe.interiorHeight/2; // y bottom interior wall of pipe.
-		if(pipeY > this.getLiquidY()) {
-			return true;
-		} else {
-			return false;
-		}
 
-	};
 
 
 	addDrop(drop, side = "") {
@@ -248,6 +187,27 @@ class Tank extends LiquidContainer {
 
 	};
 
+	/**
+		getInnerWidth()
+		@description the inner portion of the tanks width
+
+	*/
+	getInnerWidth() {
+		return this.diameter - this.wallWidth * 2;
+	}
+
+	getLiquidRect() {
+		var liquidRect = new Rect()
+		liquidRect.width = this.getInnerWidth();
+		liquidRect.height = this.getLiquidHeight();
+		liquidRect.position = {
+			x: this.position.x + this.wallWidth,
+			y: this.getLiquidWorldY()
+		}
+
+		return liquidRect
+	}
+
 	/*
 		Checks to see if the bottom two corners of a drop are in the liquid
 		near the bottom of the tank
@@ -255,42 +215,26 @@ class Tank extends LiquidContainer {
 		TODO: convert this to be more readable and elegant.
 	*/
 	containsDrop(drop) {
-		// Either the drop is in the bottom of the tank, or touching the
-		// liquid
-		// one or both of the bottom two corners of the drop are in the liquid
-							 // bottom left
-		var touchingLiquid = (
-								drop.position.x >= this.position.x + this.wallWidth &&
-							 	drop.position.x <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getLiquidHeight() &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
-							 )
-								||
-							 // bottom right
-							 (
-							 	drop.position.x + drop.size >= this.position.x + this.wallWidth &&
-							 	drop.position.x + drop.size <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getLiquidHeight() &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
-							 )
+		var dropRect = drop.getRect()
+		var liquidRect = this.getLiquidRect();
 
-		// if the this is empty, we pretend it has liquid level of 10.
-							 // bottom left
-		var withNoLiquid =  (
-								drop.position.x >= this.position.x + this.wallWidth &&
-							 	drop.position.x <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - 10 &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
-							)
-								||
-							 // bottom right
-							(
-							 	drop.position.x + drop.size >= this.position.x + this.wallWidth &&
-							 	drop.position.x + drop.size <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - 10 &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
-							)
-		return touchingLiquid || withNoLiquid;
+		// check to see if the drop is either in or touching the existing
+		// liquid
+		if(liquidRect.intersects(dropRect)) {
+			return true;
+		}
+
+		// if the tank is empty add the drop when it reaches the bottom
+		// of the tank
+		if(this.currentLevel == 0) {
+			liquidRect.height = 2
+			liquidRect.position.y -= 1
+			if(liquidRect.intersects(dropRect)) {
+				return true;
+			}
+		}
+
+		return false;
 	};
 
 
@@ -304,11 +248,11 @@ class Tank extends LiquidContainer {
 
 
 	getWidth() {
-		return this.interior.width + this.wallWidth * 2;
+		return this.width;
 	}
 
 	getHeight() {
-		return this.interior.height + this.wallWidth;
+		return this.height;
 	}
 
 

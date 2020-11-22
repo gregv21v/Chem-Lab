@@ -42,15 +42,15 @@ class Player {
       10,
       5
     ));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
+    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
+    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
+    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
 
-    var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
+    var newPipe = new Pipe({x: 500, y: 500}, 20, 100, 5)
     this.inventory.add(newPipe);
 
-    var newPipe2 = new Pipe({x: 500, y: 500}, 100, 10, 5)
+    var newPipe2 = new ElbowPipe({x: 500, y: 500}, 20, 50, 5)
     this.inventory.add(newPipe2);
 
 

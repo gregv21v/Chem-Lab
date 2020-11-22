@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Test Rotation</title>
+    <script src="js/classes/shapes/Rect.js"></script>
+    <script src="lib/jquery-1.11.3.min.js"></script>
+    <script src="lib/D3/d3.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var width = 25
+        var length = 50
+        var wallWidth = 5
+
+        var svg = d3.select("#main")
+        var grp = svg.append("g")
+
+        svg.append("line")
+          .attr("x1", 100)
+          .attr("y1", 250)
+          .attr("x2", 400)
+          .attr("y2", 250)
+          .style("stroke", "orange")
+
+        svg.append("line")
+          .attr("x1", 100)
+          .attr("y1", 250 + length + width + wallWidth*2)
+          .attr("x2", 400)
+          .attr("y2", 250 + length + width + wallWidth*2)
+          .style("stroke", "orange")
+
+        svg.append("line")
+          .attr("x1", 250)
+          .attr("y1", 100)
+          .attr("x2", 250)
+          .attr("y2", 400)
+          .style("stroke", "red")
+
+        svg.append("line")
+          .attr("x1", 250 + length + width + wallWidth*2)
+          .attr("y1", 100)
+          .attr("x2", 250 + length + width + wallWidth*2)
+          .attr("y2", 400)
+          .style("stroke", "red")
+
+        var walls1 = grp.append("rect")
+        walls1
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("width", length)
+          .attr("height", width + wallWidth * 2)
+          .style("fill", "black")
+
+        var walls2 = grp.append("rect")
+        walls2
+          .attr("x", length)
+          .attr("y", 0)
+          .attr("width", width + wallWidth * 2)
+          .attr("height", length + width + wallWidth*2)
+          .style("fill", "black")
+
+        var interior1 = grp.append("rect") // --
+        interior1
+          .attr("x", 0)
+          .attr("y", wallWidth)
+          .attr("width", length + wallWidth)
+          .attr("height", width)
+          .style("fill", "white")
+
+        var interior2 = grp.append("rect")
+        interior2
+          .attr("x", length + wallWidth)
+          .attr("y", wallWidth)
+          .attr("width", width)
+          .attr("height", length + width + wallWidth * 2)
+          .style("fill", "white")
+
+
+        var rotationAngle = 0
+        grp.attr("transform", "translate(250, 250)")
+        d3.select("body")
+          .on("keypress", function() {
+            if(d3.event.key = 'r') {
+              rotationAngle = (rotationAngle + 90) % 360
+              var transformStr = "translate(250, 250)"
+              var sizeStr = (length + width + wallWidth*2) / 2
+              transformStr += " rotate(" + rotationAngle + ", " + sizeStr + "," + sizeStr + ")"
+              grp.attr("transform", transformStr)
+            }
+          })
+
+
+
+
+
+
+  		});
+    </script>
+  </head>
+
+  <body>
+    <svg id="main" height="600" width="1750">
+    </svg>
+  </body>
+</html>
