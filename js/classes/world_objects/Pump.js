@@ -18,29 +18,23 @@ class Pump extends GameObject {
 
 		this.production = production;
 		this.position = position;
-
-		var mainSVG = d3.select("body").select("svg")
-		this.svg = {
-			spout: mainSVG.append("rect"), // where the liquid comes out
-			button: mainSVG.append("circle") // pressed to get liquid
-		}
-
-		this.tooltip = new ToolTip(
-	    this.position,
-	    "Click to produce liquid");
-
-
-		var self = this;
-		this.svg.button.on("mousedown", function() {
-			self.produceDrop(world)
-		})
+		this.world = world
 	}
 
 	createSVG() {
-		var SVGMain = document.querySelector("svg");
+		var mainSVG = d3.select("body").select("svg")
+		this.group = mainSVG.append("g")
+		this.svg = {
+			spout: this.group.append("rect"), // where the liquid comes out
+			button: this.group.append("circle") // pressed to get liquid
+		}
 
-		this.updateSVG();
+		var self = this;
+		this.svg.button.on("mousedown", function() {
+			self.produceDrop()
+		})
 
+		this.updateSVG()
 	};
 
 	updateSVG() {
@@ -63,7 +57,7 @@ class Pump extends GameObject {
 	/*
 		Creates a drop of liquid upon clicking the pump.
 	*/
-	produceDrop(world) {
+	produceDrop() {
 		// liquids that this pump could produce
 		var possibleLiquids = [
 			new Liquid(1, {red: 50, green: 0, blue: 100}),
@@ -78,12 +72,8 @@ class Pump extends GameObject {
 				possibleLiquids[getRandomInt(0, possibleLiquids.length)]
 		  )
 		drop.createSVG();
-		world.addDrop(drop);
+		this.world.addDrop(drop);
 	};
-
-	updateTooltip() {
-	  this.tooltip.position = this.position;
-	}
 
 	getWidth() {
 		return this.production * 4;

@@ -18,7 +18,7 @@
 class Faucet extends Snappable {
   constructor(position, width, height, wallWidth) {
     super(position)
-    
+
     this.opened = false;
     this.position = position;
     this.width = width;
@@ -33,8 +33,6 @@ class Faucet extends Snappable {
 
     this.closedNobWidth = 5;
     this.openedNobWidth = 10;
-
-
   }
 
   open() {

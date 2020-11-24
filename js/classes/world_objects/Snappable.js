@@ -73,8 +73,8 @@ class Snappable extends GameObject {
 
   getSnapAreas() {
     return {
-      top: this.getTopArea(),
-      bottom: this.getBottomArea(),
+      up: this.getTopArea(),
+      down: this.getBottomArea(),
       left: this.getLeftArea(),
       right: this.getRightArea()
     }
@@ -109,8 +109,9 @@ class Snappable extends GameObject {
     // match this object with the left edge of
     // the other object
     this.rotation = 0
+    this.updateSVG()
     this.moveRelativeToCenter({
-        x: snappable.getCenter().x - otherRect.width / 2 - thisRect.width / 2,
+        x: snappable.getWorldCenter().x - otherRect.width / 2 - thisRect.width / 2,
         y: mousePos.y
     })
   }
@@ -128,8 +129,9 @@ class Snappable extends GameObject {
 
     // match the right edge
     this.rotation = 0
+    this.updateSVG()
     this.moveRelativeToCenter({
-        x: snappable.getCenter().x + otherRect.width / 2 + thisRect.width / 2,
+        x: snappable.getWorldCenter().x + otherRect.width / 2 + thisRect.width / 2,
         y: mousePos.y
     })
   }
@@ -146,8 +148,9 @@ class Snappable extends GameObject {
     var otherRect = snappable.getRect()
 
     this.rotation = 90
+    this.updateSVG()
     this.moveRelativeToCenter({
-      y: snappable.getCenter().y - thisRect.height / 2,
+      y: snappable.getWorldCenter().y - thisRect.height / 2,
       x: mousePos.x
     })
   }
@@ -165,11 +168,10 @@ class Snappable extends GameObject {
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    console.log("At bottom");
-
     this.rotation = 90
+    this.updateSVG();
     this.moveRelativeToCenter({
-      y: snappable.getCenter().y + otherRect.height + thisRect.height / 2,
+      y: snappable.getWorldCenter().y + otherRect.height / 2 + thisRect.height / 2,
       x: mousePos.x
     })
   }
@@ -182,7 +184,7 @@ class Snappable extends GameObject {
   findClosestSnapArea(snappable, mousePos) {
     // find the closest snappable region that
     // intersects
-    snappable.showSnapAreas()
+    //snappable.showSnapAreas()
 
     var closestSide = "";
     var closestDistance = 2000;

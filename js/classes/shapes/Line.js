@@ -43,10 +43,21 @@ class Line {
     return Math.sqrt(Math.pow(this.point2.x - this.point1.x, 2) + Math.pow(this.point2.y - this.point1.y))
   }
 
-  // https://stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment
+  /**
+    pointWithinSegment()
+    @description checks whether a given point
+      is on this line segment
+    @param point the point to check for
+
+    stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment
+  */
   pointWithinSegment(point) {
     var p2MinusP1 = this.point2.subtract(this.point1)
     var pMinusP1 = point.subtract(this.point1)
+
+    // the cross product here returns the magnatude
+    // of a vector perpendicular to both p2MinusP1
+    // and pMinusP1
     var crossProduct = p2MinusP1.cross(pMinusP1)
     var dotProduct = p2MinusP1.dot(pMinusP1)
     var squaredLengthOfThisLine = Math.pow(this.point2.x - this.point1.x, 2) +

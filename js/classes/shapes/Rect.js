@@ -51,24 +51,24 @@ class Rect {
 	}
 
 	breakIntoLines() {
-		return [
-			new Line(
+		return {
+			up: new Line( // up
 				new Point(this.position.x, this.position.y),
 				new Point(this.position.x + this.width, this.position.x)
 			),
-			new Line(
+			down: new Line( // down
 				new Point(this.position.x, this.position.y + this.height),
-				new Point(this.position.x + this.width, this.position.y)
+				new Point(this.position.x + this.width, this.position.y + this.height)
 			),
-			new Line(
+			left: new Line( // left
 				new Point(this.position.x, this.position.y),
 				new Point(this.position.x, this.position.y + this.height)
 			),
-			new Line(
+			right: new Line( // right
 				new Point(this.position.x + this.width, this.position.y),
 				new Point(this.position.x + this.width, this.position.y + this.height)
 			)
-		]
+		}
 	}
 
 	/*
@@ -78,18 +78,21 @@ class Rect {
 		var linesFromThis = this.breakIntoLines()
 		var linesFromRect = rect.breakIntoLines()
 
-		// compare the lines of the rectangle against
-		// each other
-		// if any line intersects with another, then
-		// the two rectangles intersect
-		for (var lineThis of linesFromThis) {
-			for (var lineRect of linesFromRect) {
-				if(lineThis.intersects(lineRect)) {
-					return true;
-				}
-			}
+		if(
+			linesFromThis["up"].intersects(linesFromRect["left"]) ||
+			linesFromThis["up"].intersects(linesFromRect["right"])
+		) {
+			return true;
 		}
-		return false
+
+		if(
+			linesFromThis["down"].intersects(linesFromRect["left"]) ||
+			linesFromThis["down"].intersects(linesFromRect["right"])
+		) {
+			return true;
+		}
+
+		return false;
 	};
 
 

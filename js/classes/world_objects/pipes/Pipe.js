@@ -2,7 +2,7 @@ class Pipe extends LiquidContainer {
 
   constructor(position, diameter, length, wallWidth) {
     super(position)
-    
+
   	this.wallWidth = wallWidth;
   	this.diameter = diameter;
     this.length = length
@@ -120,10 +120,11 @@ class Pipe extends LiquidContainer {
   }
 
   updateSVG() {
-    let rotationX = this.getWidth() / 2
-    let rotationY = this.getHeight() / 2
+    let rotationX = this.getHeight() / 2
+    let rotationY = this.getWidth() / 2
+
     let transformStr = "translate(" + this.position.x + "," + this.position.y + ") "
-    transformStr += "rotate(" + this.rotation + "," + rotationX + "," + rotationY + ")"
+    transformStr += "rotate(" + this.rotation + "," + rotationX + "," + rotationY + ") "
     this.group.attr("transform", transformStr)
 
     // interior
@@ -155,19 +156,11 @@ class Pipe extends LiquidContainer {
   	Physical Properties
   ************************************************/
   getHeight() {
-  	if(this.rotation === 90) {
-  		return this.diameter;
-  	} else {
-  		return this.length;
-  	}
+  	return this.length
   };
 
   getWidth() {
-  	if(this.rotation === 90) {
-  		return this.diameter;
-  	} else {
-  		return this.length;
-  	}
+  	return this.diameter
   };
 
   getDropSize() {
@@ -175,6 +168,7 @@ class Pipe extends LiquidContainer {
   };
 
   getSnapAreas() {
+    //console.log(this.rotation);
     if(this.rotation === 0) {
       return {
         left: this.getLeftArea(),
@@ -182,8 +176,8 @@ class Pipe extends LiquidContainer {
       }
     } else if(this.rotation === 90) {
       return {
-        top: this.getTopArea(),
-        bottom: this.getBottomArea()
+        up: this.getTopArea(),
+        down: this.getBottomArea()
       }
     }
 

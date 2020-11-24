@@ -20,6 +20,10 @@ class Tank extends LiquidContainer {
 	constructor(position, width, height, wallWidth) {
 		super(position)
 		this.currentLevel = 0;
+		//console.log("Width: " + width);
+		//console.log("Height: " + height);
+		//console.log("Wall Width: " + wallWidth);
+
 		this.maxLevel = (width - wallWidth * 2) * (height - wallWidth);
 		this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
 		this.width = width;
@@ -96,9 +100,11 @@ class Tank extends LiquidContainer {
 		// setup label svg
 		this.svg.label
 			.attr("fill", "black")
-			.attr("x", this.width/2 - (this.text.length * 6)/2)
+			.attr("x", this.width/2 - (this.text.length * 3))
 			.attr("y", this.height/2)
 	}
+
+	
 
 	updateLiquidSVG() {
 		this.svg.liquid
@@ -110,27 +116,16 @@ class Tank extends LiquidContainer {
 				.style("fill", this.liquid.fill());
 
 		this.svg.label
-			.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2)
+			.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 3))
 			.text(this.text)
 	};
-
-	/**
-		topSnapBehaviour()
-		@description determines what happens when an Snappable snaps to
-			the top of another snappable
-		@param snappable the Snappable being snapped to
-		@param mousePos the current position of the mouse
-	*/
-	topSnapBehaviour(snappable, mousePos) {
-		// Do Nothing
-	}
 
 
 	getSnapAreas() {
 		return {
 			left: this.getLeftArea(),
 			right: this.getRightArea(),
-			bottom: this.getBottomArea()
+			down: this.getBottomArea()
 		}
 	}
 
@@ -159,6 +154,7 @@ class Tank extends LiquidContainer {
 			}
 		}
 	}
+
 
 
 
@@ -215,26 +211,24 @@ class Tank extends LiquidContainer {
 		TODO: convert this to be more readable and elegant.
 	*/
 	containsDrop(drop) {
-		var dropRect = drop.getRect()
-		var liquidRect = this.getLiquidRect();
+		// get the top edge of the liquid
+		var liquidTopEdge = this.getLiquidWorldY();
 
-		// check to see if the drop is either in or touching the existing
-		// liquid
-		if(liquidRect.intersects(dropRect)) {
+
+		// if the bottom edge of the drop is below the liquid top edge
+		// then return true
+		if(
+			liquidTopEdge < drop.getBottomEdgeY() &&
+			(
+				this.position.x + this.wallWidth <= drop.position.x &&
+				this.position.x + this.width - this.wallWidth >= drop.position.x &&
+				this.position.x + this.wallWidth <= drop.position.x + drop.size &&
+				this.position.x + this.width - this.wallWidth >= drop.position.x + drop.size
+			)) {
 			return true;
+		} else {
+			return false
 		}
-
-		// if the tank is empty add the drop when it reaches the bottom
-		// of the tank
-		if(this.currentLevel == 0) {
-			liquidRect.height = 2
-			liquidRect.position.y -= 1
-			if(liquidRect.intersects(dropRect)) {
-				return true;
-			}
-		}
-
-		return false;
 	};
 
 

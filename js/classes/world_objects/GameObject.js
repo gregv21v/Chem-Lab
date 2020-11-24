@@ -66,10 +66,10 @@ class GameObject {
   }
 
   /**
-    getCenter()
+    getWorldCenter()
     @description get the center point of this Snappable
   */
-  getCenter() {
+  getWorldCenter() {
     return {
       x: this.position.x + this.getWidth() / 2,
       y: this.position.y + this.getHeight() / 2

@@ -1,11 +1,12 @@
 # Chem-Lab
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=9E4Q4QVX7FMCA&item_name=To+contribute+to+the+development+of+the+Chemistry+Lab+game.&currency_code=USD)
 
 An idle game about mixing chemicals. <br>
 Inspired by Minecraft's Buildcraft Mod
 
 <strong>Objective:</strong>
-Mix chemicals together. Create a network of connecting pipes and tanks to separate tanks individually.
+Mix chemicals together. Create a network of connecting pipes and tanks to separate liquids so that you can create the liquid that gives you the most credits.
 
 Developed with JavaScript/HTML, JQuery, and D3.
 

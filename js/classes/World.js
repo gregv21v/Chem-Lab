@@ -107,7 +107,7 @@ class World {
 
 			this.player.hand.moveRelativeToCenter(mousePos)
 			//this.player.hand.updateSVG();
-			let closestSnappable = this.findClosestSnappable(mousePos)
+			let closestSnappable = this.findClosestSnappable(this.player.hand.getWorldCenter())
 			//console.log(closestSnappable);
 			if(closestSnappable != null) {
 				this.snapSide = this.player.hand.snapTo(closestSnappable, mousePos);
@@ -131,7 +131,7 @@ class World {
 		let closestDistance = 100000
 		for(var obj of this.objs) {
 			if(obj instanceof Snappable) {
-				let distance = Distance(obj.getCenter(), mousePos);
+				let distance = Distance(obj.getWorldCenter(), mousePos);
 				if(distance < closestDistance) {
 					closestDistance = distance
 					closestSnappable = obj

@@ -14,8 +14,6 @@ class Player {
     var margin = 20
     var borderWidth = 5
 
-
-
     var self = this;
 
     this.hand = null;
@@ -42,10 +40,10 @@ class Player {
       10,
       5
     ));
-    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, 50, 50, 5));
+    this.inventory.add(new Tank({x: 0, y: 0}, 50, 70, 5));
+    this.inventory.add(new Tank({x: 0, y: 0}, 50, 70, 5));
+    this.inventory.add(new Tank({x: 0, y: 0}, 50, 70, 5));
+    this.inventory.add(new Tank({x: 0, y: 0}, 50, 70, 5));
 
     var newPipe = new Pipe({x: 500, y: 500}, 20, 100, 5)
     this.inventory.add(newPipe);
@@ -74,10 +72,8 @@ class Player {
         x: this.inventory.getWidth() + this.world.getWidth()/2 - 100, /* border width of sell button */
         y: this.world.getHeight() - 85 // Space for the button
       },
-      {
-        width: 200,
-        height: 40
-      },
+      200,
+      40,
       5
     );
     sellTank.wallColor = "red";
