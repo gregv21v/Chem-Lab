@@ -10,4 +10,22 @@ class Store {
     this.sellableItems = []; // the players own items that he or she can sell
 
   }
+
+
+  /**
+    createSVG()
+    @description adds the svg to the screen
+  */
+  createSVG() {
+
+  }
+
+
+  /**
+    updateSVG()
+    @description updates the properties of the svg
+  */
+  updateSVG() {
+
+  }
 }

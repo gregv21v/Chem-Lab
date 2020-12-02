@@ -7,10 +7,15 @@
 
   <script src="lib/D3/d3.min.js"></script>
 
+
   <script src="js/classes/shapes/Circle.js"></script>
   <script src="js/classes/shapes/Point.js"></script>
   <script src="js/classes/shapes/Rect.js"></script>
   <script src="js/classes/shapes/Line.js"></script>
+
+  <!-- Screens -->
+  <script src="js/classes/gui/screens/Screen.js" charset="utf-8"></script>
+  <script src="js/classes/gui/screens/HomeScreen.js" charset="utf-8"></script>
 
   <!-- Buttons -->
   <script src="js/classes/gui/buttons/Button.js"></script>
@@ -63,20 +68,52 @@
 			You have a pump to collect liquid. Every click you get one drop of liquid.
 			Later, you can use your liquid to power an engine that will automatically pump liquid
 	-->
-  <link charset="utf-8" href="css/style.css" media="screen" rel="stylesheet" title="no title"></link>
+  <link charset="utf-8" href="css/master.css" media="screen" rel="stylesheet" title="no title"></link>
    <script src="lib/jquery-1.11.3.min.js"></script>
    <script src="lib/math.js" charset="utf-8"></script>
    <script charset="utf-8" src="lib/util.js"></script>
    <script type="text/javascript">
     var game = null;
 
-		$(document).ready(function() {
-      game = new Game();
-		});
+
+    /**
+      creativeMode
+      @description start creative mode
+    */
+    function creativeMode() {
+      game = new Game(0)
+    }
+
+    /**
+      normalMode
+      @description start normal mode
+    */
+    function normalMode() {
+      game = new Game(1)
+    }
+
+    /**
+      normalMode
+      @description start normal mode
+    */
+    function testMode() {
+      location.href = "Tests/index.html"
+    }
+
+
    </script>
  </head>
  <body>
-  <svg id="main" height="600" width="1750">
-  </svg>
+   <div id="welcomeScreen" class="container">
+     <h3>Choose your game mode:</h3>
+     <p><strong>Creative Mode:</strong> In creative mode you can do anything.</p>
+     <p><strong>Normal Mode: </strong>In normal mode you have to sell liquids in order to buy new items</p>
+     <p><strong>Test Mode: </strong> Used for testing the game.</p>
+     <button type="button" name="normal" onclick="normalMode()">Normal</button>
+     <button type="button" name="creative" onclick="creativeMode()">Creative</button>
+     <button type="button" name="test" onclick="testMode()">Test</button>
+   </div>
+
+
  </body>
 </html>

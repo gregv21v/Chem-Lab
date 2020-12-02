@@ -96,6 +96,8 @@ class Snappable extends GameObject {
     }
   };
 
+
+
   /**
     leftSnapBehaviour()
     @description determines what happens when an Snappable snaps to
@@ -104,14 +106,13 @@ class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   leftSnapBehaviour(snappable, mousePos) {
+    this.rotation = 90
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
     // match this object with the left edge of
     // the other object
-    this.rotation = 0
-    this.updateSVG()
     this.moveRelativeToCenter({
-        x: snappable.getWorldCenter().x - otherRect.width / 2 - thisRect.width / 2,
+        x: snappable.getWorldCenter().x - otherRect.width/2 - thisRect.width/2,
         y: mousePos.y
     })
   }
@@ -124,16 +125,23 @@ class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   rightSnapBehaviour(snappable, mousePos) {
+    this.rotation = 90
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    // match the right edge
-    this.rotation = 0
-    this.updateSVG()
-    this.moveRelativeToCenter({
-        x: snappable.getWorldCenter().x + otherRect.width / 2 + thisRect.width / 2,
+
+    //thisRect.createSVG()
+    //thisRect.updateSVG()
+
+    let point = {
+        x: snappable.getWorldCenter().x + otherRect.width/2 + thisRect.width/2,
         y: mousePos.y
-    })
+    }
+
+
+    //console.log(thisRect.width);
+    // match the right edge
+    this.moveRelativeToCenter(point)
   }
 
   /**
@@ -144,10 +152,10 @@ class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   topSnapBehaviour(snappable, mousePos) {
+    this.rotation = 0
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    this.rotation = 90
     this.updateSVG()
     this.moveRelativeToCenter({
       y: snappable.getWorldCenter().y - thisRect.height / 2,
@@ -165,10 +173,10 @@ class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   bottomSnapBehaviour(snappable, mousePos) {
+    this.rotation = 90
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
-    this.rotation = 90
     this.updateSVG();
     this.moveRelativeToCenter({
       y: snappable.getWorldCenter().y + otherRect.height / 2 + thisRect.height / 2,
@@ -187,9 +195,9 @@ class Snappable extends GameObject {
     //snappable.showSnapAreas()
 
     var closestSide = "";
-    var closestDistance = 2000;
+    var closestDistance = 20000;
     var snapAreas = snappable.getSnapAreas()
-    //snappable.showSnapAreas();
+    snappable.showSnapAreas();
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
@@ -199,7 +207,7 @@ class Snappable extends GameObject {
       if(distance < closestDistance && thisRect.intersects(snapAreas[side])) {
         closestDistance = distance
         closestSide = side
-        this.snapping = true;
+        console.log(side);
       }
     }
 
@@ -210,6 +218,9 @@ class Snappable extends GameObject {
   snapTo(snappable, mousePos) {
 
     let closestSide = this.findClosestSnapArea(snappable, mousePos);
+    console.log(closestSide);
+
+
 
     if(closestSide === "left") {
       this.leftSnapBehaviour(snappable, mousePos)
@@ -237,7 +248,7 @@ class Snappable extends GameObject {
   attachTo(snappable, side) {
   	if(this.attachments[side] === undefined) {
       this.attachments[side] = [snappable]
-      //console.log(this.attachments);
+      console.log(this.attachments);
     } else {
       this.attachments[side].push(snappable)
     }

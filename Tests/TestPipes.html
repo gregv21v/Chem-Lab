@@ -2,7 +2,9 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Test Rotation</title>
+    <title>Test Pipes</title>
+
+    <script src="../js/classes/shapes/Circle.js"></script>
     <script src="../js/classes/world_objects/Drop.js"></script>
     <script src="../js/classes/world_objects/GameObject.js"></script>
     <script src="../js/classes/world_objects/Snappable.js"></script>
@@ -59,8 +61,8 @@
 
             //pipe1.moveRelativeToCenter(mousePos)
             pipe1.moveRelativeToCenter({
-              x: mousePos.x - pipe1.getWidth() / 2,
-              y: mousePos.y - pipe1.getHeight() / 2
+              x: mousePos.x,
+              y: mousePos.y
             })
           })
   		});

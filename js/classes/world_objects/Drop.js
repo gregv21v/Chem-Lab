@@ -24,8 +24,8 @@ class Drop {
   */
   createSVG() {
     var mainSVG = d3.select("body").select("svg")
-    this.group = mainSVG.append("g")
-  	this.svg = this.group.append("rect");
+    //this.group = mainSVG.append("g")
+  	this.svg = mainSVG.append("rect");
   };
 
   /*
@@ -128,26 +128,25 @@ class Drop {
     Behavior: drops flow down and to the right.
   */
   canFlow(pipe, direction) {
+    let pipeCenter = pipe.getWorldCenter()
+
     if(direction === "up") {
-      // make sure the drop is below the pipes upper edge
-      if(this.position.y - 1 < pipe.getWorldCenter().y - pipe.getHeight()/2 - this.size) {
-        return false;
-      }
+      return false;
     }
     if(direction === "down") {
       // make sure the drop is below the pipes lower edge
-      if(this.position.y + 1 > pipe.getWorldCenter().y + pipe.getHeight()/2 - this.size) {
+      if(this.position.y + 1 > pipeCenter.y + pipe.length/2 - this.size) {
         return false;
       }
     } else if(direction === "left") {
       // make sure the drop is below the pipes left edge
-      if(this.position.x - 1 < pipe.getWorldCenter().x - pipe.getWidth()/2) {
+      if(this.position.x - 1 < pipeCenter.x - pipe.length/2) {
         return false;
       }
     }
     else if(direction === "right") {
       // make sure the drop is below the pipes right edge
-      if(this.position.x + 1 > pipe.getWorldCenter().x + pipe.getWidth()/2 - this.size) {
+      if(this.position.x + 1 > pipeCenter.x + pipe.length/2 - this.size) {
         return false;
       }
     }

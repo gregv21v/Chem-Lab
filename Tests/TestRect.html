@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>Test Rect</title>
-    <script src="js/classes/shapes/Point.js"></script>
-    <script src="js/classes/shapes/Line.js"></script>
-    <script src="js/classes/shapes/Rect.js"></script>
-    <script src="lib/jquery-1.11.3.min.js"></script>
-    <script src="lib/D3/d3.min.js"></script>
+    <script src="../js/classes/shapes/Point.js"></script>
+    <script src="../js/classes/shapes/Circle.js"></script>
+    <script src="../js/classes/shapes/Line.js"></script>
+    <script src="../js/classes/shapes/Rect.js"></script>
+    <script src="../lib/jquery-1.11.3.min.js"></script>
+    <script src="../lib/D3/d3.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         var rect1 = new Rect()
@@ -20,8 +21,8 @@
 
         var rect2 = new Rect()
         rect2.position = {
-          x: 500,
-          y: 40
+          x: 60,
+          y: 90
         }
         rect2.width = 100
         rect2.height = 100
@@ -31,6 +32,17 @@
 
 
         console.log(rect1.intersects(rect2));
+
+        d3.select("body")
+          .on("mousemove", function() {
+            let mousePos = {x: d3.mouse(this)[0], y: d3.mouse(this)[1]}
+
+            //pipe1.moveRelativeToCenter(mousePos)
+            rect1.position = mousePos
+            rect1.updateSVG()
+
+            console.log(rect1.intersects(rect2));
+          })
 
       });
     </script>

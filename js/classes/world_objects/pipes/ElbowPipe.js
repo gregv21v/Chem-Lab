@@ -79,6 +79,10 @@ class ElbowPipe extends Pipe {
     return this.length + this.diameter + this.wallWidth
   }
 
+  getName() {
+    return "Elbow Pipe"
+  }
+
   updateDrops () {
   	for(var x in this.drops) {
   		if(this.drops[x].drop.canFlow(this, this.drops[x].direction)) {

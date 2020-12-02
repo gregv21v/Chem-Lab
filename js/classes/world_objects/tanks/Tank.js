@@ -62,9 +62,13 @@ class Tank extends LiquidContainer {
 			liquid: this.group.append("rect"),
 			label: this.group.append("text")
 		};
+
+		this.updateSVG()
 	};
 
 	updateSVG() {
+
+
 		let rotationX = this.getWidth() / 2
 		let rotationY = this.getHeight() / 2
     let transformStr = "translate(" + this.position.x + "," + this.position.y + ") "
@@ -104,7 +108,7 @@ class Tank extends LiquidContainer {
 			.attr("y", this.height/2)
 	}
 
-	
+
 
 	updateLiquidSVG() {
 		this.svg.liquid
@@ -182,6 +186,79 @@ class Tank extends LiquidContainer {
 		// show percentage full ==> "(" + this.currentLevel + "/" + this.maxLevel + ")"
 
 	};
+
+	/**
+		topSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+			the top of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	topSnapBehaviour(snappable, mousePos) {
+
+	}
+
+
+
+	/**
+		bottomSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+			the botttom of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	bottomSnapBehaviour(snappable, mousePos) {
+		var thisRect = this.getRect()
+		var otherRect = snappable.getRect()
+
+		this.moveRelativeToCenter({
+			y: snappable.getWorldCenter().y + otherRect.height / 2 + thisRect.height / 2,
+			x: mousePos.x
+		})
+	}
+
+	/**
+    leftSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the left of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  leftSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+    // match this object with the left edge of
+    // the other object
+    this.moveRelativeToCenter({
+        x: snappable.getWorldCenter().x - otherRect.width - thisRect.width,
+        y: mousePos.y
+    })
+  }
+
+  /**
+    rightSnapBehaviour()
+    @description determines what happens when an Snappable snaps to
+      the right of another snappable
+    @param snappable the Snappable being snapped to
+    @param mousePos the current position of the mouse
+  */
+  rightSnapBehaviour(snappable, mousePos) {
+    var thisRect = this.getRect()
+    var otherRect = snappable.getRect()
+
+		let circle = new Circle(snappable.getWorldCenter(), 3)
+		circle.createSVG()
+		circle.updateSVG()
+
+
+    // match the right edge
+    this.moveRelativeToCenter({
+        x: snappable.getWorldCenter().x + otherRect.width + thisRect.width,
+        y: mousePos.y
+    })
+  }
+
+
 
 	/**
 		getInnerWidth()

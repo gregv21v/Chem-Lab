@@ -11,9 +11,6 @@ class Rect {
 			color: "blue",
 			width: 1
 		};
-
-		var mainSVG = d3.select("body").select("svg")
-		this.svg = mainSVG.append("rect");
 	}
 
 	getCenter() {
@@ -71,24 +68,72 @@ class Rect {
 		}
 	}
 
+
+	intersects(rect) {
+		// if at least one corner of the rect is in the other rect
+		return (
+			// this.rect intersects rect
+			this.contains({x: rect.position.x,
+            			   y: rect.position.y}) || // top left
+			this.contains({x: rect.position.x + rect.width,
+                           y: rect.position.y}) || // top right
+			this.contains({x: rect.position.x,
+                           y: rect.position.y + rect.height}) || // bottom left
+			this.contains({x: rect.position.x + rect.width,
+                           y: rect.position.y + rect.height}) || // bottom right
+			// rect intersects this.rect
+			rect.contains({x: this.position.x,
+                           y: this.position.y}) || // top left
+			rect.contains({x: this.position.x + this.width,
+                           y: this.position.y}) || // top right
+			rect.contains({x: this.position.x,
+                           y: this.position.y + this.height}) || // bottom left
+			rect.contains({x: this.position.x + this.width,
+                           y: this.position.y + this.height}) // bottom right
+		);
+	};
+
 	/*
 		Determines if two rectangles are intersecting
 	*/
-	intersects(rect) {
-		var linesFromThis = this.breakIntoLines()
-		var linesFromRect = rect.breakIntoLines()
+	intersects2(rect) {
+		let linesFromThis = this.breakIntoLines()
+		let linesFromRect = rect.breakIntoLines()
 
-		if(
-			linesFromThis["up"].intersects(linesFromRect["left"]) ||
-			linesFromThis["up"].intersects(linesFromRect["right"])
-		) {
+		let point1 = linesFromThis["up"].findIntersectionPoint(linesFromRect["left"])
+		let point2 = linesFromThis["up"].findIntersectionPoint(linesFromRect["right"])
+		let point3 = linesFromThis["down"].findIntersectionPoint(linesFromRect["left"])
+		let point4 = linesFromThis["down"].findIntersectionPoint(linesFromRect["right"])
+
+		if(this.contains(point1) && rect.contains(point1)) {
+			var circle = new Circle(point1, 3)
+			circle.color = "blue"
+			circle.createSVG()
+			console.log("point1");
 			return true;
 		}
 
-		if(
-			linesFromThis["down"].intersects(linesFromRect["left"]) ||
-			linesFromThis["down"].intersects(linesFromRect["right"])
-		) {
+		if(this.contains(point2) && rect.contains(point2)) {
+			var circle = new Circle(point1, 3)
+			circle.color = "orange"
+			circle.createSVG()
+			console.log("Point2");
+			return true;
+		}
+
+		if(this.contains(point3) && rect.contains(point3)) {
+			var circle = new Circle(point1, 3)
+			circle.color = "pink"
+			circle.createSVG()
+			console.log("Point3");
+			return true;
+		}
+
+		if(this.contains(point4) && rect.contains(point4)) {
+			var circle = new Circle(point1, 3)
+			circle.color = "teal"
+			circle.createSVG()
+			console.log("Point4");
 			return true;
 		}
 
@@ -130,6 +175,17 @@ class Rect {
 
 
 	createSVG() {
+		var mainSVG = d3.select("body").select("svg")
+		this.svg = mainSVG.append("rect");
+
+		this.updateSVG()
+	};
+
+	destroySVG() {
+		this.svg.attr("width", 0)
+	};
+
+	updateSVG() {
 		this.svg
 			.attr("width", this.width)
 			.attr("height", this.height)
@@ -139,13 +195,6 @@ class Rect {
 			.attr("stroke", this.stroke.color)
 			.attr("fill", this.fill.color)
 			.attr("fill-opacity", this.fill.opacity)
-	};
-
-	destroySVG() {
-		this.svg.attr("width", 0)
-	};
-
-	updateSVG() {
 	}
 
 }

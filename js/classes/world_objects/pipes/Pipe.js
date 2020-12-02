@@ -11,31 +11,30 @@ class Pipe extends LiquidContainer {
   	this.drops = [];
   }
 
-
-
-
   addDrop(drop, side) {
 
     // set the drops start position
+    let center = this.getWorldCenter();
+
     if(side === "left") {
       drop.position = {
-        x: this.position.x + this.getWidth() - drop.size/2,
-        y: this.position.y + this.wallWidth
+        x: center.x + this.length / 2 - drop.size/2,
+        y: center.y - this.wallWidth
       }
     } else if(side === "right") {
       drop.position = {
-        x: this.position.x,
-        y: this.position.y + this.wallWidth
+        x: center.x - this.length / 2,
+        y: center.y - this.wallWidth
       }
     } else if(side === "up") {
       drop.position = {
-        x: this.position.x + drop.size/2,
-        y: this.position.y
+        x: center.x + drop.size/2,
+        y: center.y
       }
     } else if(side === "down") {
       drop.position = {
-        x: this.position.x + drop.size/2,
-        y: this.position.y
+        x: center.x + drop.size/2,
+        y: center.y
       }
     }
 
@@ -55,6 +54,8 @@ class Pipe extends LiquidContainer {
   	this.drops.push(drop);
   };
 
+
+
   /**
     spout()
     @description gets the drops available at the specified side
@@ -68,7 +69,8 @@ class Pipe extends LiquidContainer {
   		// if a drop can no longer flow in the direction it was
   		// flowing, give it is at its spout, and ready to leak.
   		if(!drop.drop.canFlow(this, drop.direction) && drop.direction === side) {
-  			leakingDrops.push(drop);
+        console.log("drop leaking");
+        leakingDrops.push(drop);
   		} else {
   			keptDrops.push(drop);
   		}
@@ -84,7 +86,8 @@ class Pipe extends LiquidContainer {
   canAccessLiquid(tank) {
     // the opening of the pipe is even with the
     // tanks liquid or above it.
-    var y = this.position.y + this.diameter - this.wallWidth; // y bottom interior wall of pipe.
+    var y = this.getWorldCenter().y + this.diameter/2 - this.wallWidth; // y bottom interior wall of pipe.
+
     if(y > tank.getLiquidWorldY()) {
       return true;
     } else {
@@ -102,6 +105,11 @@ class Pipe extends LiquidContainer {
   	}
   }
 
+  getButtomEdgeY() {
+    return this.position.y + this.diameter - this.wallWidth;
+  }
+
+
   /*
   	=============Drawing the Pipe=============
   */
@@ -112,16 +120,24 @@ class Pipe extends LiquidContainer {
   		walls: this.group.append("rect"),
   		interior: this.group.append("rect")
   	}
+
+    //this.posSvg = new Circle(this.position, 10)
+  //  this.posSvg.position = this.position
+    //this.posSvg.createSVG()
+    //this.posSvg.updateSVG()
+
   }
 
 
-  getButtomEdgeY() {
-    return this.position.y + this.diameter - this.wallWidth;
-  }
 
   updateSVG() {
-    let rotationX = this.getHeight() / 2
-    let rotationY = this.getWidth() / 2
+    //this.posSvg.position = this.position
+    //this.posSvg.updateSVG()
+
+    // these coordinates are relative to
+    // the group for which they are in
+    let rotationX = this.diameter / 2
+    let rotationY = this.length / 2
 
     let transformStr = "translate(" + this.position.x + "," + this.position.y + ") "
     transformStr += "rotate(" + this.rotation + "," + rotationX + "," + rotationY + ") "
@@ -129,17 +145,17 @@ class Pipe extends LiquidContainer {
 
     // interior
     this.svg.interior
-      .attr("width", this.length)
-      .attr("height", this.diameter - this.wallWidth * 2)
-      .attr("x", 0)
-      .attr("y", this.wallWidth)
+      .attr("width", this.diameter - this.wallWidth * 2)
+      .attr("height", this.length)
+      .attr("x", this.wallWidth)
+      .attr("y", 0)
       .style("fill", "white")
   		.style("fill-opacity", 1)
 
     // walls
   	this.svg.walls
-      .attr("width", this.length)
-  	  .attr("height", this.diameter)
+      .attr("width", this.diameter)
+  	  .attr("height", this.length)
   	  .attr("x", 0)
   	  .attr("y", 0)
   	  .style("fill", "black")
@@ -150,18 +166,75 @@ class Pipe extends LiquidContainer {
 
 
 
-
-
   /************************************************
-  	Physical Properties
+    Properties
   ************************************************/
+  /***
+    getHeight
+    @description the height of the object in the world
+  */
   getHeight() {
-  	return this.length
+    if(this.rotation === 0 || this.rotation === 180) {
+      return this.length
+    } else {
+      return this.diameter
+    }
   };
 
+  /***
+    getWidth()
+    @description the width of the object in the world
+  */
   getWidth() {
-  	return this.diameter
+    if(this.rotation === 0 || this.rotation === 180) {
+      return this.diameter
+    } else {
+      return this.length
+    }
   };
+
+  /**
+    getWorldCenter()
+    @description get the center point of this Snappable
+  */
+  getWorldCenter() {
+    let center = {}
+
+    if(this.rotation === 0 || this.rotation === 180) {
+      center = {
+        x: this.position.x + this.getWidth() / 2,
+        y: this.position.y + this.getHeight() / 2,
+      }
+    } else {
+      center = {
+        x: this.position.x + this.getHeight() / 2,
+        y: this.position.y + this.getWidth() / 2,
+      }
+    }
+
+    return center;
+  }
+
+  /**
+   * moveRelativeToCenter()
+   * @description moves the Snappable relative to it's center
+   * @param point point to move to
+   */
+  moveRelativeToCenter(point) {
+    if(this.rotation === 0 || this.rotation === 180) {
+      this.position = {
+        x: point.x - this.diameter /2,
+        y: point.y - this.length / 2
+      }
+    } else {
+      this.position = {
+        x: point.x - this.diameter /2,
+        y: point.y - this.length / 2
+      }
+    }
+
+    this.updateSVG()
+  }
 
   getDropSize() {
   	return this.diameter - this.wallWidth * 2;
@@ -169,20 +242,18 @@ class Pipe extends LiquidContainer {
 
   getSnapAreas() {
     //console.log(this.rotation);
-    if(this.rotation === 0) {
+    if(this.rotation === 0 || this.rotation === 180) {
       return {
         left: this.getLeftArea(),
         right: this.getRightArea()
       }
-    } else if(this.rotation === 90) {
+    } else {
       return {
         up: this.getTopArea(),
         down: this.getBottomArea()
       }
     }
-
   }
-
 
   getName() {
   	return "Pipe";

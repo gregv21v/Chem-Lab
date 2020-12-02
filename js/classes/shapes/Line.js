@@ -11,7 +11,7 @@ class Line {
     @description returns true if two line segments intersect
     @param line the line to check intersection with
   */
-  intersects(line) {
+  findIntersectionPoint(line) {
     // equation for this line
     var thisA = this.point2.y - this.point1.y
     var thisB = this.point1.x - this.point2.x
@@ -31,11 +31,10 @@ class Line {
       // lines are parallel, so do nothing
       return false
     } else {
-      var intersectionPoint = new Point (
+      return new Point (
         (lineB*thisC - thisB*lineC)/det,
         (thisA*lineC - lineA*thisC)/det
       )
-      return this.pointWithinSegment(intersectionPoint)
     }
   }
 
@@ -52,6 +51,7 @@ class Line {
     stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment
   */
   pointWithinSegment(point) {
+
     var p2MinusP1 = this.point2.subtract(this.point1)
     var pMinusP1 = point.subtract(this.point1)
 
@@ -76,6 +76,19 @@ class Line {
     }
 
     return true;
+  }
+
+  /**
+    pointWithinSegment()
+    @description checks whether a given point
+      is on this line segment
+    @param point the point to check for
+
+    stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment
+  */
+  pointWithinSegment2(point) {
+
+
   }
 
 

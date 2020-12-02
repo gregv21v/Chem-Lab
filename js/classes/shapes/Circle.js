@@ -6,8 +6,7 @@ class Circle {
 		this.color = "rgb(0, 0, 255)";
 		this.fillOpacity = 0.5;
 
-		var mainSVG = d3.select("body").select("svg");
-		this.svg = mainSVG.append("circle");
+
 	}
 
 	contains (point) {
@@ -15,11 +14,8 @@ class Circle {
 	};
 
 	createSVG() {
-		this.svg.attr("r", this.radius);
-		this.svg.attr("cx", this.center.x);
-		this.svg.attr("cy", this.center.y);
-		this.svg.attr("fill", this.color);
-		this.svg.attr("fill-opacity", this.fillOpacity);
+		var mainSVG = d3.select("body").select("svg");
+		this.svg = mainSVG.append("circle");
 	};
 
 	destroySVG() {
@@ -27,7 +23,11 @@ class Circle {
 	};
 
 	updateSVG() {
-
+		this.svg.attr("r", this.radius);
+		this.svg.attr("cx", this.center.x);
+		this.svg.attr("cy", this.center.y);
+		this.svg.attr("fill", this.color);
+		this.svg.attr("fill-opacity", this.fillOpacity);
 	};
 
 }

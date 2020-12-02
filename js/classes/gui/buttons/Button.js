@@ -144,6 +144,10 @@ class Button {
 		this.svg.clickBox.on('click', onClick);
 	};
 
+	updateSVG() {
+		
+	}
+
 }
 
 //export default Button
