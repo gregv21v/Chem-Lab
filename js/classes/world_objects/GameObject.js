@@ -12,7 +12,6 @@ class GameObject {
   constructor(center) {
     this.center = center
 
-
     /*********
       Visuals
     **********/
@@ -45,7 +44,10 @@ class GameObject {
 
 
 
-
+  /**
+   * createSVG() 
+   * @description creates the svg graphics for this GameObject
+   */
   createSVG() {
     var mainSVG = d3.select("body").select("svg")
 
@@ -63,6 +65,10 @@ class GameObject {
 
   }
 
+  /**
+   * updateSVG()
+   * @description updates the svg graphic for this GameObject
+   */
   updateSVG() {
 
   }
@@ -71,16 +77,29 @@ class GameObject {
     return "";
   };
 
+  /**
+   * getWidth()
+   * @description gets the width of this GameObject   
+   * @returns the width of this GameObject
+   */
   getWidth() {
     return 0;
   };
 
+  /**
+   * getHeight()
+   * @description gets the hight of this GameObject
+   * @returns height
+   */
   getHeight() {
     return 0;
   }
 
 
-
+  /**
+   * getName()
+   * @returns name of this GameObject
+   */
   getName() {
     return "";
   }
@@ -96,6 +115,11 @@ class GameObject {
     }
   }
 
+  /**
+   * getRect()
+   * @description gets the rectangler bounding box of this game object.
+   * @returns the rectangler bounding box of this GameObject
+   */
   getRect() {
     return new Rect();
   }

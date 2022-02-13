@@ -1,9 +1,6 @@
 /*
 	Tank: a container for liquid
 
-
-
-
 	Attaching pipes to tank:
 		Each tank has a surface are that limits the number of pipes that can be
 		connected to the tank. No two pipes can overlap.
@@ -42,14 +39,28 @@ class Tank extends Snappable {
 		};
 	}
 
+	/**
+	 * getLiquidHeight()
+	 * @description gets the height of the liquid in the tank
+	 * @returns the liquid's height in the tank
+	 */
 	getLiquidHeight () {
 		return this.interior.height * this.currentLevel / this.maxLevel;
 	};
 
+	/**
+	 * getLiquidY()
+	 * @description gets the y position of the liquid in the tank
+	 * @returns the liquid's y position
+	 */
 	getLiquidY() {
 		return this.position.y + this.interior.height - this.getLiquidHeight();
 	};
 
+	/**
+	 * createSVG()
+	 * @description creates the graphic for the tank
+	 */
 	createSVG() {
 		this.updateSVG();
 	};
@@ -67,57 +78,57 @@ class Tank extends Snappable {
 
 
 	/**
-    leftSnapBehaviour()
-    @description determines what happens when an Snappable snaps to
-      the left of another snappable
-    @param snappable the Snappable being snapped to
-    @param mousePos the current position of the mouse
-  */
-  leftSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
-    // match this object with the left edge of
-    // the other object
-    this.moveRelativeToCenter({
-        x: snappable.center.x - thisRect.width / 2,
-        y: mousePos.y
-    })
-  }
+		leftSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+		the left of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	leftSnapBehaviour(snappable, mousePos) {
+		var thisRect = this.getRect()
+		var otherRect = snappable.getRect()
+		// match this object with the left edge of
+		// the other object
+		this.moveRelativeToCenter({
+			x: snappable.center.x - thisRect.width / 2,
+			y: mousePos.y
+		})
+	}
 
-  /**
-    rightSnapBehaviour()
-    @description determines what happens when an Snappable snaps to
-      the right of another snappable
-    @param snappable the Snappable being snapped to
-    @param mousePos the current position of the mouse
-  */
-  rightSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
+	/**
+		rightSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+		the right of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	rightSnapBehaviour(snappable, mousePos) {
+		var thisRect = this.getRect()
+		var otherRect = snappable.getRect()
 
-		console.log("This Rect: ");
-		console.log(thisRect);
-		console.log("Other Rect: ");
-		console.log(otherRect);
+			console.log("This Rect: ");
+			console.log(thisRect);
+			console.log("Other Rect: ");
+			console.log(otherRect);
 
-    // match the right edge
-    this.moveRelativeToCenter({
-        x: snappable.center.x + otherRect.width + thisRect.width / 2,
-        y: mousePos.y
-    })
-  }
-
-
+		// match the right edge
+		this.moveRelativeToCenter({
+			x: snappable.center.x + otherRect.width + thisRect.width / 2,
+			y: mousePos.y
+		})
+	}
 
 
-  /**
-    bottomSnapBehaviour()
-    @description determines what happens when an Snappable snaps to
-      the botttom of another snappable
-    @param snappable the Snappable being snapped to
-    @param mousePos the current position of the mouse
-  */
-  bottomSnapBehaviour(snappable, mousePos) {}
+
+
+	/**
+		bottomSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+		the botttom of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	bottomSnapBehaviour(snappable, mousePos) {}
 
 
 	getSnapAreas() {
@@ -195,8 +206,6 @@ class Tank extends Snappable {
 		for(var side of Object.keys(this.attachments)) {
 			for(var pipe of this.attachments[side]) {
 				if(pipe instanceof Pipe) {
-
-
 					var drop;
 
 					// get a drop from the tank
@@ -207,7 +216,7 @@ class Tank extends Snappable {
 					}
 
 
-
+					// if pipe is there, move the drop to the pipe
 					if(drop) {
 						//console.log(.size);
 						// position drop at front of pipe
@@ -237,17 +246,20 @@ class Tank extends Snappable {
 						drop.createSVG();
 						pipe.addDrop(drop, side);
 
-
 					}
 				}
 			}
 		}
 	}
 
-	/*
-		Checks to see if a given pipe can access the
-		liquid in the tank.
-	*/
+	/**
+	 * pipeCanAccessLiquid()	
+	 * @description Checks to see if a given pipe can access the
+		liquid in the tank.	
+	 * @param {Pipe} pipe the pipe to check access to
+	 * @returns true if the pipe has access to the liquid
+	 * 			false if the pipe does not have access to the liquid
+	 */
 	pipeCanAccessLiquid (pipe) {
 		// the opening of the pipe is even with the
 		// tanks liquid or above it.
@@ -260,6 +272,13 @@ class Tank extends Snappable {
 
 	};
 
+	/**
+	 * addDrop()	
+	 * @description adds a drop to the tank
+	 * @param {Drop} drop the drop to add to the tank
+	 * @returns true if the tank isn't full
+	 * 			false if the tank is full
+	 */
 	addDrop(drop) {
 		console.log("Adding Drop");
 
@@ -283,8 +302,9 @@ class Tank extends Snappable {
 
 	};
 
-	/*
-		Checks to see if the bottom two corners of a drop are in the liquid
+	/**
+		containsDrop()
+		@description Checks to see if the bottom two corners of a drop are in the liquid
 		near the bottom of the tank
 
 		TODO: convert this to be more readable and elegant.
