@@ -23,12 +23,13 @@ class GameObject {
     this.tooltip = new ToolTip(
       center,
       20, // radius of hover circle
-      "");
+      ""
+    );
 
     // Open sides that appear visually open
     this.openSides = {
-      top: false,
-      bottom: false,
+      up: false,
+      down: false,
       left: false,
       right: false
     }
@@ -38,28 +39,9 @@ class GameObject {
     this.snapping = false;
   }
 
-
-  /**
-   * create()
-   * @description creates the GameObject
-   */
-  create() {
-
-  }
-
-  /**
-   * update() 
-   * @description updates the GameObject every game tick
-   */
-  update() {
-
-  }
-
   updateTooltip() {
     this.tooltip.position = this.position;
   };
-
-
 
   /**
    * createSVG() 

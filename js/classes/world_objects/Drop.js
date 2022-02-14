@@ -6,7 +6,7 @@
 	it enters the tank.
 */
 
- var lastId = 0;
+var lastId = 0;
 
 class Drop {
 

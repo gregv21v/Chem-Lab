@@ -11,16 +11,20 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Valves                  --> Pipes that you can open and close
 - Tank                    --> Stores liquid
 - Pump                    --> Produces liquid
-- Sell Tank               --> Allows you to sell liquids
 - Liquid Distributor Pipe --> Distributes liquids evenly among connecting tanks
 - Liquid Sorter Pipe      --> Sorts liquids by color
 
 
+<strong> Tools </strong>
+- Sell Tool               --> Allows you to sell the contents of a tank
+
+
 <strong> Mechanics </strong>
-- A <b>store</b> where you can buy, and sell tanks, pipes, pumps, and whatever else I decide to add.
+- A <b>shop</b> where you can buy and sell items.
 - An <b>inventory</b> where you store your items.
 - A <b>world</b> where you place your items.
 - The ability to sort various liquids, by chemical properties
+- Different chemicals that react in different ways when they are combined with each other.
 
 
 <strong> TODO:</strong>

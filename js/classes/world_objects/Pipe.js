@@ -158,8 +158,8 @@ class Pipe extends Snappable {
       }
     } else if(this.orientation === "vertical") {
       return {
-        top: this.getTopArea(),
-        bottom: this.getBottomArea()
+        up: this.getTopArea(),
+        down: this.getBottomArea()
       }
     }
 

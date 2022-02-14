@@ -108,10 +108,10 @@ class Tank extends Snappable {
 		var thisRect = this.getRect()
 		var otherRect = snappable.getRect()
 
-			console.log("This Rect: ");
-			console.log(thisRect);
-			console.log("Other Rect: ");
-			console.log(otherRect);
+		console.log("This Rect: ");
+		console.log(thisRect);
+		console.log("Other Rect: ");
+		console.log(otherRect);
 
 		// match the right edge
 		this.moveRelativeToCenter({
@@ -142,7 +142,7 @@ class Tank extends Snappable {
 		return {
 			left: this.getLeftArea(),
 			right: this.getRightArea(),
-			bottom: this.getBottomArea()
+			down: this.getDownArea()
 		}
 	}
 
@@ -249,12 +249,12 @@ class Tank extends Snappable {
 								x: pipe.position.x,
 								y: pipe.getCenter().y - drop.size/2
 							}
-						} else if(side === "top") {
+						} else if(side === "up") {
 							drop.position = {
 								x: pipe.position.x + drop.size/2,
 								y: pipe.position.y
 							}
-						} else if(side === "bottom") {
+						} else if(side === "down") {
 							drop.position = {
 								x: pipe.position.x + drop.size/2,
 								y: pipe.position.y

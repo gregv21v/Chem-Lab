@@ -73,26 +73,30 @@ class Snappable extends GameObject {
   };
 
 
-  getTopArea() {
-    var topArea = new Rect()
-    topArea.fill.color = "red"
-    topArea.width = this.getWidth()
-    topArea.height = this.snapRadius
-    topArea.position.x = this.position.x
-    topArea.position.y = this.position.y - this.snapRadius
+  getUpArea() {
+    var upArea = new Rect()
+    upArea.fill.color = "red"
+    upArea.width = this.getWidth()
+    upArea.height = this.snapRadius
+    upArea.position.x = this.position.x
+    upArea.position.y = this.position.y - this.snapRadius
 
     return topArea
   };
 
-  getBottomArea() {
-    var bottomArea = new Rect()
-    bottomArea.fill.color = "green"
-    bottomArea.width = this.getWidth()
-    bottomArea.height = this.snapRadius
-    bottomArea.position.x = this.position.x
-    bottomArea.position.y = this.position.y + this.getHeight()
+  /**
+   * getDownArea()
+   * @returns the snap area facing downwards
+   */
+  getDownArea() {
+    var downArea = new Rect()
+    downArea.fill.color = "green"
+    downArea.width = this.getWidth()
+    downArea.height = this.snapRadius
+    downArea.position.x = this.position.x
+    downArea.position.y = this.position.y + this.getHeight()
 
-    return bottomArea
+    return downArea
   };
 
 
@@ -124,8 +128,8 @@ class Snappable extends GameObject {
   getSnapAreas() {
     //this.updatePosition()
     return {
-      top: this.getTopArea(),
-      bottom: this.getBottomArea(),
+      up: this.getTopArea(),
+      down: this.getBottomArea(),
       left: this.getLeftArea(),
       right: this.getRightArea()
     }
@@ -283,9 +287,9 @@ class Snappable extends GameObject {
       this.leftSnapBehaviour(snappable, mousePos)
     } else if(closestSide === "right") {
       this.rightSnapBehaviour(snappable, mousePos)
-    } else if(closestSide === "top") {
+    } else if(closestSide === "up") {
       this.topSnapBehaviour(snappable, mousePos)
-    } else if(closestSide === "bottom") {
+    } else if(closestSide === "down") {
       this.bottomSnapBehaviour(snappable, mousePos)
     }
 
