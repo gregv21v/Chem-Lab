@@ -45,6 +45,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Create a home screen 
 - Add the ability to move tanks
 - Add the ability to buy and sell tanks
+- Convert to Raster Graphics for faster performance
 
 
 

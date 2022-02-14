@@ -222,10 +222,10 @@ class Tank extends Snappable {
 		@description transfers liquid from the tank to its connecting pipes
 	*/
 	transferLiquid() {
-		for(var side of Object.keys(this.attachments)) {
-			for(var pipe of this.attachments[side]) {
+		for(const side of Object.keys(this.attachments)) {
+			for(const pipe of this.attachments[side]) {
 				if(pipe instanceof Pipe) {
-					var drop;
+					let drop;
 
 					// get a drop from the tank
 					if(this.pipeCanAccessLiquid(pipe)) {
