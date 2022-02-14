@@ -39,6 +39,8 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Display opening in tank when pipes are attached. (extra)
 - Create gases
 - Create a home screen 
+- Add the ability to move tanks
+- Add the ability to buy and sell tanks
 
 
 
