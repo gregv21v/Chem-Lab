@@ -72,7 +72,11 @@ class Snappable extends GameObject {
   	return newRect;
   };
 
-
+  /**
+   * getUpArea()
+   * @description gets the up area of the snappable
+   * @returns the up area of the snappable
+   */
   getUpArea() {
     var upArea = new Rect()
     upArea.fill.color = "red"
@@ -81,11 +85,12 @@ class Snappable extends GameObject {
     upArea.position.x = this.position.x
     upArea.position.y = this.position.y - this.snapRadius
 
-    return topArea
+    return upArea
   };
 
   /**
    * getDownArea()
+   * @description gets the down area of the snappable
    * @returns the snap area facing downwards
    */
   getDownArea() {
@@ -100,6 +105,11 @@ class Snappable extends GameObject {
   };
 
 
+  /**
+   * getLeftArea()
+   * @description gets the left area
+   * @returns the left snap area 
+   */
   getLeftArea() {
     var leftArea = new Rect()
     leftArea.fill.color = "blue"
@@ -111,7 +121,11 @@ class Snappable extends GameObject {
     return leftArea
   };
 
-
+  /**
+   * getRightArea()
+   * @description get the right snap area
+   * @returns right snap area 
+   */
   getRightArea() {
     var rightArea = new Rect()
     rightArea.fill.color = "yellow"
@@ -125,10 +139,15 @@ class Snappable extends GameObject {
     return rightArea
   };
 
+  /**
+   * getSnapAreas()
+   * @description get the snap areas 
+   * @returns the snap areas
+   */
   getSnapAreas() {
     //this.updatePosition()
     return {
-      up: this.getTopArea(),
+      up: this.getUpArea(),
       down: this.getBottomArea(),
       left: this.getLeftArea(),
       right: this.getRightArea()
@@ -157,18 +176,26 @@ class Snappable extends GameObject {
   }
 
 
+  /**
+   * showSnapAreas()
+   * @description shows the snap areas
+   */
   showSnapAreas() {
-    var snapAreas = this.getSnapAreas()
-    for(var key of Object.keys(snapAreas)) {
+    let snapAreas = this.getSnapAreas()
+    for(const key of Object.keys(snapAreas)) {
       //console.log(key)
       snapAreas[key].fill.opacity = 0.5
       snapAreas[key].createSVG()
     }
   };
 
+  /**
+   * hideSnapArea()
+   * @description hide the snap areas
+   */
   hideSnapAreas() {
-    var snapAreas = this.getSnapAreas()
-    for(var key of Object.keys(snapAreas)) {
+    let snapAreas = this.getSnapAreas()
+    for(const key of Object.keys(snapAreas)) {
       snapAreas[key].destroySVG()
     }
   };
@@ -212,13 +239,13 @@ class Snappable extends GameObject {
   }
 
   /**
-    topSnapBehaviour()
+    upSnapBehaviour()
     @description determines what happens when an Snappable snaps to
       the top of another snappable
     @param snappable the Snappable being snapped to
     @param mousePos the current position of the mouse
   */
-  topSnapBehaviour(snappable, mousePos) {
+  upSnapBehaviour(snappable, mousePos) {
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
@@ -232,13 +259,13 @@ class Snappable extends GameObject {
 
 
   /**
-    bottomSnapBehaviour()
+    downSnapBehaviour()
     @description determines what happens when an Snappable snaps to
       the botttom of another snappable
     @param snappable the Snappable being snapped to
     @param mousePos the current position of the mouse
   */
-  bottomSnapBehaviour(snappable, mousePos) {
+  downSnapBehaviour(snappable, mousePos) {
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
@@ -288,13 +315,10 @@ class Snappable extends GameObject {
     } else if(closestSide === "right") {
       this.rightSnapBehaviour(snappable, mousePos)
     } else if(closestSide === "up") {
-      this.topSnapBehaviour(snappable, mousePos)
+      this.upSnapBehaviour(snappable, mousePos)
     } else if(closestSide === "down") {
-      this.bottomSnapBehaviour(snappable, mousePos)
+      this.downSnapBehaviour(snappable, mousePos)
     }
-
-    //console.log(closestSide);
-    //console.log(snappable);
 
     return closestSide;
   };

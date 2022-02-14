@@ -4,6 +4,11 @@
 */
 
 class Player {
+
+  /**
+   * constructor()
+   * @description constructs the Player
+   */
   constructor() {
     var svg = document.querySelector("svg");
     var height = svg.getAttribute("height") - 30;
@@ -52,6 +57,36 @@ class Player {
     this.sellBtn.setText("Sell");
     this.sellBtn.setFill({color: "red"});
     this.sellBtn.setStroke({color: "blue", width: 2})
+
+
+    /**
+     * Test Tanks
+     */
+    let startX = 300;
+    let startY = 100;
+    
+    let testTanks = [
+      new Tank(
+        {x: startX + 100, y: startY}, {width: 40, height: 40}, 5, 
+        true, true, true, true 
+      ),
+      new Tank(
+        {x: startX + 200, y: startY}, {width: 40, height: 40}, 5, 
+        true, false, true, true 
+      ),
+      new Tank(
+        {x: startX + 300, y: startY}, {width: 40, height: 40}, 5, 
+        true, true, false, true 
+      ),
+      new Tank(
+        {x: startX + 400, y: startY}, {width: 40, height: 40}, 5, 
+        true, true, true, false 
+      ),
+      new Tank(
+        {x: startX + 500, y: startY}, {width: 40, height: 40}, 5, 
+        true, false, false, true 
+      )
+    ]
 
 
     // positioned sell tank at center of world.
@@ -104,6 +139,9 @@ class Player {
 
 
 
+    for (const tank of testTanks) {
+      this.world.add(tank)
+    }
     this.world.add(sellTank);
     this.world.add(startPump);
     //this.world.add(testValve)
