@@ -27,7 +27,9 @@ class Tank extends Snappable {
    * @param {Boolean} upOpen indicates whether the up side is opened
    * @param {Boolean} downOpen indicates whether the down side is opened
    */
-  constructor(center, interior, wallWidth, leftOpened=true, rightOpened=true, upOpened=true, downOpened=true) {
+  constructor(
+	  center, interior, wallWidth, 
+	  leftOpened=false, rightOpened=false, upOpened=true, downOpened=false) {
     super(center) 
 
     this._chemicals = [] // the list of chemicals
@@ -39,16 +41,16 @@ class Tank extends Snappable {
     this._downOpened = downOpened;
 
     this.currentLevel = 0;
-		this.maxLevel = interior.width * interior.height;
-		this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
-		this.interior = interior;
-		this.wallWidth = wallWidth;
-		this.position = center;
-		this.orientation = "vertical"
+	this.maxLevel = interior.width * interior.height;
+	this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
+	this.interior = interior;
+	this.wallWidth = wallWidth;
+	this.position = center;
+	this.orientation = "vertical"
 
-		this.wallColor = "green";
-		this.active = false;
-		this.text = "";
+	this.wallColor = "green";
+	this.active = false;
+	this.text = "";
   }
 
 
@@ -109,25 +111,45 @@ class Tank extends Snappable {
 		// setup interior svg
 		this.svg.interiorVertical.attr("height", this.interior.height);
 		this.svg.interiorVertical.attr("width", this.interior.width);
+		this.svg.interiorVertical.attr("x", this.position.x + this.wallWidth);
+
+		this.svg.interiorVertical.style("fill", "blue")
+
+		this.svg.interiorHorizontal.attr("height", this.interior.height);
+		this.svg.interiorHorizontal.attr("width", this.interior.width);
+		this.svg.interiorHorizontal.attr("y", this.position.y + this.wallWidth)
+
+		this.svg.interiorHorizontal.style("fill", "blue")
     
-    this.svg.interiorVertical.style("fill", "blue")
 
 
-    if(this._leftOpened) {
-      this.svg.interiorVertical.attr("x", this.position.x);
-    } else {
-      this.svg.interiorVertical.attr("x", this.position.x + this.wallWidth);
-    }
+		if(this._leftOpened) {
+			this.svg.interiorHorizontal.attr("x", this.position.x);
 
-    if(this._upOpened) {
-		  this.svg.interiorVertical.attr("y", this.position.y);
+			if(this._rightOpened) {
+				this.svg.interiorHorizontal.attr("width", this.interior.width + this.wallWidth*2)
+			}
+		} else {
+			this.svg.interiorHorizontal.attr("x", this.position.x + this.wallWidth);
 
-      if(this._downOpened) {
-        this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth)
-      }
-    } else {
+			if(this._rightOpened) {
+				this.svg.interiorHorizontal.attr("width", this.interior.width + this.wallWidth)
+			}
+		}
 
-    }
+		if(this._upOpened) {
+			this.svg.interiorVertical.attr("y", this.position.y);
+
+			if(this._downOpened) {
+				this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth * 2)
+			}
+		} else {
+			this.svg.interiorVertical.attr("y", this.position.y + this.wallWidth)
+
+			if(this._downOpened) {
+				this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth)
+			}
+		}
 
 
 
@@ -169,7 +191,7 @@ class Tank extends Snappable {
 			left: this.getLeftArea(),
 			right: this.getRightArea(),
 			down: this.getDownArea(),
-      up: this.getUpArea()
+      		up: this.getUpArea()
 		}
 	}
 
@@ -344,12 +366,22 @@ class Tank extends Snappable {
 
 
 
+	/**
+	 * getWidth()
+	 * @description gets the width of the tank
+	 * @returns the width of the tank
+	 */
 	getWidth() {
 		return this.interior.width + this.wallWidth * 2;
 	}
 
+	/**
+	 * getHeight()
+	 * @description gets the height of the tank
+	 * @returns height of the tank
+	 */
 	getHeight() {
-		return this.interior.height + this.wallWidth;
+		return this.interior.height + this.wallWidth * 2;
 	}
 
 
@@ -406,15 +438,15 @@ class Tank extends Snappable {
 	*/
 	upSnapBehaviour(snappable, mousePos) {
 		if(!this._upOpened) {
-      let thisRect = this.getRect()
-      //let otherRect = snappable.getRect()
+			let thisRect = this.getRect()
+			//let otherRect = snappable.getRect()
 
-      this.orientation = "vertical"
-      this.moveRelativeToCenter({
-        y: snappable.center.y - thisRect.height / 2,
-        x: mousePos.x
-      })
-    }
+			this.orientation = "vertical"
+			this.moveRelativeToCenter({
+				y: snappable.center.y - thisRect.height / 2,
+				x: mousePos.x
+			})
+		}
 	}
 
 
@@ -427,14 +459,14 @@ class Tank extends Snappable {
 	*/
 	leftSnapBehaviour(snappable, mousePos) {
 		if(!this._leftOpened) {
-      let thisRect = this.getRect()
-      // match this object with the left edge of
-      // the other object
-      this.moveRelativeToCenter({
-        x: snappable.center.x - thisRect.width / 2,
-        y: mousePos.y
-      })
-    }
+			let thisRect = this.getRect()
+			// match this object with the left edge of
+			// the other object
+			this.moveRelativeToCenter({
+				x: snappable.center.x - thisRect.width / 2,
+				y: mousePos.y
+			})
+		}
 	}
 
 	/**
@@ -445,16 +477,16 @@ class Tank extends Snappable {
 		@param mousePos the current position of the mouse
 	*/
 	rightSnapBehaviour(snappable, mousePos) {
-    if(!this._rightOpened) {
-      let thisRect = this.getRect()
-      let otherRect = snappable.getRect()
-      
-      // match the right edge
-      this.moveRelativeToCenter({
-        x: snappable.center.x + otherRect.width + thisRect.width / 2,
-        y: mousePos.y
-      })
-    }
+		if(!this._rightOpened) {
+			let thisRect = this.getRect()
+			let otherRect = snappable.getRect()
+			
+			// match the right edge
+			this.moveRelativeToCenter({
+				x: snappable.center.x + otherRect.width + thisRect.width / 2,
+				y: mousePos.y
+			})
+		}
 	}
 
 	/**
@@ -465,15 +497,15 @@ class Tank extends Snappable {
 		@param mousePos the current position of the mouse
 	*/
 	downSnapBehaviour(snappable, mousePos) {
-    if(!this._downOpened) {
-      let thisRect = this.getRect()
-      let otherRect = snappable.getRect()
+		if(!this._downOpened) {
+			let thisRect = this.getRect()
+			let otherRect = snappable.getRect()
 
-      this.orientation = "vertical"
-      this.moveRelativeToCenter({
-        y: snappable.center.y + otherRect.height + thisRect.height / 2,
-        x: mousePos.x
-      })
-    }
-  }
+			this.orientation = "vertical"
+			this.moveRelativeToCenter({
+				y: snappable.center.y + otherRect.height + thisRect.height / 2,
+				x: mousePos.x
+			})
+		}
+  	}
 }

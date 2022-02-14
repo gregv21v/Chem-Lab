@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   Chemistry
+  </title>
+
+  <script src="lib/D3/d3.min.js"></script>
+
+  <script src="js/classes/shapes/Circle.js"></script>
+  <script src="js/classes/shapes/Point.js"></script>
+  <script src="js/classes/shapes/Rect.js"></script>
+
+  <!-- Buttons -->
+  <script src="js/classes/gui/buttons/Button.js"></script>
+  <script src="js/classes/gui/buttons/BorderedButton.js"></script>
+  <script src="js/classes/gui/buttons/ItemButton.js"></script>
+
+  <script src="js/classes/gui/Inventory.js"></script>
+  <script src="js/classes/gui/Slot.js"></script>
+  <script src="js/classes/gui/TradeItem.js" charset="utf-8"></script>
+  <script src="js/classes/gui/Store.js" charset="utf-8"></script>
+  <script src="js/classes/gui/ToolTip.js" charset="utf-8"></script>
+  <script src="js/classes/gui/ValueBox.js"></script>
+
+  <script src="js/classes/world_objects/Drop.js"></script>
+  <script src="js/classes/world_objects/GameObject.js"></script>
+  <script src="js/classes/world_objects/Snappable.js"></script>
+  <script src="js/classes/world_objects/Pipe.js"></script>
+  <script src="js/classes/world_objects/Pump.js"></script>
+  <script src="js/classes/world_objects/Valve.js"></script>
+  <script src="js/classes/world_objects/Faucet.js"></script>
+  <script src="js/classes/world_objects/tanks/SellTank.js"></script>
+  <script src="js/classes/world_objects/tanks/Tank.js"></script>
+  <script src="js/classes/Liquid.js"></script>
+  <script src="js/classes/Player.js"></script>
+  <script src="js/classes/World.js"></script>
+  <script src="js/classes/Game.js" charset="utf-8"></script>
+  <!--
+
+		TODO: Pipes to connect the two tanks
+		TODO: Animation of liquid flowing through the pipes
+		TODO: Pump (whenever a pump is clicked it produces a square drop of liquid which moves down from the opening
+					of the pump until it encounters a tank. At that point, it enters the tank, and fills that tank 1 unit.)
+		TODO: Multiple tanks
+		TODO: Pump to pump liquids out of tanks
+		TODO: Prevent text from being selected.
+		TODO: Prevent pipes from overlapping.
+		TODO: Liquid not entering tank.
+	-->
+  <!--
+		Main Idea:
+			A game about creating the most efficient fuel
+
+
+			You have a pump to collect liquid. Every click you get one drop of liquid.
+			Later, you can use your liquid to power an engine that will automatically pump liquid
+	-->
+  <link charset="utf-8" href="css/style.css" media="screen" rel="stylesheet" title="no title"></link>
+   <script src="lib/jquery-1.11.3.min.js"></script>
+   <script charset="utf-8" src="lib/util.js"></script>
+   <!--
+		Tests
+			-Rect.contains
+			-Rect.intersects
+	-->
+   <script type="text/javascript">
+    var game = null;
+
+		$(document).ready(function() {
+      game = new Game();
+		});
+   </script>
+ </head>
+ <body>
+  <svg id="main" height="600" width="1750">
+  </svg>
+ </body>
+</html>

@@ -85,6 +85,10 @@ class Player {
       new Tank(
         {x: startX + 500, y: startY}, {width: 40, height: 40}, 5, 
         true, false, false, true 
+      ),
+      new Tank(
+        {x: startX + 600, y: startY}, {width: 40, height: 40}, 5, 
+        false, false, false, false 
       )
     ]
 
