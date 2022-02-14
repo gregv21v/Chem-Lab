@@ -17,6 +17,7 @@ class Drop {
   	this.id = lastId;
     var mainSVG = d3.select("body").select("svg")
   	this.svg = mainSVG.append("rect");
+    this.direction = "" // the direction that the drop is traveling in
 
     this.tooltip = new ToolTip(
       position,
@@ -103,17 +104,19 @@ class Drop {
     This called every update.
     directions: up, down, left, right
   */
-  flow(pipe, direction) {
-    if(direction === "up") {
+  flow(pipe) {
+    if(this.direction === "up") {
       this.position.y -= 1
     }
-    if(direction === "down") {
+    if(this.direction === "down") {
       this.position.y += 1
     }
-    else if(direction === "left") {
+    
+    if(this.direction === "left") {
       this.position.x -= 1
     }
-    else if(direction === "right") {
+    
+    if(this.direction === "right") {
       this.position.x += 1
     }
     this.updateSVG();
@@ -125,25 +128,25 @@ class Drop {
 
     Behavior: drops flow down and to the right.
   */
-  canFlow(pipe, direction) {
-    if(direction === "up") {
+  canFlow(pipe) {
+    if(this.direction === "up") {
       // make sure the drop is below the pipes upper edge
       if(this.position.y - 1 < pipe.getCenter().y - pipe.getHeight()/2 - this.size) {
         return false;
       }
     }
-    if(direction === "down") {
+    if(this.direction === "down") {
       // make sure the drop is below the pipes lower edge
       if(this.position.y + 1 > pipe.getCenter().y + pipe.getHeight()/2 - this.size) {
         return false;
       }
-    } else if(direction === "left") {
+    } else if(this.direction === "left") {
       // make sure the drop is below the pipes left edge
       if(this.position.x - 1 < pipe.getCenter().x - pipe.getWidth()/2) {
         return false;
       }
     }
-    else if(direction === "right") {
+    else if(this.direction === "right") {
       // make sure the drop is below the pipes right edge
       if(this.position.x + 1 > pipe.getCenter().x + pipe.getWidth()/2 - this.size) {
         return false;

@@ -261,7 +261,8 @@ class Tank extends Snappable {
 
 						// create the drop in the world and add it to the respective pipe
 						drop.createSVG();
-						pipe.addDrop(drop, side);
+						drop.direction = side;
+						pipe.addDrop(drop);
 
 					}
 				}
