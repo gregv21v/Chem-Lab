@@ -131,6 +131,11 @@ class Tank extends Snappable {
 	bottomSnapBehaviour(snappable, mousePos) {}
 
 
+	/**
+	 * getSnapAreas() 
+	 * @description gets the snap areas for the tank
+	 * @returns snap areas for the tank
+	 */
 	getSnapAreas() {
 		return {
 			left: this.getLeftArea(),
@@ -139,6 +144,10 @@ class Tank extends Snappable {
 		}
 	}
 
+	/**
+	 * updateSVG()
+	 * @description renders the svg for the tan
+	 */
 	updateSVG() {
 		//this.position.x = this.center.x - this.getWidth()/2;
 		//this.position.y = this.center.y - this.getHeight()/2;
@@ -181,6 +190,10 @@ class Tank extends Snappable {
 		this.svg.label.attr("y", this.position.y + this.getHeight()/2);
 	}
 
+	/**
+	 * updateLiquidSVG() 
+	 * @description updates the svg for the liquid in the tank
+	 */
 	updateLiquidSVG() {
 		this.svg.liquid.attr("height", this.getLiquidHeight());
 		this.svg.liquid.attr("y", this.getLiquidY());
@@ -192,6 +205,10 @@ class Tank extends Snappable {
 		this.svg.label.text(this.text);
 	};
 
+	/**
+	 * destroySVG()
+	 * @description removes the svgs for the tank
+	 */
 	destroySVG() {
 		this.svg.walls.remove();
 		this.svg.interior.remove();
@@ -244,7 +261,8 @@ class Tank extends Snappable {
 
 						// create the drop in the world and add it to the respective pipe
 						drop.createSVG();
-						pipe.addDrop(drop, side);
+						drop.direction = side;
+						pipe.addDrop(drop);
 
 					}
 				}

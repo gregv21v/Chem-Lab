@@ -24,9 +24,6 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 
 
 <strong> TODO:</strong>
-- Snap Pipes to the edge of tanks
-  - there are some issues with the snapping mechanics
-    pipes snap to tanks, but the reverse is sometimes messed up
 - Snap valves to the edge of tanks
 - Create the liquid distributor pipe
 - Create the liquid sorter pipe 
@@ -40,6 +37,8 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Display a miniturized graphic of the actual world object on the icons
   for an each item (extra)
 - Display opening in tank when pipes are attached. (extra)
+- Create gases
+- Create a home screen 
 
 
 

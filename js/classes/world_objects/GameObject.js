@@ -38,6 +38,23 @@ class GameObject {
     this.snapping = false;
   }
 
+
+  /**
+   * create()
+   * @description creates the GameObject
+   */
+  create() {
+
+  }
+
+  /**
+   * update() 
+   * @description updates the GameObject every game tick
+   */
+  update() {
+
+  }
+
   updateTooltip() {
     this.tooltip.position = this.position;
   };

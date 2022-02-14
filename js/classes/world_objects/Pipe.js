@@ -23,47 +23,42 @@ class Pipe extends Snappable {
 
   }
 
-  addDrop (drop, direction) {
-  	this.drops.push({
-  		drop: drop,
-  		direction: direction
-  	})
+  /**
+   * @description adds a drop to the pipe
+   * @param {Drop} drop the drop to add
+   */
+  addDrop (drop) {
+  	this.drops.push(drop)
   };
 
-  /*
-  	Adds back a drop that was retrieved from
-  	the spout.
+  /**
+  	takeExitingDrops()
+  	@description takes the exiting drops from the pipe
   */
-  addDropBack (drop) {
-  	this.drops.push(drop);
-  };
-
-  /*
-  	Here is where the liquid comes out of the Pipe
-  	and can be collected by another tank or something else.
-  */
-  spout() {
+  takeExitingDrops(side) {
   	// search for available drops
-  	var leakingDrops = []; // drops at their exit.
-  	var keptDrops = [];
-  	for(var drop of this.drops) {
+  	var exitingDrops = []; // drops at their exit.
+  	var keptDrops = []; // drops that are not about to exit
+  	for(const drop of this.drops) {
+		//debugger
+		console.log(drop);
   		// if a drop can no longer flow in the direction it was
   		// flowing, give it is at its spout, and ready to leak.
-  		if(!drop.drop.canFlow(this, drop.direction)) {
-  			leakingDrops.push(drop);
+  		if(!drop.canFlow(this) && side === drop.direction) {
+  			exitingDrops.push(drop);
   		} else {
   			keptDrops.push(drop);
   		}
   	}
   	this.drops = keptDrops;
-  	return leakingDrops;
+  	return exitingDrops;
   };
 
 
   updateDrops () {
   	for(var x in this.drops) {
-  		if(this.drops[x].drop.canFlow(this, this.drops[x].direction)) {
-  			this.drops[x].drop.flow(this, this.drops[x].direction);
+  		if(this.drops[x].canFlow(this)) {
+  			this.drops[x].flow(this);
   		}
   	}
   };
@@ -180,18 +175,15 @@ class Pipe extends Snappable {
     @description transfers liquid to connected tanks
   */
   transferLiquid() {
-    for(var side of Object.keys(this.attachments)) {
-			for(var tank of this.attachments[side]) {
-        if(tank instanceof Tank) {
-          var drops = this.spout();
-          for(var drop of drops) {
-            if(tank.addDrop(drop.drop)) {
-              this.addDropBack(drop)
-            } else {
-              drop.drop.destroySVG();
-              tank.updateLiquidSVG();
-            }
-          }
+    for(const side of Object.keys(this.attachments)) {
+		for(const tank of this.attachments[side]) { // for each tank attached to this pipe
+			if(tank instanceof Tank) {
+				let exitingDrops = this.takeExitingDrops(side); // take the exiting drops
+				for(var drop of exitingDrops) {
+					tank.addDrop(drop);
+					drop.destroySVG()
+					tank.updateLiquidSVG()
+				}
         }
       }
     }
