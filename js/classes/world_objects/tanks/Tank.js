@@ -54,7 +54,7 @@ class Tank extends Snappable {
   }
 
 
-  /**
+  	/**
 	 * getLiquidHeight()
 	 * @description gets the height of the liquid in the tank
 	 * @returns the liquid's height in the tank
@@ -69,27 +69,27 @@ class Tank extends Snappable {
 	 * @returns the liquid's y position
 	 */
 	getLiquidY() {
-		return this.position.y + this.interior.height - this.getLiquidHeight();
+		return this.position.y + this.interior.height - this.getLiquidHeight() + this.wallWidth;
 	};
 
-  /**
-   * create()
-   * @description creates the Tank
-   */
-  createSVG() {
-    let mainSVG = d3.select("body").select("svg")
-		this.svg = {
-			walls: mainSVG.append("rect"),
-			interiorVertical: mainSVG.append("rect"),
-      interiorHorizontal: mainSVG.append("rect"),
-			liquid: mainSVG.append("rect"),
-			label: mainSVG.append("text")
-		};
+	/**
+	 * create()
+	 * @description creates the Tank
+	 */
+	createSVG() {
+		let mainSVG = d3.select("body").select("svg")
+			this.svg = {
+				walls: mainSVG.append("rect"),
+				interiorVertical: mainSVG.append("rect"),
+		interiorHorizontal: mainSVG.append("rect"),
+				liquid: mainSVG.append("rect"),
+				label: mainSVG.append("text")
+			};
 
-    this.updateSVG()
-  }
+		this.updateSVG()
+	}
 
-  /**
+  	/**
 	 * updateSVG()
 	 * @description renders the svg for the tan
 	 */
@@ -151,8 +151,6 @@ class Tank extends Snappable {
 			}
 		}
 
-
-
 		// setup liquid svg
 		this.svg.liquid.attr("width", this.interior.width);
 		this.svg.liquid.attr("height", this.getLiquidHeight());
@@ -166,7 +164,7 @@ class Tank extends Snappable {
 		this.svg.label.attr("y", this.position.y + this.getHeight()/2);
 	}
 
-  /**
+  	/**
 	 * updateLiquidSVG() 
 	 * @description updates the svg for the liquid in the tank
 	 */
@@ -181,7 +179,7 @@ class Tank extends Snappable {
 		this.svg.label.text(this.text);
 	};
 
-  /**
+  	/**
 	 * getSnapAreas() 
 	 * @description gets the snap areas for the tank
 	 * @returns snap areas for the tank
@@ -195,7 +193,7 @@ class Tank extends Snappable {
 		}
 	}
 
-  /**
+  	/**
 	 * destroySVG()
 	 * @description removes the svgs for the tank
 	 */
@@ -205,10 +203,10 @@ class Tank extends Snappable {
 		this.svg.liquid.remove();
 	}
 
-  /**
-		transferLiquid()
-		@description transfers liquid from the tank to its connecting pipes
-	*/
+  	/**
+	 *	transferLiquid()
+	 *	@description transfers liquid from the tank to its connecting pipes
+	 */
 	transferLiquid() {
 		for(const side of Object.keys(this.attachments)) {
 			for(const pipe of this.attachments[side]) {
@@ -354,7 +352,7 @@ class Tank extends Snappable {
 							 	drop.position.y + drop.size <= this.position.y + this.interior.height
 							)
 		return touchingLiquid || withNoLiquid;
-	};
+	}
 
 
 	/*
@@ -362,9 +360,7 @@ class Tank extends Snappable {
 	*/
 	getName() {
 		return "Tank";
-	};
-
-
+	}
 
 	/**
 	 * getWidth()
@@ -384,8 +380,6 @@ class Tank extends Snappable {
 		return this.interior.height + this.wallWidth * 2;
 	}
 
-
-
 	/*
 		Get the liquid in the tank.
 	*/
@@ -396,12 +390,12 @@ class Tank extends Snappable {
 		}
 	}
 
-  /**
-   * getDrop()
-   * @description gets a drop from the tank of size size
-   * @param {number} size the size of the drop
-   * @returns a new drop of size size 
-   */
+  	/**
+	 * getDrop()
+	 * @description gets a drop from the tank of size size
+	 * @param {number} size the size of the drop
+	 * @returns a new drop of size size 
+	 */
 	getDrop (size) {
 		if(size * size <= this.currentLevel) {
 			this.currentLevel -= size * size;
@@ -414,12 +408,13 @@ class Tank extends Snappable {
 			return drop;
 		} else
 			return null;
-	};
+	}
 
 
-	/*
-		Empties the tank of all its liquid
-	*/
+	/**
+	 *	empty()
+	 *	@description Empties the tank of all its liquid
+	 */
 	empty () {
 		this.currentLevel = 0;
 		this.liquid = null;
