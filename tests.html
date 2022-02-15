@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   Chemistry
+  </title>
+
+  <script src="lib/D3/d3.min.js"></script>
+
+  <script src="js/classes/shapes/Circle.js"></script>
+  <script src="js/classes/shapes/Point.js"></script>
+  <script src="js/classes/shapes/Rect.js"></script>
+
+  <!-- Buttons -->
+  <script src="js/classes/gui/buttons/Button.js"></script>
+  <script src="js/classes/gui/buttons/BorderedButton.js"></script>
+  <script src="js/classes/gui/buttons/ItemButton.js"></script>
+
+  <script src="js/classes/gui/Inventory.js"></script>
+  <script src="js/classes/gui/Slot.js"></script>
+  <script src="js/classes/gui/TradeItem.js" charset="utf-8"></script>
+  <script src="js/classes/gui/Store.js" charset="utf-8"></script>
+  <script src="js/classes/gui/ToolTip.js" charset="utf-8"></script>
+  <script src="js/classes/gui/ValueBox.js"></script>
+
+  <script src="js/classes/world_objects/Drop.js"></script>
+  <script src="js/classes/world_objects/GameObject.js"></script>
+  <script src="js/classes/world_objects/Snappable.js"></script>
+  <script src="js/classes/world_objects/Pipe.js"></script>
+  <script src="js/classes/world_objects/Pump.js"></script>
+  <script src="js/classes/world_objects/Valve.js"></script>
+  <script src="js/classes/world_objects/Faucet.js"></script>
+  <script src="js/classes/world_objects/tanks/SellTank.js"></script>
+  <script src="js/classes/world_objects/tanks/Tank.js"></script>
+  <script src="js/classes/world_objects/tanks/SidedTank.js"></script>
+  <script src="js/classes/Liquid.js"></script>
+  <script src="js/classes/TestPlayer.js"></script>
+  <script src="js/classes/World.js"></script>
+  <script src="js/classes/TestGame.js" charset="utf-8"></script>
+
+  <link charset="utf-8" href="css/style.css" media="screen" rel="stylesheet" title="no title"></link>
+   <script src="lib/jquery-1.11.3.min.js"></script>
+   <script charset="utf-8" src="lib/util.js"></script>
+   <!--
+		Tests
+			-Rect.contains
+			-Rect.intersects
+	-->
+   <script type="text/javascript">
+        var game = null;
+
+        $(document).ready(function() {
+            game = new TestGame();
+        });
+   </script>
+ </head>
+ <body>
+  <svg id="main" height="600" width="1750">
+  </svg>
+ </body>
+</html>
