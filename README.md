@@ -28,26 +28,29 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 
 
 <strong> TODO:</strong>
-- Snap valves to the edge of tanks
+- Sided Tanks
+  - Make it so that liquids can only enter sided tanks 
+      through an open side.
 - Create the liquid distributor pipe
 - Create the liquid sorter pipe 
 - Create a class for the sell tank (extra)
-- Create the store interface (priority)
-* Design the store interface
+- Create the shop interface (priority)
+* Design the shop interface
 - Connect pipes together
 - Overflow mechanic: tanks spill drops over the edges
   when they have been filled too much. (extra)
-- Create snappable class that allows you to create generic snappable objects (extra)
 - Display a miniturized graphic of the actual world object on the icons
   for an each item (extra)
 - Display opening in tank when pipes are attached. (extra)
-- Create gases
+- Create a list of chemicals of various densities
 - Create a home screen 
 - Add the ability to move tanks
 - Add the ability to buy and sell tanks
-- Convert to Raster Graphics for faster performance
+- Comment all the code.
+- Increase Performance
+- Big Changes
+  - Convert to Raster Graphics for faster performance
+  - Use webpack
+- Create a test page
 
 
-
-<strong>Where did I leave off?</strong>
-Last time I was working on chemistry lab. I was working on reorganizing the structure of the classes.
