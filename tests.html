@@ -32,30 +32,12 @@
   <script src="js/classes/world_objects/Faucet.js"></script>
   <script src="js/classes/world_objects/tanks/SellTank.js"></script>
   <script src="js/classes/world_objects/tanks/Tank.js"></script>
+  <script src="js/classes/world_objects/tanks/SidedTank.js"></script>
   <script src="js/classes/Liquid.js"></script>
-  <script src="js/classes/Player.js"></script>
+  <script src="js/classes/TestPlayer.js"></script>
   <script src="js/classes/World.js"></script>
-  <script src="js/classes/Game.js" charset="utf-8"></script>
-  <!--
-
-		TODO: Pipes to connect the two tanks
-		TODO: Animation of liquid flowing through the pipes
-		TODO: Pump (whenever a pump is clicked it produces a square drop of liquid which moves down from the opening
-					of the pump until it encounters a tank. At that point, it enters the tank, and fills that tank 1 unit.)
-		TODO: Multiple tanks
-		TODO: Pump to pump liquids out of tanks
-		TODO: Prevent text from being selected.
-		TODO: Prevent pipes from overlapping.
-		TODO: Liquid not entering tank.
-	-->
-  <!--
-		Main Idea:
-			A game about creating the most efficient fuel
-
-
-			You have a pump to collect liquid. Every click you get one drop of liquid.
-			Later, you can use your liquid to power an engine that will automatically pump liquid
-	-->
+  <script src="js/classes/TestGame.js" charset="utf-8"></script>
+   
   <link charset="utf-8" href="css/style.css" media="screen" rel="stylesheet" title="no title"></link>
    <script src="lib/jquery-1.11.3.min.js"></script>
    <script charset="utf-8" src="lib/util.js"></script>
@@ -65,11 +47,11 @@
 			-Rect.intersects
 	-->
    <script type="text/javascript">
-    var game = null;
+        var game = null;
 
-		$(document).ready(function() {
-      game = new Game();
-		});
+        $(document).ready(function() {
+            game = new TestGame();
+        });
    </script>
  </head>
  <body>

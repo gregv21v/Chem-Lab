@@ -4,10 +4,4 @@ describe('Shape Tests', function() {
     expect(testCircle.contains(0, 0)).toEqual(true)
   })
 
-
-
-
-
-
-
 });
