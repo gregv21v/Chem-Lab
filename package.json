@@ -1,0 +1,41 @@
+{
+  "name": "chem-lab",
+  "version": "0.0.1",
+  "description": "a fun game that about mixing chemicals that has an educational component",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "predev": "webpack",
+    "dev": "webpack serve --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregv21v/Chem-Lab.git"
+  },
+  "keywords": [
+    "Chemisty",
+    "Lab",
+    "Game"
+  ],
+  "author": "Gregory Venezia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gregv21v/Chem-Lab/issues"
+  },
+  "homepage": "https://github.com/gregv21v/Chem-Lab#readme",
+  "devDependencies": {
+    "css-loader": "^6.5.1",
+    "handlebars-loader": "^1.7.1",
+    "html-loader": "^3.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "webpack-dev-server": "^4.7.2",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "d3": "^7.3.0"
+  }
+}
