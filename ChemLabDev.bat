@@ -1,2 +1,0 @@
-start index.html
-atom .
