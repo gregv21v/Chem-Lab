@@ -8,5 +8,4 @@ class Slot extends ItemButton {
       this.empty = false;
       this.index = 0;
   }
-
 }

@@ -33,7 +33,7 @@ class Inventory {
 		document.addEventListener('keypress', function(evnt) {
 			// add the item back into the inventory if the escape key is pressed
 			// esc = 27
-			if(evnt.keyCode == 27) {
+			if(evnt.key == "Esc") { // not currently working
 				self.add(self.player.hand);
 				self.player.hand = null;
 			}

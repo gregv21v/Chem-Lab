@@ -13,4 +13,13 @@ class TopTank extends Tank {
 	constructor(center, interior, wallWidth) {
 		super(center, interior, wallWidth)
 	}
+
+
+	/**
+	 * getName()
+	 * @description gets the name of the tank
+	 */
+	getName() {
+		return "Top Tank"
+	}
 }
