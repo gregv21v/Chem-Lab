@@ -8,7 +8,8 @@
   },
   "scripts": {
     "predev": "webpack",
-    "dev": "webpack serve --config webpack.config.js"
+    "dev": "webpack serve --config webpack.config.js",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -31,11 +32,12 @@
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
-    "webpack-dev-server": "^4.7.2",
     "webpack": "^5.69.1",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.2"
   },
   "dependencies": {
-    "d3": "^7.3.0"
+    "d3": "^7.3.0",
+    "gh-pages": "^3.2.3"
   }
 }
