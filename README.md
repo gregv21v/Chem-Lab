@@ -35,7 +35,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Create the liquid sorter pipe 
 - Create a class for the sell tank (extra)
 - Create the shop interface (priority)
-* Design the shop interface
+- Design the shop interface
 - Connect pipes together
 - Overflow mechanic: tanks spill drops over the edges
   when they have been filled too much. (extra)
@@ -50,7 +50,6 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Increase Performance
 - Big Changes
   - Convert to Raster Graphics for faster performance
-  - Use webpack
 - Create a test page
 
 

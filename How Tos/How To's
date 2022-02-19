@@ -1,8 +1,7 @@
-How to create a new type of game object?
+How to create a new GameObject?
 
   1) Create a new game object that inherits from the
-    GameObject class as shown in some of the other
-    classes that inherit from GameObject.
+    GameObject
   2) Override the createSVG() function to design
    your own visuals for the class
   3) Create your own tooltip for the class by setting

@@ -10,13 +10,53 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/templates/CreativeModeScreen.html":
+/*!***********************************************!*\
+  !*** ./src/templates/CreativeModeScreen.html ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<svg id=\\\"main\\\" height=\\\"600\\\" width=\\\"1750\\\"></svg>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://chem-lab/./src/templates/CreativeModeScreen.html?");
+
+/***/ }),
+
+/***/ "./src/templates/LoadingScreen.html":
+/*!******************************************!*\
+  !*** ./src/templates/LoadingScreen.html ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<div>\\r\\n    <h3>Choose your game mode:</h3>\\r\\n    <p><strong>Creative Mode:</strong> In creative mode you can do anything.</p>\\r\\n    <p><strong>Normal Mode: </strong>In normal mode you have to sell liquids in order to buy new items</p>\\r\\n    <p><strong>Test Mode: </strong> Used for testing the game.</p>\\r\\n    <button type=\\\"button\\\" name=\\\"normal\\\" onclick=\\\"normalMode()\\\">Normal</button>\\r\\n    <button type=\\\"button\\\" name=\\\"creative\\\" onclick=\\\"creativeMode()\\\">Creative</button>\\r\\n    <button type=\\\"button\\\" name=\\\"test\\\" onclick=\\\"testMode()\\\">Test</button>\\r\\n</div>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://chem-lab/./src/templates/LoadingScreen.html?");
+
+/***/ }),
+
+/***/ "./src/templates/NormalModeScreen.html":
+/*!*********************************************!*\
+  !*** ./src/templates/NormalModeScreen.html ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<svg id=\\\"main\\\" height=\\\"600\\\" width=\\\"1750\\\"></svg>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://chem-lab/./src/templates/NormalModeScreen.html?");
+
+/***/ }),
+
+/***/ "./src/templates/TestModeScreen.html":
+/*!*******************************************!*\
+  !*** ./src/templates/TestModeScreen.html ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<svg id=\\\"main\\\" height=\\\"600\\\" width=\\\"1750\\\"></svg>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://chem-lab/./src/templates/TestModeScreen.html?");
+
+/***/ }),
+
 /***/ "./src/Game.js":
 /*!*********************!*\
   !*** ./src/Game.js ***!
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ Game)\n/* harmony export */ });\n/* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Player */ \"./src/Player.js\");\n/* harmony import */ var _gui_Shop__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./gui/Shop */ \"./src/gui/Shop.js\");\n/* harmony import */ var _gui_TradeItem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./gui/TradeItem */ \"./src/gui/TradeItem.js\");\n/* harmony import */ var _gui_buttons_BorderedButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./gui/buttons/BorderedButton */ \"./src/gui/buttons/BorderedButton.js\");\n/*\r\n  Game - This is where the game starts\r\n*/\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nclass Game {\r\n  constructor() {\r\n    this.player = new _Player__WEBPACK_IMPORTED_MODULE_0__[\"default\"](); // contains inventory\r\n\r\n    //this.world = new World(this.player);\r\n    this.shop = new _gui_Shop__WEBPACK_IMPORTED_MODULE_1__[\"default\"]();\r\n\r\n\r\n    var testTradeItem = new _gui_TradeItem__WEBPACK_IMPORTED_MODULE_2__[\"default\"](\r\n      {x: 30, y: 30},\r\n      50, 50, \"Player\", 100, 50);\r\n\r\n    var testBtn = new _gui_buttons_BorderedButton__WEBPACK_IMPORTED_MODULE_3__[\"default\"](\r\n      {x: 100, y: 100},\r\n      50, 50, 2\r\n    )\r\n\r\n    //testBtn.createSVG();\r\n\r\n    this.player.createSVG();\r\n    this.player.update();\r\n\r\n    //testTradeItem.createSVG();\r\n    //this.gui = new GUI();\r\n\r\n\r\n    // setup the player\r\n\r\n\r\n    // setup the world\r\n\r\n\r\n    // setup the store\r\n\r\n\r\n\r\n    // setup the gui\r\n  }\r\n}\r\n\n\n//# sourceURL=webpack://chem-lab/./src/Game.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ Game)\n/* harmony export */ });\n/* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Player */ \"./src/Player.js\");\n/* harmony import */ var _gui_Shop__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./gui/Shop */ \"./src/gui/Shop.js\");\n/* harmony import */ var _gui_TradeItem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./gui/TradeItem */ \"./src/gui/TradeItem.js\");\n/* harmony import */ var _gui_buttons_BorderedButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./gui/buttons/BorderedButton */ \"./src/gui/buttons/BorderedButton.js\");\n/*\r\n  Game - This is where the game starts\r\n*/\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nclass Game {\r\n\r\n  /**\r\n   * constructor()\r\n   * @description constructs the game \r\n   * @param {Integer} mode the mode of the game\r\n   *  modes \r\n   *    0 => Test\r\n   *    1 => Creative\r\n   *    2 => Normal   \r\n   */\r\n  constructor(mode=0) {\r\n    this._mode = mode;\r\n\r\n    this._player = new _Player__WEBPACK_IMPORTED_MODULE_0__[\"default\"](); // contains inventory\r\n\r\n    //this.world = new World(this._player);\r\n    this._shop = new _gui_Shop__WEBPACK_IMPORTED_MODULE_1__[\"default\"]();\r\n\r\n\r\n    this._testTradeItem = new _gui_TradeItem__WEBPACK_IMPORTED_MODULE_2__[\"default\"](\r\n      {x: 30, y: 30},\r\n      50, 50, \"Player\", 100, 50);\r\n\r\n    this._testBtn = new _gui_buttons_BorderedButton__WEBPACK_IMPORTED_MODULE_3__[\"default\"](\r\n      {x: 100, y: 100},\r\n      50, 50, 2\r\n    )\r\n\r\n \r\n    //this.gui = new GUI();\r\n\r\n\r\n    // setup the player\r\n\r\n\r\n    // setup the world\r\n\r\n\r\n    // setup the shop\r\n\r\n\r\n\r\n    // setup the gui\r\n  }\r\n\r\n\r\n  /**\r\n   * render() \r\n   * @description renders the game \r\n   */\r\n  render() {\r\n    this._player.createSVG();\r\n    this._player.update()\r\n\r\n    this._testBtn.createSVG();\r\n    this._testTradeItem.createSVG();\r\n  }\r\n}\r\n\n\n//# sourceURL=webpack://chem-lab/./src/Game.js?");
 
 /***/ }),
 
@@ -146,7 +186,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Game */ \"./src/Game.js\");\n\r\n\r\nlet game = new _Game__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\n\n//# sourceURL=webpack://chem-lab/./src/main.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Game */ \"./src/Game.js\");\n/* harmony import */ var _templates_LoadingScreen_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates/LoadingScreen.html */ \"./src/templates/LoadingScreen.html\");\n/* harmony import */ var _templates_TestModeScreen_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./templates/TestModeScreen.html */ \"./src/templates/TestModeScreen.html\");\n/* harmony import */ var _templates_CreativeModeScreen_html__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./templates/CreativeModeScreen.html */ \"./src/templates/CreativeModeScreen.html\");\n/* harmony import */ var _templates_NormalModeScreen_html__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./templates/NormalModeScreen.html */ \"./src/templates/NormalModeScreen.html\");\n\r\n\r\n\r\n\r\n\r\n\r\nlet app = d3.select(\"#app\")\r\nlet loadingScreen = app.html(_templates_LoadingScreen_html__WEBPACK_IMPORTED_MODULE_1__[\"default\"]);\r\nlet game = null;\r\n\r\nloadingScreen.select(\"[name='test']\").on(\"click\", () => {\r\n    game = new _Game__WEBPACK_IMPORTED_MODULE_0__[\"default\"](0);\r\n    app.html(_templates_TestModeScreen_html__WEBPACK_IMPORTED_MODULE_2__[\"default\"])\r\n    game.render()\r\n\r\n})\r\n\r\nloadingScreen.select(\"[name='creative']\").on(\"click\", () => {\r\n    game = new _Game__WEBPACK_IMPORTED_MODULE_0__[\"default\"](1);\r\n    app.html(_templates_CreativeModeScreen_html__WEBPACK_IMPORTED_MODULE_3__[\"default\"])\r\n    game.render()\r\n})\r\n\r\nloadingScreen.select(\"[name='normal']\").on(\"click\", () => {\r\n    game = new _Game__WEBPACK_IMPORTED_MODULE_0__[\"default\"](2);\r\n    app.html(_templates_NormalModeScreen_html__WEBPACK_IMPORTED_MODULE_4__[\"default\"])\r\n    game.render()\r\n})\r\n\r\n\r\n\r\n\n\n//# sourceURL=webpack://chem-lab/./src/main.js?");
 
 /***/ }),
 
