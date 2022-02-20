@@ -31,7 +31,7 @@ export default class Pump extends GameObject {
 		super(position)
 
 		this.production = production;
-		this.position = position;
+		this._position = position;
 
 		let mainSVG = d3.select("body").select("svg")
 		this.svg = {
@@ -40,7 +40,7 @@ export default class Pump extends GameObject {
 		}
 
 		this.tooltip = new ToolTip(
-	    this.position,
+	    this._position,
 	    "Click to produce liquid");
 
 
@@ -59,8 +59,8 @@ export default class Pump extends GameObject {
 		//this.tooltip.createSVG();
 
 		this.svg.button.attr("r", this.production * 2);
-		this.svg.button.attr("cx", this.position.x);
-		this.svg.button.attr("cy", this.position.y);
+		this.svg.button.attr("cx", this._position.x);
+		this.svg.button.attr("cy", this._position.y);
 		this.svg.button.style("fill", "red")
 			.on("mouseenter", function() {
 				self.tooltip.show();
@@ -71,8 +71,8 @@ export default class Pump extends GameObject {
 
 		this.svg.spout.attr("width", this.production);
 		this.svg.spout.attr("height", this.production * 2);
-		this.svg.spout.attr("x", this.position.x - this.production/2);
-		this.svg.spout.attr("y", this.position.y + this.production);
+		this.svg.spout.attr("x", this._position.x - this.production/2);
+		this.svg.spout.attr("y", this._position.y + this.production);
 	}
 
 
@@ -89,8 +89,8 @@ export default class Pump extends GameObject {
 
 
 
-		var drop = new Drop(
-				{x: this.position.x - this.production/2, y: this.position.y + this.production * 3},
+		let drop = new Drop(
+				{x: this._position.x - this.production/2, y: this._position.y + this.production * 3},
 				this.production,
 				possibleLiquids[getRandomInt(0, possibleLiquids.length)]
 		  )
@@ -99,7 +99,7 @@ export default class Pump extends GameObject {
 	};
 
 	updateTooltip() {
-	  this.tooltip.position = this.position;
+	  this.tooltip.position = this._position;
 	}
 
 	getWidth() {

@@ -23,42 +23,43 @@ import Liquid from "../../Liquid";
 
 export default class Tank extends Snappable {
 
-  /**
-   * constructor()
-   * @description constructs the sided tank
-   * @param {Point} center the center of the tank
-   * @param {Object (width, height)} interior the interior width and height of the tank
+	/**
+	 * constructor()
+	 * @description constructs the sided tank
+	 * @param {Point} center the center of the tank
+	 * @param {Object (width, height)} interior the interior width and height of the tank
 	 * @param {Number} wallWidth the width of the walls of the tank
-   * @param {Boolean} leftOpen indicates whether the left side is opened
-   * @param {Boolean} rightOpen indicates whether the right side is opened
-   * @param {Boolean} upOpen indicates whether the up side is opened
-   * @param {Boolean} downOpen indicates whether the down side is opened
-   */
-  constructor(
-	  center, interior, wallWidth, 
-	  leftOpened=false, rightOpened=false, upOpened=true, downOpened=false) {
-    super(center) 
+	 * @param {Boolean} leftOpen indicates whether the left side is opened
+	 * @param {Boolean} rightOpen indicates whether the right side is opened
+	 * @param {Boolean} upOpen indicates whether the up side is opened
+	 * @param {Boolean} downOpen indicates whether the down side is opened
+	 */
+	constructor(
+		center, interior, wallWidth, 
+		leftOpened=false, rightOpened=false, upOpened=true, downOpened=false
+	) {
+		super(center) 
 
-    this._chemicals = [] // the list of chemicals
+		this._chemicals = [] // the list of chemicals
 
-    // the open and closes sides
-    this._leftOpened = leftOpened;
-    this._rightOpened = rightOpened;
-    this._upOpened = upOpened;
-    this._downOpened = downOpened;
+		// the open and closes sides
+		this._leftOpened = leftOpened;
+		this._rightOpened = rightOpened;
+		this._upOpened = upOpened;
+		this._downOpened = downOpened;
 
-    this.currentLevel = 0;
-	this.maxLevel = interior.width * interior.height;
-	this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
-	this.interior = interior;
-	this.wallWidth = wallWidth;
-	this.position = center;
-	this.orientation = "vertical"
+		this.currentLevel = 0;
+		this.maxLevel = interior.width * interior.height;
+		this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
+		this.interior = interior;
+		this.wallWidth = wallWidth;
+		this._position = center;
+		this.orientation = "vertical"
 
-	this.wallColor = "green";
-	this.active = false;
-	this.text = "";
-  }
+		this.wallColor = "green";
+		this.active = false;
+		this.text = "";
+	}
 
 
   	/**
@@ -76,7 +77,7 @@ export default class Tank extends Snappable {
 	 * @returns the liquid's y position
 	 */
 	getLiquidY() {
-		return this.position.y + this.interior.height - this.getLiquidHeight() + this.wallWidth;
+		return this._position.y + this.interior.height - this.getLiquidHeight() + this.wallWidth;
 	};
 
 	/**
@@ -101,40 +102,38 @@ export default class Tank extends Snappable {
 	 * @description renders the svg for the tan
 	 */
 	updateSVG() {
-		//this.position.x = this.center.x - this.getWidth()/2;
-		//this.position.y = this.center.y - this.getHeight()/2;
-		this.tooltip.createSVG();
+		//this._position.x = this.center.x - this.getWidth()/2;
+		//this._position.y = this.center.y - this.getHeight()/2;
+		//this.tooltip.createSVG();
 
 		// setup walls svg
 		this.svg.walls.attr("height", this.getHeight());
 		this.svg.walls.attr("width", this.getWidth());
-		this.svg.walls.attr("x", this.position.x);
-		this.svg.walls.attr("y", this.position.y);
+		this.svg.walls.attr("x", this._position.x);
+		this.svg.walls.attr("y", this._position.y);
 		this.svg.walls.style("fill", this.wallColor);
 
 		// setup interior svg
 		this.svg.interiorVertical.attr("height", this.interior.height);
 		this.svg.interiorVertical.attr("width", this.interior.width);
-		this.svg.interiorVertical.attr("x", this.position.x + this.wallWidth);
+		this.svg.interiorVertical.attr("x", this._position.x + this.wallWidth);
 
 		this.svg.interiorVertical.style("fill", "white")
 
 		this.svg.interiorHorizontal.attr("height", this.interior.height);
 		this.svg.interiorHorizontal.attr("width", this.interior.width);
-		this.svg.interiorHorizontal.attr("y", this.position.y + this.wallWidth)
+		this.svg.interiorHorizontal.attr("y", this._position.y + this.wallWidth)
 
 		this.svg.interiorHorizontal.style("fill", "white")
     
-
-
 		if(this._leftOpened) {
-			this.svg.interiorHorizontal.attr("x", this.position.x);
+			this.svg.interiorHorizontal.attr("x", this._position.x);
 
 			if(this._rightOpened) {
 				this.svg.interiorHorizontal.attr("width", this.interior.width + this.wallWidth*2)
 			}
 		} else {
-			this.svg.interiorHorizontal.attr("x", this.position.x + this.wallWidth);
+			this.svg.interiorHorizontal.attr("x", this._position.x + this.wallWidth);
 
 			if(this._rightOpened) {
 				this.svg.interiorHorizontal.attr("width", this.interior.width + this.wallWidth)
@@ -142,13 +141,13 @@ export default class Tank extends Snappable {
 		}
 
 		if(this._upOpened) {
-			this.svg.interiorVertical.attr("y", this.position.y);
+			this.svg.interiorVertical.attr("y", this._position.y);
 
 			if(this._downOpened) {
 				this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth * 2)
 			}
 		} else {
-			this.svg.interiorVertical.attr("y", this.position.y + this.wallWidth)
+			this.svg.interiorVertical.attr("y", this._position.y + this.wallWidth)
 
 			if(this._downOpened) {
 				this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth)
@@ -158,14 +157,14 @@ export default class Tank extends Snappable {
 		// setup liquid svg
 		this.svg.liquid.attr("width", this.interior.width);
 		this.svg.liquid.attr("height", this.getLiquidHeight());
-		this.svg.liquid.attr("x", this.position.x + this.wallWidth);
+		this.svg.liquid.attr("x", this._position.x + this.wallWidth);
 		this.svg.liquid.attr("y", this.getLiquidY());
 		this.svg.liquid.style("fill", this.liquid.fill());
 
 		// setup label svg
 		this.svg.label.attr("fill", "black");
-		this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-		this.svg.label.attr("y", this.position.y + this.getHeight()/2);
+		this.svg.label.attr("x", this._position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+		this.svg.label.attr("y", this._position.y + this.getHeight()/2);
 	}
 
   	/**
@@ -179,7 +178,7 @@ export default class Tank extends Snappable {
 		if(this.liquid)
 			this.svg.liquid.style("fill", this.liquid.fill());
 
-		this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+		this.svg.label.attr("x", this._position.x + this.getWidth()/2 - (this.text.length * 6)/2);
 		this.svg.label.text(this.text);
 	}
 
@@ -228,7 +227,6 @@ export default class Tank extends Snappable {
 
 					// if pipe is there, move the drop to the pipe
 					if(drop) {
-						//console.log(.size);
 						// position drop at front of pipe
 						if(side === "left") {
 							drop.position = {
@@ -264,6 +262,12 @@ export default class Tank extends Snappable {
 	}
 
 	/**
+	 * createThumbnail() 
+	 * @description create a little image of the tank
+	 */
+
+
+	/**
 	 * pipeCanAccessLiquid()	
 	 * @description Checks to see if a given pipe can access the
 		liquid in the tank.	
@@ -291,8 +295,6 @@ export default class Tank extends Snappable {
 	 * 			false if the tank is full
 	 */
 	addDrop(drop) {
-		console.log("Adding Drop");
-
 		// Handle liquid coloring and value
 		if(this.currentLevel == 0) {
 			this.liquid = drop.liquid;
@@ -326,35 +328,35 @@ export default class Tank extends Snappable {
 		// one or both of the bottom two corners of the drop are in the liquid
 							 // bottom left
 		var touchingLiquid = (
-								drop.position.x >= this.position.x + this.wallWidth &&
-							 	drop.position.x <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getLiquidHeight() &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
+								drop.position.x >= this._position.x + this.wallWidth &&
+							 	drop.position.x <= this._position.x + this.wallWidth + this.interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this.interior.height - this.getLiquidHeight() &&
+							 	drop.position.y + drop.size <= this._position.y + this.interior.height
 							 )
 								||
 							 // bottom right
 							 (
-							 	drop.position.x + drop.size >= this.position.x + this.wallWidth &&
-							 	drop.position.x + drop.size <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - this.getLiquidHeight() &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
+							 	drop.position.x + drop.size >= this._position.x + this.wallWidth &&
+							 	drop.position.x + drop.size <= this._position.x + this.wallWidth + this.interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this.interior.height - this.getLiquidHeight() &&
+							 	drop.position.y + drop.size <= this._position.y + this.interior.height
 							 )
 
 		// if the this is empty, we pretend it has liquid level of 10.
 							 // bottom left
 		var withNoLiquid =  (
-								drop.position.x >= this.position.x + this.wallWidth &&
-							 	drop.position.x <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - 10 &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
+								drop.position.x >= this._position.x + this.wallWidth &&
+							 	drop.position.x <= this._position.x + this.wallWidth + this.interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this.interior.height - 10 &&
+							 	drop.position.y + drop.size <= this._position.y + this.interior.height
 							)
 								||
 							 // bottom right
 							(
-							 	drop.position.x + drop.size >= this.position.x + this.wallWidth &&
-							 	drop.position.x + drop.size <= this.position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this.position.y + this.interior.height - 10 &&
-							 	drop.position.y + drop.size <= this.position.y + this.interior.height
+							 	drop.position.x + drop.size >= this._position.x + this.wallWidth &&
+							 	drop.position.x + drop.size <= this._position.x + this.wallWidth + this.interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this.interior.height - 10 &&
+							 	drop.position.y + drop.size <= this._position.y + this.interior.height
 							)
 		return touchingLiquid || withNoLiquid;
 	}
@@ -364,7 +366,13 @@ export default class Tank extends Snappable {
 		A string of info used for creating a tooltip
 	*/
 	getName() {
-		return "Tank";
+		let sidesOpen = "";
+		sidesOpen += (this._leftOpened) ? "left " : ""
+		sidesOpen += (this._rightOpened) ? "right " : ""
+		sidesOpen += (this._upOpened) ? "up " : ""
+		sidesOpen += (this._downOpened) ? "down " : ""
+
+		return "Tank " + sidesOpen;
 	}
 
 	/**
@@ -443,7 +451,7 @@ export default class Tank extends Snappable {
 
 			this.orientation = "vertical"
 			this.moveRelativeToCenter({
-				y: snappable.center.y - thisRect.height / 2,
+				y: snappable._center.y - thisRect.height / 2,
 				x: mousePos.x
 			})
 		}
@@ -463,7 +471,7 @@ export default class Tank extends Snappable {
 			// match this object with the left edge of
 			// the other object
 			this.moveRelativeToCenter({
-				x: snappable.center.x - thisRect.width / 2,
+				x: snappable._center.x - thisRect.width / 2,
 				y: mousePos.y
 			})
 		}
@@ -483,7 +491,7 @@ export default class Tank extends Snappable {
 			
 			// match the right edge
 			this.moveRelativeToCenter({
-				x: snappable.center.x + otherRect.width + thisRect.width / 2,
+				x: snappable._center.x + otherRect.width + thisRect.width / 2,
 				y: mousePos.y
 			})
 		}
@@ -503,7 +511,7 @@ export default class Tank extends Snappable {
 
 			this.orientation = "vertical"
 			this.moveRelativeToCenter({
-				y: snappable.center.y + otherRect.height + thisRect.height / 2,
+				y: snappable._center.y + otherRect.height + thisRect.height / 2,
 				x: mousePos.x
 			})
 		}

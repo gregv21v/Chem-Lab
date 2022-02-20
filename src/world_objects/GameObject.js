@@ -19,7 +19,8 @@ export default class GameObject {
    * @param {Point} center the center of the game object
    */
   constructor(center) {
-    this.center = center
+    this._center = center;
+    this._position = center;
 
     /*********
       Visuals
@@ -35,28 +36,36 @@ export default class GameObject {
       ""
     );
 
-    // Open sides that appear visually open
-    this.openSides = {
-      up: false,
-      down: false,
-      left: false,
-      right: false
-    }
-
     // snap parts
     this.snapCenter = {x: 0, y: 0}
     this.snapping = false;
   }
 
+  /**
+   * get position()
+   * @description returns the position of the game object
+   */
+  get position() {
+    return this._position;
+  }
+
+  /**
+   * set position()
+   * @description sets the position of the game object
+   */
+  set position(value) {
+    this._position = value;
+  }
+
   updateTooltip() {
-    this.tooltip.position = this.position;
+    this.tooltip.position = this._position;
   };
 
   /**
    * createSVG() 
    * @description creates the svg graphics for this GameObject
    */
-  createSVG() {
+  createSVG(position) {
     let mainSVG = d3.select("body").select("svg")
 
     //console.log(mainSVG);
@@ -66,8 +75,8 @@ export default class GameObject {
   	// add all the svg objects to the world
     let obj = mainSVG.append(this.svg.default.type)
 
-    obj.attr("cx", this.position.x)
-      .attr("cy", this.position.y)
+    obj.attr("cx", this._center.x)
+      .attr("cy", this._center.y)
       .attr("r", 5)
       .style("fill", "red")
 
@@ -127,8 +136,8 @@ export default class GameObject {
   */
   getCenter() {
     return {
-      x: this.position.x + this.getWidth() / 2,
-      y: this.position.y + this.getHeight() / 2
+      x: this._position.x + this.getWidth() / 2,
+      y: this._position.y + this.getHeight() / 2
     }
   }
 

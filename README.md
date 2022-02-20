@@ -28,9 +28,10 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 
 
 <strong> TODO:</strong>
-- Sided Tanks
+- Tanks
   - Make it so that liquids can only enter sided tanks 
       through an open side.
+
 - Create the liquid distributor pipe
 - Create the liquid sorter pipe 
 - Create a class for the sell tank (extra)
@@ -42,7 +43,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Display a miniturized graphic of the actual world object on the icons
   for an each item (extra)
 - Display opening in tank when pipes are attached. (extra)
-- Create a list of chemicals of various densities
+- Create a list of chemicals of various densities for each tank
 - Create a home screen 
 - Add the ability to move tanks
 - Add the ability to buy and sell tanks
@@ -51,5 +52,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Big Changes
   - Convert to Raster Graphics for faster performance
 - Create a test page
+- Add touch screen capability
+
 
 

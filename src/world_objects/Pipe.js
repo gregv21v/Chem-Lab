@@ -168,8 +168,8 @@ export default class Pipe extends Snappable {
       }
     } else if(this.orientation === "vertical") {
       return {
-        up: this.getTopArea(),
-        down: this.getBottomArea()
+        up: this.getUpArea(),
+        down: this.getDownArea()
       }
     }
 

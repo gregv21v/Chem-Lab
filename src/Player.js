@@ -47,8 +47,9 @@ export default class Player {
       5
     ));
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Pipe({x: 500, y: 500}, 100, 10, 5));
+    this.inventory.add(new Tank({x: 475, y: 540}, {width: 50, height: 50}, 5));
+    this.inventory.add(new Tank({x: 0, y: 0}, {width: 50, height: 50}, 5, false, false, false, false))
+    this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));
 
     //this.inventory.createSlots();
 

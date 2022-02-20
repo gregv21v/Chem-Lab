@@ -18,7 +18,7 @@ export default class Snappable extends GameObject {
   constructor(center) {
     super(center)
 
-    this.position = {x: 0, y: 0}
+    this._position = {x: 0, y: 0}
     this.orientation = "horizontal"
     this.attachments = {}
 
@@ -68,7 +68,7 @@ export default class Snappable extends GameObject {
   */
   getRect() {
   	var newRect = new Rect();
-  	newRect.position = this.position
+  	newRect.position = this._position
     newRect.width = this.getWidth(); // horizontal dimension
     newRect.height = this.getHeight(); //   vertical dimension
 
@@ -86,8 +86,8 @@ export default class Snappable extends GameObject {
     upArea.fill.color = "red"
     upArea.width = this.getWidth()
     upArea.height = this.snapRadius
-    upArea.position.x = this.position.x
-    upArea.position.y = this.position.y - this.snapRadius
+    upArea.position.x = this._position.x
+    upArea.position.y = this._position.y - this.snapRadius
 
     return upArea
   };
@@ -102,8 +102,8 @@ export default class Snappable extends GameObject {
     downArea.fill.color = "green"
     downArea.width = this.getWidth()
     downArea.height = this.snapRadius
-    downArea.position.x = this.position.x
-    downArea.position.y = this.position.y + this.getHeight()
+    downArea.position.x = this._position.x
+    downArea.position.y = this._position.y + this.getHeight()
 
     return downArea
   };
@@ -119,8 +119,8 @@ export default class Snappable extends GameObject {
     leftArea.fill.color = "blue"
     leftArea.width = this.snapRadius
     leftArea.height = this.getHeight()
-    leftArea.position.x = this.position.x - this.snapRadius
-    leftArea.position.y = this.position.y
+    leftArea.position.x = this._position.x - this.snapRadius
+    leftArea.position.y = this._position.y
 
     return leftArea
   };
@@ -135,8 +135,8 @@ export default class Snappable extends GameObject {
     rightArea.fill.color = "yellow"
     rightArea.width = this.snapRadius
     rightArea.height = this.getHeight()
-    rightArea.position.x = this.position.x + this.getWidth()
-    rightArea.position.y = this.position.y
+    rightArea.position.x = this._position.x + this.getWidth()
+    rightArea.position.y = this._position.y
 
     //console.log("Right Area: " + JSON.stringify(rightArea));
 
@@ -165,8 +165,8 @@ export default class Snappable extends GameObject {
     @param point the point to center on
   */
   moveTo(point) {
-    this.position.x = point.x
-    this.position.y = point.y
+    this._position.x = point.x
+    this._position.y = point.y
   }
 
   /**
@@ -175,8 +175,8 @@ export default class Snappable extends GameObject {
    * @param point point to move to
    */
   moveRelativeToCenter(point) {
-    this.position.x = point.x - this.getWidth() / 2
-    this.position.y = point.y - this.getHeight() / 2
+    this._position.x = point.x - this.getWidth() / 2
+    this._position.y = point.y - this.getHeight() / 2
   }
 
 
@@ -218,7 +218,7 @@ export default class Snappable extends GameObject {
     // the other object
     this.orientation = "horizontal"
     this.moveRelativeToCenter({
-        x: snappable.center.x - thisRect.width / 2,
+        x: snappable._center.x - thisRect.width / 2,
         y: mousePos.y
     })
   }
@@ -237,7 +237,7 @@ export default class Snappable extends GameObject {
     this.orientation = "horizontal"
     // match the right edge
     this.moveRelativeToCenter({
-        x: snappable.center.x + otherRect.width + thisRect.width / 2,
+        x: snappable._center.x + otherRect.width + thisRect.width / 2,
         y: mousePos.y
     })
   }
@@ -255,7 +255,7 @@ export default class Snappable extends GameObject {
 
     this.orientation = "vertical"
     this.moveRelativeToCenter({
-      y: snappable.center.y - thisRect.height / 2,
+      y: snappable._center.y - thisRect.height / 2,
       x: mousePos.x
     })
   }
@@ -275,7 +275,7 @@ export default class Snappable extends GameObject {
 
     this.orientation = "vertical"
     this.moveRelativeToCenter({
-      y: snappable.center.y + otherRect.height + thisRect.height / 2,
+      y: snappable._center.y + otherRect.height + thisRect.height / 2,
       x: mousePos.x
     })
   }

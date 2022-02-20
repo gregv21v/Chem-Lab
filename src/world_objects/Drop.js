@@ -20,21 +20,22 @@ export default class Drop {
    * @param {Point} position the position of the drop in the world
    * @param {Number} size the size of the drop
    * @param {Liquid} liquid the liquid of the drop
+   * @param {Point} velocity the velocity of the drop
    */
-  constructor(position, size, liquid) {
+  constructor(position, size, liquid, velocity) {
+    this._velocity = velocity
   	this.position = position;
   	this.size = size;
     this.liquid = liquid;
   	this.id = Drop.lastId;
-    var mainSVG = d3.select("body").select("svg")
+
+    let mainSVG = d3.select("body").select("svg")
   	this.svg = mainSVG.append("rect");
     this.direction = "" // the direction that the drop is traveling in
 
     this.tooltip = new ToolTip(
       position,
       "Drop is the most basic unit of liquid");
-
-
 
   	Drop.lastId++
   }
@@ -70,30 +71,28 @@ export default class Drop {
   }
 
 
+  
+
   /*
     Causes a drop to fall until it enters a tank, or exits the world
   */
   fall(world) {
   	var self = this;
 
-  	var svg = document.querySelector("svg");
+  	var svg = d3.select("svg");
 
   	this.position.y += 1;
   	this.updateSVG();
 
     // drop is outside the world
-  	if(!world.within({position: this.position, width: this.size, height: this.size}))
-  	{
+  	if(!world.within({position: this.position, width: this.size, height: this.size})) {
   		world.removeDrop(this);
   		this.destroySVG();
-  	}
-  	else // drop is inside the world
-  	{
+  	} else { // drop is inside the world
   		// if in tank, remove drop and fill tank with size of drop
   		world.objs.forEach(function(obj) {
 
-  			if(obj instanceof Tank && obj.containsDrop(self))
-  			{
+  			if(obj instanceof Tank && obj.containsDrop(self)) {
           // add respective amount of fluid to the tank
   				obj.addDrop(self);
   				obj.updateLiquidSVG();

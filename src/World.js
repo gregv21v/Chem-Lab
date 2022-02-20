@@ -190,19 +190,18 @@ export default class World {
 		@description Updates all the objects currently in the world
 	*/
 	update() {
-		for(var i = 0; i < this.drops.length; i++)
-		{
+		for(var i = 0; i < this.drops.length; i++) {
 			this.drops[i].fall(this);
 		}
 
-		var pipes = this.findPipes();
+		let pipes = this.findPipes();
 
 		// Move fluid drops through pipes
-		for(var pipe of pipes) {
+		for(const pipe of pipes) {
 			pipe.updateDrops();
 		}
 
-		for(var obj of this.objs) {
+		for(const obj of this.objs) {
 			if(obj instanceof Pipe || obj instanceof Tank)
 				obj.transferLiquid();
 		}
@@ -219,10 +218,10 @@ export default class World {
 	within(rect) {
 		// if all 4 corners of the rect are in the world
 		return  (
-				this.rect.contains({x: rect.position.x, y: rect.position.y}) && // top left
-				this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y}) && // top right
-				this.rect.contains({x: rect.position.x, y: rect.position.y + rect.height}) && // bottom left
-				this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height})
+			this.rect.contains({x: rect.position.x, y: rect.position.y}) && // top left
+			this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y}) && // top right
+			this.rect.contains({x: rect.position.x, y: rect.position.y + rect.height}) && // bottom left
+			this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height})
 		);
 	};
 
@@ -232,7 +231,7 @@ export default class World {
 		@description Find all the tanks in the world.
 	*/
 	findTanks() {
-		var tanks = [];
+		let tanks = [];
 		for(var i = 0; i < this.objs.length; i++) {
 			if(this.objs[i] instanceof Tank) {
 				tanks.push(this.objs[i]);
@@ -246,7 +245,7 @@ export default class World {
 		@description Find all the pipes in the world.
 	*/
 	findPipes() {
-		var pipes = [];
+		let pipes = [];
 		for(var i = 0; i < this.objs.length; i++) {
 			if(this.objs[i] instanceof Pipe) {
 				pipes.push(this.objs[i]);
