@@ -191,7 +191,7 @@ export default class World {
 	*/
 	update() {
 		for(var i = 0; i < this.drops.length; i++) {
-			this.drops[i].fall(this);
+			this.drops[i].update(this);
 		}
 
 		let pipes = this.findPipes();

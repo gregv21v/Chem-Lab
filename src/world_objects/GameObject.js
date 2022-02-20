@@ -13,14 +13,20 @@ import * as d3 from "d3"
 import ToolTip from "../gui/ToolTip"
 
 export default class GameObject {
+
+  static lastId = 0; // the last id of a created GameObject
   /**
    * constructor()
    * @description constructs the game object
    * @param {Point} center the center of the game object
    */
-  constructor(center) {
+  constructor(center, velocity) {
     this._center = center;
     this._position = center;
+    this._velocity = velocity;
+
+    this._id = GameObject.lastId
+    GameObject.lastId++ 
 
     /*********
       Visuals
@@ -35,10 +41,6 @@ export default class GameObject {
       20, // radius of hover circle
       ""
     );
-
-    // snap parts
-    this.snapCenter = {x: 0, y: 0}
-    this.snapping = false;
   }
 
   /**
@@ -89,6 +91,15 @@ export default class GameObject {
   destroySVG() {
     this.svg.default.remove()
   }
+
+  /**
+   * update()
+   * @description update the GameObject
+   */
+  update(world) {
+    this._position.x += this._velocity.x;
+    this._position.y += this._velocity.y;
+  } 
 
 
   /**

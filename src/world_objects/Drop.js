@@ -9,11 +9,9 @@
 import ToolTip from "../gui/ToolTip";
 import Tank from "./tanks/Tank";
 import * as d3 from "d3"
+import GameObject from "./GameObject";
 
-export default class Drop {
-
-  static lastId = 0;
-
+export default class Drop extends GameObject {
   /**
    * constructor()
    * @description constructs the drop
@@ -22,12 +20,10 @@ export default class Drop {
    * @param {Liquid} liquid the liquid of the drop
    * @param {Point} velocity the velocity of the drop
    */
-  constructor(position, size, liquid, velocity) {
-    this._velocity = velocity
-  	this.position = position;
+  constructor(position, velocity, size, liquid) {
+    super(position, velocity)
   	this.size = size;
     this.liquid = liquid;
-  	this.id = Drop.lastId;
 
     let mainSVG = d3.select("body").select("svg")
   	this.svg = mainSVG.append("rect");
@@ -36,8 +32,15 @@ export default class Drop {
     this.tooltip = new ToolTip(
       position,
       "Drop is the most basic unit of liquid");
+  }
 
-  	Drop.lastId++
+  /**
+   * get id()
+   * @description gets the drop id
+   * @returns the drops id
+   */
+  get id() {
+    return this._id;
   }
 
   /*
@@ -71,20 +74,19 @@ export default class Drop {
   }
 
 
-  
+  /**
+   * update() 
+   * @description update the the drop
+   */
+  update(world) {
+    let self = this;
 
-  /*
-    Causes a drop to fall until it enters a tank, or exits the world
-  */
-  fall(world) {
-  	var self = this;
+    this.position.x += this._velocity.x;
+    this.position.y += this._velocity.y;
 
-  	var svg = d3.select("svg");
+    this.updateSVG()
 
-  	this.position.y += 1;
-  	this.updateSVG();
-
-    // drop is outside the world
+    // if the drop is outside the world remove it
   	if(!world.within({position: this.position, width: this.size, height: this.size})) {
   		world.removeDrop(this);
   		this.destroySVG();
@@ -92,7 +94,7 @@ export default class Drop {
   		// if in tank, remove drop and fill tank with size of drop
   		world.objs.forEach(function(obj) {
 
-  			if(obj instanceof Tank && obj.containsDrop(self)) {
+  			if(obj instanceof Tank && obj.containsDrop(self) && obj.upOpened) {
           // add respective amount of fluid to the tank
   				obj.addDrop(self);
   				obj.updateLiquidSVG();
@@ -105,9 +107,7 @@ export default class Drop {
   			}
   		})
   	}
-  };
-
-
+  }
 
   /*
     Causes the drop to flow through a pipe.

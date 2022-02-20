@@ -28,7 +28,7 @@ export default class Pump extends GameObject {
 	 * @param {*} production 
 	 */
 	constructor(world, position, production) {
-		super(position)
+		super(position, {x: 0, y: 0})
 
 		this.production = production;
 		this._position = position;
@@ -87,13 +87,13 @@ export default class Pump extends GameObject {
 			new Liquid(6, {red: 255, green: 0, blue: 0})
 		];
 
-
-
 		let drop = new Drop(
-				{x: this._position.x - this.production/2, y: this._position.y + this.production * 3},
-				this.production,
-				possibleLiquids[getRandomInt(0, possibleLiquids.length)]
-		  )
+			{x: this._position.x - this.production/2, y: this._position.y + this.production * 3}, // position
+			{x: 0, y: 1}, // velocity
+			this.production,
+			possibleLiquids[getRandomInt(0, possibleLiquids.length)],
+		)
+		
 		drop.createSVG();
 		world.addDrop(drop);
 	};

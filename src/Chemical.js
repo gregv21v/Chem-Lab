@@ -11,5 +11,8 @@ export default class Chemical {
     constructor(volume, color) {
         this._volume = volume;
         this._color = color;
+        this._uid = ""
     }
+
+
 }

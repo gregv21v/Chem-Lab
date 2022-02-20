@@ -38,7 +38,7 @@ export default class Tank extends Snappable {
 		center, interior, wallWidth, 
 		leftOpened=false, rightOpened=false, upOpened=true, downOpened=false
 	) {
-		super(center) 
+		super(center, {x: 0, y: 0}) 
 
 		this._chemicals = [] // the list of chemicals
 
@@ -59,6 +59,42 @@ export default class Tank extends Snappable {
 		this.wallColor = "green";
 		this.active = false;
 		this.text = "";
+	}
+
+	/** 
+	 * get leftOpened()
+	 * @description gets the left opened value
+	 * @returns leftOpened
+	 */
+	get leftOpened() {
+		return this._leftOpened;
+	}
+
+	/** 
+	 * get rightOpened()
+	 * @description gets the left opened value
+	 * @returns rightOpened
+	 */
+	get rightOpened() {
+		return this._rightOpened;
+	}
+
+	/** 
+	 * get upOpened()
+	 * @description gets the left opened value
+	 * @returns upOpened
+	 */
+	get upOpened() {
+		return this._upOpened;
+	}
+
+	/** 
+	 * get downOpened()
+	 * @description gets the left opened value
+	 * @returns downOpened
+	 */
+	get downOpened() {
+		return this._downOpened;
 	}
 
 
@@ -162,9 +198,9 @@ export default class Tank extends Snappable {
 		this.svg.liquid.style("fill", this.liquid.fill());
 
 		// setup label svg
-		this.svg.label.attr("fill", "black");
-		this.svg.label.attr("x", this._position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-		this.svg.label.attr("y", this._position.y + this.getHeight()/2);
+		//this.svg.label.attr("fill", "black");
+		//this.svg.label.attr("x", this._position.x + this.getWidth()/2 - (this.text.length * 6)/2);
+		//this.svg.label.attr("y", this._position.y + this.getHeight()/2);
 	}
 
   	/**
@@ -260,6 +296,7 @@ export default class Tank extends Snappable {
 			}
 		}
 	}
+
 
 	/**
 	 * createThumbnail() 
@@ -414,7 +451,7 @@ export default class Tank extends Snappable {
 			this.currentLevel -= size * size;
 			this.text = "" + (this.currentLevel * this.liquid.value);
 			this.updateLiquidSVG();
-			var drop = new Drop({x: 0, y: 0}, size, this.liquid);
+			var drop = new Drop({x: 0, y: 0}, {x: 0, y: 0}, size, this.liquid);
 			if(this.currentLevel == 0) {
 				this.liquid = null;
 			}

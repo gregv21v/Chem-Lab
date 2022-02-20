@@ -130,4 +130,12 @@ export default class Valve extends Pipe {
   	}
   };
 
+  /**
+   * getName()
+   * @returns name of this Valve
+   */
+  getName() {
+    return "Valve";
+  }
+
 }
