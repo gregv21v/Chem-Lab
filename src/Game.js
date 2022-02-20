@@ -6,6 +6,7 @@ import Player from "./Player"
 import Shop from "./gui/Shop"
 import TradeItem from "./gui/TradeItem"
 import BorderedButton from "./gui/buttons/BorderedButton"
+import * as d3 from "d3"
 
 
 export default class Game {
@@ -52,6 +53,11 @@ export default class Game {
 
 
     // setup the gui
+
+    let self = this;
+    d3.select("body").on("keydown", (event) => {
+      self.onKeyPress(event)
+    })
   }
 
 
@@ -63,7 +69,15 @@ export default class Game {
     this._player.createSVG();
     this._player.update()
 
-    this._testBtn.createSVG();
-    this._testTradeItem.createSVG();
+    //this._testBtn.createSVG();
+    //this._testTradeItem.createSVG();
+  }
+
+  /**
+   * onKeyPress()
+   * @description called when key is pressed
+   */
+  onKeyPress(event) {
+    this._player.onKeyPress(event) 
   }
 }

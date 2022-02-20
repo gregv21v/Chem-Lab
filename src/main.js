@@ -10,6 +10,11 @@ let app = d3.select("#app")
 let loadingScreen = app.html(LoadingScreenTemplate);
 let game = null;
 
+/** Remove this code to put back loading screen */
+app.html(TestModeScreenTemplate)
+game = new Game(0);
+game.render()
+
 loadingScreen.select("[name='test']").on("click", () => {
     app.html(TestModeScreenTemplate)
     game = new Game(0);

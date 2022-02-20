@@ -38,6 +38,36 @@ export default class ItemButton extends Button {
   }
 
   /**
+	 * set position
+	 * @description sets the position of the Button
+	 * @param {Point} value the new position of the button
+	 */
+	set position(value) {
+		this._position = value; 
+
+		// add name text
+    this.svg.name.attr("x", this._position.x + 10);
+  	this.svg.name.attr("y", this._position.y + 20);
+
+
+    // add dimensions text
+    this.svg.dimensions.attr("x", this._position.x + 10);
+  	this.svg.dimensions.attr("y", this._position.y + 40);
+
+    // add liquid type text
+    if(this.isLiquid) {
+      this.svg.liquidType.attr("x", this._position.x + 10);
+    	this.svg.liquidType.attr("y", this._position.y + 60);
+    }
+
+    this.svg.clickBox.attr("x", this._position.x);
+		this.svg.clickBox.attr("y", this._position.y);
+
+		this.svg.rect.attr("x", this._position.x);
+		this.svg.rect.attr("y", this._position.y);
+	}
+
+  /**
 		createTextSVG()
 		@description creates the text svg for the itemButton
 		@param svgMain the main svg canvas
@@ -45,22 +75,21 @@ export default class ItemButton extends Button {
   createTextSVG(svgMain) {
 
     // add name text
-    this.svg.name.attr("x", this.position.x + 10);
-  	this.svg.name.attr("y", this.position.y + 20);
+    this.svg.name.attr("x", this._position.x + 10);
+  	this.svg.name.attr("y", this._position.y + 20);
     this.svg.name.text(this.nameText)
 
 
     // add dimensions text
-    this.svg.dimensions.attr("x", this.position.x + 10);
-  	this.svg.dimensions.attr("y", this.position.y + 40);
+    this.svg.dimensions.attr("x", this._position.x + 10);
+  	this.svg.dimensions.attr("y", this._position.y + 40);
     this.svg.dimensions.text(this.dimensionsText)
 
     // add liquid type text
     if(this.isLiquid) {
-      this.svg.liquidType.attr("x", this.position.x + 10);
-    	this.svg.liquidType.attr("y", this.position.y + 60);
+      this.svg.liquidType.attr("x", this._position.x + 10);
+    	this.svg.liquidType.attr("y", this._position.y + 60);
       this.svg.liquidType.text(this.liquidTypeText)
-
     }
 
   };

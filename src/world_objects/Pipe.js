@@ -63,6 +63,10 @@ export default class Pipe extends Snappable {
   };
 
 
+  /**
+   * updateDrops()
+   * @description update the drops
+   */
   updateDrops () {
   	for(var x in this.drops) {
   		if(this.drops[x].canFlow(this)) {
@@ -75,8 +79,6 @@ export default class Pipe extends Snappable {
   	=============Drawing the Pipe=============
   */
   createSVG() {
-  	var SVGMain = document.getElementById("main");
-
   	this.updateSVG();
   };
 
@@ -192,8 +194,8 @@ export default class Pipe extends Snappable {
 					drop.destroySVG()
 					tank.updateLiquidSVG()
 				}
-        }
-      }
+     		}
+      	}
     }
   }
 

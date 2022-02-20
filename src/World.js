@@ -30,37 +30,25 @@ export default class World {
 
 
 
-		var mainSVG = document.querySelector("svg");
-		var self = this;
+		let mainSVG = d3.select("svg");
+		let self = this;
 		/*****************************************************
 											 Mouse Interactions
 		*****************************************************/
 		/*
 			Mouse Movement
 		*/
-		mainSVG.addEventListener('mousemove', function(evnt) {
+		mainSVG.on('mousemove', function(evnt) {
 			self.mouseMoveHandler(evnt);
 		});
 
 		/*
 			Mouse Down
 		*/
-		mainSVG.addEventListener('mousedown', function(evnt) {
+		mainSVG.on('mousedown', function(evnt) {
 			self.mouseDownHandler(evnt);
 		});
 
-
-		/*****************************************************
-									Keyboard Interactions
-		*****************************************************/
-		document.addEventListener('keypress', function(evnt) {
-			// rotate the pipe in the players hand
-			// 'r' = 114
-			if(evnt.key == 'r' && self.player.hand instanceof Pipe) {
-				self.player.hand.rotate();
-				self.player.hand.updateSVG();
-			}
-		})
 	}
 
 

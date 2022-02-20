@@ -117,13 +117,13 @@ export default class Tank extends Snappable {
 		this.svg.interiorVertical.attr("width", this.interior.width);
 		this.svg.interiorVertical.attr("x", this.position.x + this.wallWidth);
 
-		this.svg.interiorVertical.style("fill", "blue")
+		this.svg.interiorVertical.style("fill", "white")
 
 		this.svg.interiorHorizontal.attr("height", this.interior.height);
 		this.svg.interiorHorizontal.attr("width", this.interior.width);
 		this.svg.interiorHorizontal.attr("y", this.position.y + this.wallWidth)
 
-		this.svg.interiorHorizontal.style("fill", "blue")
+		this.svg.interiorHorizontal.style("fill", "white")
     
 
 
@@ -181,7 +181,17 @@ export default class Tank extends Snappable {
 
 		this.svg.label.attr("x", this.position.x + this.getWidth()/2 - (this.text.length * 6)/2);
 		this.svg.label.text(this.text);
-	};
+	}
+
+	/**
+	 * destroySVG()
+	 * @description destroys the svg for the object
+	 */
+	destroySVG() {
+		for (const part of Object.values(this.svg)) {
+			part.remove()
+		}
+	}
 
   	/**
 	 * getSnapAreas() 
@@ -197,15 +207,6 @@ export default class Tank extends Snappable {
 		}
 	}
 
-  	/**
-	 * destroySVG()
-	 * @description removes the svgs for the tank
-	 */
-	destroySVG() {
-		this.svg.walls.remove();
-		this.svg.interior.remove();
-		this.svg.liquid.remove();
-	}
 
   	/**
 	 *	transferLiquid()

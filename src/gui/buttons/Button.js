@@ -4,7 +4,7 @@
 import * as d3 from "d3"
 export default class Button {
 	constructor(position, width, height) {
-		this.position = position;
+		this._position = position;
 		this.width = width;
 		this.height = height;
 		this.text = "";
@@ -17,18 +17,39 @@ export default class Button {
 		};
 	}
 
+	/**
+	 * set position
+	 * @description sets the position of the Button
+	 * @param {Point} value the new position of the button
+	 */
+	set position(value) {
+		this._position = value; 
+
+		this.svg.clickBox.attr("x", this._position.x);
+		this.svg.clickBox.attr("y", this._position.y);
+
+		this.svg.rect.attr("x", this._position.x);
+		this.svg.rect.attr("y", this._position.y);
+
+		this.svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
+		this.svg.label.attr("y", this._position.y + this.height/2 + 5);
+	}
+
 	/*
 		Creates the graphics for the overlay of the
 		button
 	*/
 	createOverlaySVG() {
+		let self = this;
+
 		// click overlay
-		this.svg.clickBox.attr("x", this.position.x);
-		this.svg.clickBox.attr("y", this.position.y);
+		this.svg.clickBox.attr("x", this._position.x);
+		this.svg.clickBox.attr("y", this._position.y);
 		this.svg.clickBox.attr("width", this.width);
 		this.svg.clickBox.attr("height", this.height);
 		this.svg.clickBox.style("fill", "white");
 		this.svg.clickBox.style("fill-opacity", 0);
+		this.svg.clickBox.on("click", () => self.onClick())
 	}
 
 	/*
@@ -37,8 +58,8 @@ export default class Button {
 	*/
 	createBackgroundSVG() {
 		// background
-		this.svg.rect.attr("x", this.position.x);
-		this.svg.rect.attr("y", this.position.y);
+		this.svg.rect.attr("x", this._position.x);
+		this.svg.rect.attr("y", this._position.y);
 		this.svg.rect.attr("width", this.width);
 		this.svg.rect.attr("height", this.height);
 		this.svg.rect.attr("class", "Button");
@@ -50,8 +71,8 @@ export default class Button {
 		Button
 	*/
 	createTextSVG() {
-		this.svg.label.attr("x", this.position.x + this.width/2 - (this.text.length * 6)/2);
-		this.svg.label.attr("y", this.position.y + this.height/2 + 5);
+		this.svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
+		this.svg.label.attr("y", this._position.y + this.height/2 + 5);
 	}
 
 	/**
@@ -144,6 +165,14 @@ export default class Button {
 	setOnClick(onClick) {
 		this.svg.clickBox.on('click', onClick);
 	};
+
+	/**
+	 * onClick()
+	 * @description the function called when this button is clicked
+	 */
+	onClick() {
+		// do nothing
+	}
 
 }
 

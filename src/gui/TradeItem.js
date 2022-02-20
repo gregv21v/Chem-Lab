@@ -17,8 +17,8 @@ export default class TradeItem extends BorderedButton {
     var btnHeight = 20;
     this.sellBtn = new Button(
       {
-        x: this.position.x + width - 50 - 20,
-        y: this.position.y + height/2 - 20/2
+        x: this._position.x + width - 50 - 20,
+        y: this._position.y + height/2 - 20/2
       },
       btnWidth, // width
       btnHeight // height

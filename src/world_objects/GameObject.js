@@ -57,14 +57,14 @@ export default class GameObject {
    * @description creates the svg graphics for this GameObject
    */
   createSVG() {
-    var mainSVG = d3.select("body").select("svg")
+    let mainSVG = d3.select("body").select("svg")
 
     //console.log(mainSVG);
 
   	this.updateSVG();
 
   	// add all the svg objects to the world
-    var obj = mainSVG.append(this.svg.default.type)
+    let obj = mainSVG.append(this.svg.default.type)
 
     obj.attr("cx", this.position.x)
       .attr("cy", this.position.y)
@@ -72,6 +72,15 @@ export default class GameObject {
       .style("fill", "red")
 
   }
+
+  /**
+   * destroySVG()
+   * @description destroys the svg for the object
+   */
+  destroySVG() {
+    this.svg.default.remove()
+  }
+
 
   /**
    * updateSVG()

@@ -56,7 +56,7 @@ export default class Pump extends GameObject {
 
 	updateSVG() {
 		var self = this;
-		this.tooltip.createSVG();
+		//this.tooltip.createSVG();
 
 		this.svg.button.attr("r", this.production * 2);
 		this.svg.button.attr("cx", this.position.x);

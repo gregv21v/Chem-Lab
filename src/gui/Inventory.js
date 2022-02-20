@@ -40,41 +40,38 @@ export default class Inventory {
 		this.rect.fill.color = "blue";
 		this.objs = [];
 		this.slots = [];
+	}
 
-		var self = this;
 
-		document.addEventListener('keypress', function(evnt) {
-			// add the item back into the inventory if the escape key is pressed
-			// esc = 27
-			if(evnt.key == "Esc") { // not currently working
-				self.add(self.player.hand);
-				self.player.hand = null;
-			}
-		});
+	/**
+	 * onKeyPress() 
+	 * @description called when a key is pressed.
+	 */
+	onKeyPress(event) {
+		if(event.key === "Escape") { // not currently working
+			this.add(this.player.hand);
+			this.updateSVG()
+			this.player.hand.destroySVG()
+
+			this.player.hand = null;
+		}
 	}
 
 
 	/**
 		createSlot()
 		@description Create a new slot for the inventory
-		@param i the index of the new slot
+		@param {Number} index the index of the new slot
 	*/
-	createSlot(i) {
-		var newSlot = new Slot(
-			{
-				x: this.rect.position.x,
-				y: this.rect.position.y + i * this.slotHeight
-			}, this.rect.width, 80)
-
+	createSlot(index) {
+		let newSlot = new Slot(this, index, this.rect.width, 80)
 		newSlot.setTextFill({color: "black"});
 		newSlot.setFill({color: "blue", opacity: 0.5});
-		newSlot.setName(this.objs[i].getName());
-		newSlot.setDimensions(this.objs[i].getWidth(), this.objs[i].getHeight());
+		newSlot.setName(this.objs[index].getName());
+		newSlot.setDimensions(this.objs[index].getWidth(), this.objs[index].getHeight());
 		//newSlot.setLiquidType(this.objs[i].getLiquidType());
 		newSlot.setStroke({color: "black", width: 10});
-		newSlot.index = i;
-
-		newSlot.createSVG();
+		newSlot.index = index;
 
 		return newSlot;
 	};
@@ -84,57 +81,81 @@ export default class Inventory {
 		@description create the SVG graphics for the inventory
 	*/
 	createSVG() {
-		var self = this;
-
-		var svg = document.querySelector("svg");
 		this.rect.createSVG();
 
-		// create the slots
-		for(var i = 0; i < this.objs.length; i++) {
-			this.slots.push(this.createSlot(i))
-			this.slots[i].setOnClickWithParam(function(button) {
-				// move the object to the player's hand
-
-				// pickup item
-				self.player.hand = self.objs[button.index];
-				self.player.hand.createSVG();
-
-
-				// remove the object from the inventory
-				self.objs.splice(button.index, 1);
-
-				// remove the button
-				button.destroySVG();
-				self.slots.splice(button.index, 1);
-
-				// resign indicies
-				for(var i = 0; i < self.slots.length; i++) {
-					self.slots[i].index = i;
-				}
-
-			}, this.slots[i]);
+		for (const slot of this.slots) {
+			slot.createSVG()
 		}
-	};
+	}
+
+	
+
+	/**
+	 * updateSVG() 
+	 * @description updates the svg for this inventory
+	 */
+	updateSVG() {
+		
+	}
+
+	/**
+	 * remove()
+	 * @description removes an item by index from the inventory
+	 * @param {Number} index the index of the item to remove
+	 */
+	remove(index) {
+		// remove the object from the inventory
+		this.objs.splice(index, 1);
+
+		// remove the button
+		this.slots[index].destroySVG();
+		this.slots.splice(index, 1);
+
+		// resign indicies
+		for(var i = 0; i < this.slots.length; i++) {
+			this.slots[i].index = i;
+		}
+
+		// update the graphics
+		
+
+	}
 
 	getWidth() {
 		return this.rect.width + 20;
-	};
+	}
 
 	getHeight() {
 		return this.rect.height + 20;
-	};
+	}
 
+	/**
+	 * add()
+	 * @description adds the specifed item to the inventory
+	 * @param {Item} item add the item to the inventory
+	 */
 	add(item) {
 		this.objs.push(item);
-	};
-	/*
-		Picks an item from the inventory and places it in the players "hand" (followObj)
-	*/
-	pickItem() {
 
-	};
+		let newSlot = this.createSlot(this.slots.length);
+		this.slots.push(newSlot)
+		newSlot.createSVG();
+	}
+
+	/**
+	 * pickItem()
+	 * @description Picks an item from the inventory and places it in the players "hand" (followObj)
+	 * @param {Number} index the index of the item to pick
+	 */
+	pickItem(index) {
+		// put the item in the players hand
+		this.player.hand = this.objs[index];
+		this.player.hand.createSVG();
+
+		this.remove(index);
+	}
 
 	contains(point) {
 		return this.rect.contains(point);
-	};
+	}
 }

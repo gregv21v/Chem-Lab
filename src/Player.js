@@ -48,11 +48,9 @@ export default class Player {
     ));
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
-    this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
+    this.inventory.add(new Pipe({x: 500, y: 500}, 100, 10, 5));
 
-    var newPipe = new Pipe({x: 500, y: 500}, 100, 10, 5)
-    this.inventory.add(newPipe);
+    //this.inventory.createSlots();
 
 
 
@@ -179,6 +177,21 @@ export default class Player {
 
     // show-hide snap areas
     //this.world.showSnapAreas();
-  };
+  }
+
+  /**
+   * onKeyPress()
+   * @description called when a key is pressed
+   */
+  onKeyPress(event) {
+    this.inventory.onKeyPress(event);
+
+    console.log(event.key)
+    if(event.key === 'r' && this.hand instanceof Pipe) {
+      console.log("rotating");
+      this.hand.rotate();
+      this.hand.updateSVG();
+    }
+  }
 
 }
