@@ -55,17 +55,17 @@ export default class Player {
 
 
 
-    this.sellBtn = new Button(
+    /**this.sellBtn = new Button(
       {
-        x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button */,
-        y: this.world.getHeight() - 35 /* Space for the button */
+        x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button,
+        y: this.world.getHeight() - 35 /* Space for the button
       },
       208,
       30
-    );
-    this.sellBtn.setText("Sell");
-    this.sellBtn.setFill({color: "red"});
-    this.sellBtn.setStroke({color: "blue", width: 2})
+    );*/
+    //this.sellBtn.setText("Sell");
+    //this.sellBtn.setFill({color: "red"});
+    //this.sellBtn.setStroke({color: "blue", width: 2})
 
 
     /**
@@ -117,7 +117,7 @@ export default class Player {
     sellTank.wallColor = "red";
 
 
-    this.sellBtn.setOnClick(function() {
+    /*this.sellBtn.setOnClick(function() {
       console.log("Sold");
 
       // get the liquid from the tank
@@ -131,7 +131,7 @@ export default class Player {
       self.credits.updateText();
       self.credits.createSVG();
 
-    })
+    })*/
 
     var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
     startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
@@ -173,7 +173,7 @@ export default class Player {
 
     this.inventory.createSVG();
     this.world.createSVG();
-    this.sellBtn.createSVG();
+    //this.sellBtn.createSVG();
     this.credits.createSVG();
 
     // show-hide snap areas

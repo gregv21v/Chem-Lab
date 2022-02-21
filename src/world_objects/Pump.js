@@ -15,17 +15,17 @@
 import GameObject from "./GameObject";
 import Drop from "./Drop"
 import ToolTip from "../gui/ToolTip";
-import Liquid from "../Liquid";
 import { getRandomInt } from "../util";
 
 import * as d3 from "d3"
+import Fluid from "../Fluid";
 
 export default class Pump extends GameObject {
 	/**
 	 * 
 	 * @param {World} world the world that the pump is in
 	 * @param {Point} position the position of the pump
-	 * @param {*} production 
+	 * @param {Number} production 
 	 */
 	constructor(world, position, production) {
 		super(position, {x: 0, y: 0})
@@ -48,6 +48,13 @@ export default class Pump extends GameObject {
 		this.svg.button.on("mousedown", function() {
 			self.produceDrop(world)
 		})
+
+		this._possibleFluids = [
+			new Fluid("Water", 2, this.production * this.production, {red: 0, green: 0, blue: 200}),
+			new Fluid("Smoke", -1, this.production * this.production, {red: 142, green: 140, blue: 145}),
+			new Fluid("Dust", 5, this.production * this.production, {red: 173, green: 161, blue: 113}),
+			new Fluid("Fire", 1, this.production * this.production, {red: 255, green: 0, blue: 0})
+		]
 	}
 
 	createSVG() {
@@ -80,18 +87,13 @@ export default class Pump extends GameObject {
 		Creates a drop of liquid upon clicking the pump.
 	*/
 	produceDrop(world) {
-		var possibleLiquids = [
-			new Liquid(1, {red: 50, green: 0, blue: 100}),
-			new Liquid(3, {red: 0, green: 75, blue: 100}),
-			new Liquid(5, {red: 10, green: 100, blue: 100}),
-			new Liquid(6, {red: 255, green: 0, blue: 0})
-		];
+		let fluid = this._possibleFluids[getRandomInt(0, this._possibleFluids.length)].clone()
 
 		let drop = new Drop(
 			{x: this._position.x - this.production/2, y: this._position.y + this.production * 3}, // position
 			{x: 0, y: 1}, // velocity
 			this.production,
-			possibleLiquids[getRandomInt(0, possibleLiquids.length)],
+			fluid
 		)
 		
 		drop.createSVG();

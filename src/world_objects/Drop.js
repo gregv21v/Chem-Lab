@@ -10,6 +10,7 @@ import ToolTip from "../gui/ToolTip";
 import Tank from "./tanks/Tank";
 import * as d3 from "d3"
 import GameObject from "./GameObject";
+import Substance from "../Fluid";
 
 export default class Drop extends GameObject {
   /**
@@ -17,13 +18,13 @@ export default class Drop extends GameObject {
    * @description constructs the drop
    * @param {Point} position the position of the drop in the world
    * @param {Number} size the size of the drop
-   * @param {Liquid} liquid the liquid of the drop
+   * @param {Fluid} fluid the fluid of the drop
    * @param {Point} velocity the velocity of the drop
    */
-  constructor(position, velocity, size, liquid) {
+  constructor(position, velocity, size, fluid) {
     super(position, velocity)
   	this.size = size;
-    this.liquid = liquid;
+    this._fluid = fluid;
 
     let mainSVG = d3.select("body").select("svg")
   	this.svg = mainSVG.append("rect");
@@ -31,7 +32,16 @@ export default class Drop extends GameObject {
 
     this.tooltip = new ToolTip(
       position,
-      "Drop is the most basic unit of liquid");
+      "Drop is the most basic unit of fluid");
+  }
+
+
+  /**
+   * get fluid()
+   * @description gets the fluid of this drop
+   */
+  get fluid() {
+    return this._fluid;
   }
 
   /**
@@ -58,7 +68,7 @@ export default class Drop extends GameObject {
   	this.svg.attr("height", this.size);
   	this.svg.attr("x", this.position.x);
   	this.svg.attr("y", this.position.y);
-  	this.svg.attr("fill", this.liquid.fill());
+  	this.svg.attr("fill", this._fluid.fill());
   };
 
   getVolume() {
@@ -96,8 +106,7 @@ export default class Drop extends GameObject {
 
   			if(obj instanceof Tank && obj.containsDrop(self) && obj.upOpened) {
           // add respective amount of fluid to the tank
-  				obj.addDrop(self);
-  				obj.updateLiquidSVG();
+  				obj.addDrop(self);  
 
   				// remove drop from world
   				world.removeDrop(self);

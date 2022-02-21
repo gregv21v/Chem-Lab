@@ -19,7 +19,7 @@ import * as d3 from "d3"
 import Snappable from "../Snappable";
 import Pipe from "../Pipe";
 import Drop from "../Drop";
-import Liquid from "../../Liquid";
+import Fluid from "../../Fluid";
 
 export default class Tank extends Snappable {
 
@@ -40,7 +40,10 @@ export default class Tank extends Snappable {
 	) {
 		super(center, {x: 0, y: 0}) 
 
-		this._chemicals = [] // the list of chemicals
+		// the list of fluids in the tank
+		this._fluids = [
+			new Fluid("Empty", 0, interior.width * interior.height, {red: 256, green: 256, blue: 256})
+		] 
 
 		// the open and closes sides
 		this._leftOpened = leftOpened;
@@ -50,7 +53,7 @@ export default class Tank extends Snappable {
 
 		this.currentLevel = 0;
 		this.maxLevel = interior.width * interior.height;
-		this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
+		//this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
 		this.interior = interior;
 		this.wallWidth = wallWidth;
 		this._position = center;
@@ -98,14 +101,22 @@ export default class Tank extends Snappable {
 	}
 
 
-  	/**
-	 * getLiquidHeight()
-	 * @description gets the height of the liquid in the tank
-	 * @returns the liquid's height in the tank
+	/**
+	 * getUpY()
+	 * @description get the y value for the top of the tank, below the inner wall
 	 */
-	getLiquidHeight () {
-		return this.interior.height * this.currentLevel / this.maxLevel;
-	};
+	getUpY() {
+		return this._position.y + this.wallWidth;
+	}
+
+	/**
+	 * getDownY()
+	 * @description get the y value for the bottom of the tank, below the inner wall
+	 */
+	getDownY() {
+		return this._position.y + this.interior.height + this.wallWidth;
+	}
+
 
 	/**
 	 * getLiquidY()
@@ -126,7 +137,7 @@ export default class Tank extends Snappable {
 			walls: mainSVG.append("rect"),
 			interiorVertical: mainSVG.append("rect"),
 			interiorHorizontal: mainSVG.append("rect"),
-			liquid: mainSVG.append("rect"),
+			fluids: mainSVG.append("g"),
 			label: mainSVG.append("text")
 		};
 
@@ -191,11 +202,7 @@ export default class Tank extends Snappable {
 		}
 
 		// setup liquid svg
-		this.svg.liquid.attr("width", this.interior.width);
-		this.svg.liquid.attr("height", this.getLiquidHeight());
-		this.svg.liquid.attr("x", this._position.x + this.wallWidth);
-		this.svg.liquid.attr("y", this.getLiquidY());
-		this.svg.liquid.style("fill", this.liquid.fill());
+		this.updateFluidsSVG()
 
 		// setup label svg
 		//this.svg.label.attr("fill", "black");
@@ -204,18 +211,66 @@ export default class Tank extends Snappable {
 	}
 
   	/**
-	 * updateLiquidSVG() 
+	 * updateFluidsSVG() 
 	 * @description updates the svg for the liquid in the tank
 	 */
-	updateLiquidSVG() {
-		this.svg.liquid.attr("height", this.getLiquidHeight());
-		this.svg.liquid.attr("y", this.getLiquidY());
+	updateFluidsSVG() {
+		
+		let lastY = this.getUpY()
+		for (const fluid of this._fluids) {
+			fluid.updateRect(
+				{
+					x: this._position.x + this.wallWidth,
+					y: lastY
+				}, this.interior.width
+			)
+			fluid.render(this.svg.fluids)
+			lastY = fluid.rect.position.y + fluid.rect.height
+			console.log(lastY)
+		}
+		console.log(this._fluids)
+	}
 
-		if(this.liquid)
-			this.svg.liquid.style("fill", this.liquid.fill());
+	/**
+	 * addFluid()
+	 * @description adds a fluid to the tank
+	 * @param {Fluid} fluid the fluid to add to the tank
+	 */
+	/**
+	 * new fluid("Water", 1, interior.width * 10, {red: 0, green: 0, blue: 256}),
+			new fluid("Olive Oil", 5, interior.width * 10, {red: 0, green: 256, blue: 0})
+	 */
+	addFluid(newFluid) {
 
-		this.svg.label.attr("x", this._position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-		this.svg.label.text(this.text);
+		// find the empty fluid
+		let emptySpace = null;
+		for (const fluid of this._fluids) {
+			if(fluid.name === "Empty") {
+				emptySpace = fluid
+			}
+		}
+
+		// add the fluid
+		if(emptySpace.volume > 0) {
+			emptySpace.volume -= newFluid.volume;
+
+			// search through the fluids to find the new fluid
+			let i = 0;
+			while(i < this._fluids.length && this._fluids[i].name !== newFluid.name) {
+				i++;
+			}
+
+			// if it doesn't exist add it
+			if(i >= this._fluids.length) {
+				this._fluids.push(newFluid);
+				this._fluids = this._fluids.sort((a, b) => a.density - b.density) 
+			} else { // otherwise combine the new fluid with the existing one
+				this._fluids[i].volume += newFluid.volume
+			}
+		}
+			
+
+		this.updateFluidsSVG()
 	}
 
 	/**
@@ -332,21 +387,7 @@ export default class Tank extends Snappable {
 	 * 			false if the tank is full
 	 */
 	addDrop(drop) {
-		// Handle liquid coloring and value
-		if(this.currentLevel == 0) {
-			this.liquid = drop.liquid;
-		} else if(this.currentLevel + drop.getVolume() <= this.maxLevel) {
-			this.liquid = Liquid.mix(this.liquid, drop.liquid);
-		}
-
-		// Handle liquid level
-		if(this.currentLevel + drop.getVolume() <= this.maxLevel) {
-			this.currentLevel += drop.getVolume();
-			this.text = "" + (this.currentLevel * this.liquid.value);
-			return true;
-		} else {
-			return false;
-		}
+		this.addFluid(drop.fluid);
 
 		// show percentage full ==> "(" + this.currentLevel + "/" + this.maxLevel + ")"
 
@@ -367,7 +408,7 @@ export default class Tank extends Snappable {
 		var touchingLiquid = (
 								drop.position.x >= this._position.x + this.wallWidth &&
 							 	drop.position.x <= this._position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this._position.y + this.interior.height - this.getLiquidHeight() &&
+							 	drop.position.y + drop.size >= this._position.y + this.interior.height &&
 							 	drop.position.y + drop.size <= this._position.y + this.interior.height
 							 )
 								||
@@ -375,7 +416,7 @@ export default class Tank extends Snappable {
 							 (
 							 	drop.position.x + drop.size >= this._position.x + this.wallWidth &&
 							 	drop.position.x + drop.size <= this._position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this._position.y + this.interior.height - this.getLiquidHeight() &&
+							 	drop.position.y + drop.size >= this._position.y + this.interior.height &&
 							 	drop.position.y + drop.size <= this._position.y + this.interior.height
 							 )
 
@@ -450,7 +491,7 @@ export default class Tank extends Snappable {
 		if(size * size <= this.currentLevel) {
 			this.currentLevel -= size * size;
 			this.text = "" + (this.currentLevel * this.liquid.value);
-			this.updateLiquidSVG();
+			this.updateFluidsSVG();
 			var drop = new Drop({x: 0, y: 0}, {x: 0, y: 0}, size, this.liquid);
 			if(this.currentLevel == 0) {
 				this.liquid = null;
@@ -466,15 +507,15 @@ export default class Tank extends Snappable {
 	 *	@description Empties the tank of all its liquid
 	 */
 	empty () {
-		this.currentLevel = 0;
+		/**this.currentLevel = 0;
 		this.liquid = null;
 		this.text = ""
 
-		this.updateLiquidSVG();
+		this.updateFluidsSVG();**/
 	};
 
 
-  /**
+    /**
 		topSnapBehaviour()
 		@description determines what happens when an Snappable snaps to
 			the top of another snappable
