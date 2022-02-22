@@ -69,11 +69,17 @@ export default class Drop extends GameObject {
   	this.svg.attr("x", this.position.x);
   	this.svg.attr("y", this.position.y);
   	this.svg.attr("fill", this._fluid.fill());
-  };
+  }
 
+
+
+  /**
+   * getVolume()
+   * @returns the volume of the drop
+   */
   getVolume() {
     return this.size * this.size;
-  };
+  }
 
 
   /*

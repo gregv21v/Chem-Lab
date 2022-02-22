@@ -29,10 +29,10 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 
 <strong> TODO:</strong>
 - Tanks
-  - Make it so that liquids can only enter sided tanks 
+  - Make it so that fluids can only enter sided tanks 
       through an open side. (partly done way done)
-  - Make it so tanks can hold multiple different liquids of 
-      different densities.
+  - make it so that fluids can pass through pipes again
+
 
 - Create the liquid distributor pipe
 - Create the liquid sorter pipe 

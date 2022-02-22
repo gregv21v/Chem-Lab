@@ -1,5 +1,5 @@
 /**
- * Rect - a rectangle
+ * Rect - a rectangle whose position starts at the top left corner
  */
 
 import * as d3 from "d3"
@@ -158,15 +158,31 @@ export default class Rect {
 		);
 	}
 
-	snapTo (object) {
-		// TODO: Implement rect snapping to other rectangles
+	/**
+	 * withinYRange()
+	 * @description checks whether this rectangle is within the y range 
+	 *  of another rectangle
+	 * @param {Rect} rect the other rectangle
+	 */
+	withinYRange(rect) {
+		return (
+			(
+				this._position.y < rect.position.y && 
+				this._position.y + this._height > rect.position.y
+			) || (
+				this._position.y < rect.position.y + rect.height &&
+				this._position.y + this._height > rect.position.y + rect.height
+			)
+		)
 	}
 
-
-
-	/*
-		Constructs a rectangle from two points.
-	*/
+	
+	/**
+	 * fromPoints()
+	 * @description creates a rectangle from two points
+	 * @param {Point} point1 the first point of the rectangle
+	 * @param {Point} point2 the second point of the rectangle
+	 */
 	fromPoints (point1, point2) {
 		if(point1.x < point2.x) {
 			this._position.x = point1.x;
@@ -185,6 +201,10 @@ export default class Rect {
 	};
 
 
+	/**
+	 * createSVG()
+	 * @deprecated in favor of render()
+	 */
 	createSVG() {
 		this.svg.attr("width", this._width);
 		this.svg.attr("height", this._height);
@@ -218,6 +238,14 @@ export default class Rect {
 	}
 
 	updateSVG() {
+		this._svg.attr("width", this._width);
+		this._svg.attr("height", this._height);
+		this._svg.attr("x", this._position.x);
+		this._svg.attr("y", this._position.y);
+		this._svg.attr("stroke-width", this._stroke.width);
+		this._svg.attr("stroke", this._stroke.color);
+		this._svg.attr("fill", this._fill.color);
+		this._svg.attr("fill-opacity", this._fill.opacity);
 	}
 
 }

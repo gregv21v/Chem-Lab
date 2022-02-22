@@ -1,7 +1,7 @@
 {
   "name": "chem-lab",
-  "version": "0.0.1",
-  "description": "a fun game that about mixing chemicals that has an educational component",
+  "version": "0.0.2",
+  "description": "a game that about mixing chemicals",
   "main": "index.js",
   "directories": {
     "lib": "lib"

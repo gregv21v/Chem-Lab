@@ -5,6 +5,7 @@
 import Snappable from "./Snappable"
 import Tank from "./tanks/Tank"
 import * as d3 from "d3"
+import Rect from "../shapes/Rect";
 
 export default class Pipe extends Snappable {
 
@@ -26,9 +27,17 @@ export default class Pipe extends Snappable {
   		interior: mainSVG.append("rect")
   	}
 
-  	//this.rect = this.getRect();
+  	
   	//this.updatePosition();
 
+  }
+
+  /**
+   * get rect()
+   * @description gets the rect for this pipe
+   */
+  get rect() {
+	  return new Rect(this.position, this.getWidth(), this.getHeight());
   }
 
   /**
@@ -189,10 +198,10 @@ export default class Pipe extends Snappable {
 		for(const tank of this.attachments[side]) { // for each tank attached to this pipe
 			if(tank instanceof Tank) {
 				let exitingDrops = this.takeExitingDrops(side); // take the exiting drops
-				for(var drop of exitingDrops) {
+				for(const drop of exitingDrops) {
 					tank.addDrop(drop);
 					drop.destroySVG()
-					tank.updateLiquidSVG()
+					tank.updateFluidsSVG()
 				}
      		}
       	}

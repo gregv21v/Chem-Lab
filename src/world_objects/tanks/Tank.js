@@ -201,6 +201,8 @@ export default class Tank extends Snappable {
 			}
 		}
 
+		this._fluids[0].render(this.svg.fluids)
+
 		// setup liquid svg
 		this.updateFluidsSVG()
 
@@ -224,11 +226,10 @@ export default class Tank extends Snappable {
 					y: lastY
 				}, this.interior.width
 			)
-			fluid.render(this.svg.fluids)
 			lastY = fluid.rect.position.y + fluid.rect.height
-			console.log(lastY)
+			//console.log(lastY)
 		}
-		console.log(this._fluids)
+		//console.log(this._fluids)
 	}
 
 	/**
@@ -243,16 +244,11 @@ export default class Tank extends Snappable {
 	addFluid(newFluid) {
 
 		// find the empty fluid
-		let emptySpace = null;
-		for (const fluid of this._fluids) {
-			if(fluid.name === "Empty") {
-				emptySpace = fluid
-			}
-		}
+		let emptyFluid = this.getEmptyFluid()
 
 		// add the fluid
-		if(emptySpace.volume > 0) {
-			emptySpace.volume -= newFluid.volume;
+		if(emptyFluid.volume > 0) {
+			emptyFluid.volume -= newFluid.volume;
 
 			// search through the fluids to find the new fluid
 			let i = 0;
@@ -270,6 +266,7 @@ export default class Tank extends Snappable {
 		}
 			
 
+		newFluid.render(this.svg.fluids);
 		this.updateFluidsSVG()
 	}
 
@@ -307,14 +304,19 @@ export default class Tank extends Snappable {
 			for(const pipe of this.attachments[side]) {
 				if(pipe instanceof Pipe) {
 					let drop;
+					let firstFluid = this.getFirstAccessibleFluid(pipe);
+					
 
 					// get a drop from the tank
-					if(this.pipeCanAccessLiquid(pipe)) {
-						drop = this.getDrop(pipe.getDropSize())
+					if(firstFluid) {
+						let dropSize = pipe.getDropSize()
+						console.log(dropSize);
+						drop = firstFluid.removeDrop(dropSize)
+						this.getEmptyFluid().addDrop(dropSize)
+						this.updateFluidsSVG();
 					} else {
 						drop = null;
 					}
-
 
 					// if pipe is there, move the drop to the pipe
 					if(drop) {
@@ -352,6 +354,19 @@ export default class Tank extends Snappable {
 		}
 	}
 
+	/**
+	 * getEmptyFluid() 
+	 * @description gets the empty fluid from the list of fluids
+	 * @returns the empty fluid
+	 */
+	getEmptyFluid() {
+		for (const fluid of this._fluids) {
+			if(fluid.name === "Empty") {
+				return fluid;
+			}
+		}
+	}
+
 
 	/**
 	 * createThumbnail() 
@@ -360,21 +375,20 @@ export default class Tank extends Snappable {
 
 
 	/**
-	 * pipeCanAccessLiquid()	
-	 * @description Checks to see if a given pipe can access the
-		liquid in the tank.	
-	 * @param {Pipe} pipe the pipe to check access to
-	 * @returns true if the pipe has access to the liquid
-	 * 			false if the pipe does not have access to the liquid
+	 * getFirstAccessibleFluid()	
+	 * @description Gets the fluid in the tank that the pipe can first access	
+	 * @param {Pipe} pipe the pipe find 
+	 * @returns true if the pipe has access to the fluid
+	 * 			false if the pipe does not have access to the fluid
 	 */
-	pipeCanAccessLiquid (pipe) {
-		// the opening of the pipe is even with the
-		// tanks liquid or above it.
-		var pipeY = pipe.getCenter().y + pipe.interiorHeight/2; // y bottom interior wall of pipe.
-		if(pipeY > this.getLiquidY()) {
-			return true;
-		} else {
-			return false;
+	getFirstAccessibleFluid(pipe) {
+
+		// search throught the list of fluids to find the first 
+		// accessible one by the pipe
+		for (const fluid of this._fluids) {
+			if(fluid.name !== "Empty" && pipe.rect.withinYRange(fluid.rect)) {
+				return fluid;
+			}
 		}
 
 	};
@@ -481,26 +495,7 @@ export default class Tank extends Snappable {
 		}
 	}
 
-  	/**
-	 * getDrop()
-	 * @description gets a drop from the tank of size size
-	 * @param {number} size the size of the drop
-	 * @returns a new drop of size size 
-	 */
-	getDrop (size) {
-		if(size * size <= this.currentLevel) {
-			this.currentLevel -= size * size;
-			this.text = "" + (this.currentLevel * this.liquid.value);
-			this.updateFluidsSVG();
-			var drop = new Drop({x: 0, y: 0}, {x: 0, y: 0}, size, this.liquid);
-			if(this.currentLevel == 0) {
-				this.liquid = null;
-			}
-			return drop;
-		} else
-			return null;
-	}
-
+  	
 
 	/**
 	 *	empty()

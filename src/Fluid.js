@@ -1,4 +1,5 @@
 import Rect from "./shapes/Rect";
+import Drop from "./world_objects/Drop";
 
 /**
  * Fluid - a fluid is a gas or a liquid
@@ -6,7 +7,7 @@ import Rect from "./shapes/Rect";
 export default class Fluid {
     /**
      * constructor()
-     * @description constructs the chemical
+     * @description constructs the fluid
      * @param {String} name the name of the fluid
      * @param {Number} density the density of the fluid
      * @param {Number} volume the volume of the chemical
@@ -28,6 +29,31 @@ export default class Fluid {
             color: this.fill()
         }
     }
+
+    /**
+	 * removeDrop()
+	 * @description removes a drop from the tank of size size
+	 * @param {number} size the size of the drop
+	 * @returns a drop of size size 
+	 */
+	removeDrop (size) {
+		if(size * size <= this.volume) {
+			this.volume -= size * size;
+			var drop = new Drop({x: 0, y: 0}, {x: 0, y: 0}, size, this);
+			return drop;
+		} else
+			return null;
+	}
+
+    /**
+     * addDrop()
+     * @description add a drop to the fluid
+     * @param {Number} size the size of the drop to add
+     */
+    addDrop(size) {
+        this.volume += size * size;
+    }
+
 
     /**
      * clone()
@@ -100,6 +126,8 @@ export default class Fluid {
         this._rect.width = width;
         this._rect.height = this._volume / width;
         this._rect.position = position;
+
+        this._rect.updateSVG();
     }
 
     /**
