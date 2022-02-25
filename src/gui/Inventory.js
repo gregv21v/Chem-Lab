@@ -15,6 +15,7 @@
 */
 import Slot from "./Slot";
 import Rect from "../shapes/Rect";
+import * as d3 from "d3"
 
 export default class Inventory {
 
@@ -28,9 +29,10 @@ export default class Inventory {
 	 * @param {Number} height the height of the inventory
 	 */
 	constructor(player, position, width, height) {
-		this.player = player;
-		this.slots = 3;
-		this.slotHeight = 80;
+		this.player = player; // the player the inventory belongs to 
+		this.slotHeight = 80; // the height of the slots 
+
+		// a rect that borders the inventory
 		this.rect = new Rect();
 		this.rect.position = position;
 		this.rect.width = width;
@@ -38,9 +40,33 @@ export default class Inventory {
 		this.rect.stroke.width = 10;
 		this.rect.stroke.color = "black";
 		this.rect.fill.color = "blue";
-		this.objs = [];
-		this.slots = [];
+
+
+		this.objs = []; // the GameObjects in the inventory
+		this.slots = []; // the Slots that the GameObjects fit in
 	}
+
+
+	/**
+	 * create() 
+	 * @description creates the graphics
+	 */
+	create(parent) {
+		this.rect.create(parent);
+	}
+
+	
+
+
+
+	/**
+	 * destroy()
+	 * @description destroys the svg for the button
+	 */
+	destroy() {
+
+	}
+
 
 
 	/**
@@ -48,9 +74,8 @@ export default class Inventory {
 	 * @description called when a key is pressed.
 	 */
 	onKeyPress(event) {
-		if(event.key === "Escape") { // not currently working
+		if(event.key === "Escape") { 
 			this.add(this.player.hand);
-			this.updateSVG()
 			this.player.hand.destroySVG()
 
 			this.player.hand = null;
@@ -65,38 +90,25 @@ export default class Inventory {
 	*/
 	createSlot(index) {
 		let newSlot = new Slot(this, index, this.rect.width, 80)
-		newSlot.setTextFill({color: "black"});
-		newSlot.setFill({color: "blue", opacity: 0.5});
-		newSlot.setName(this.objs[index].getName());
+
+		newSlot.create(d3.select("svg")); // creates the graphics for the slot
+
+		// style the slot
+		newSlot.styling = {
+			textColor: "black",
+			color: "blue",
+			opacity: 0.5,
+			strokeColor: "black",
+			strokeWidth: 5
+		}
+
+		newSlot.name = this.objs[index].getName();
 		newSlot.setDimensions(this.objs[index].getWidth(), this.objs[index].getHeight());
-		//newSlot.setLiquidType(this.objs[i].getLiquidType());
-		newSlot.setStroke({color: "black", width: 10});
 		newSlot.index = index;
 
 		return newSlot;
-	};
+	};	
 
-	/**
-		createSVG()
-		@description create the SVG graphics for the inventory
-	*/
-	createSVG() {
-		this.rect.createSVG();
-
-		for (const slot of this.slots) {
-			slot.createSVG()
-		}
-	}
-
-	
-
-	/**
-	 * updateSVG() 
-	 * @description updates the svg for this inventory
-	 */
-	updateSVG() {
-		
-	}
 
 	/**
 	 * remove()
@@ -108,26 +120,16 @@ export default class Inventory {
 		this.objs.splice(index, 1);
 
 		// remove the button
-		this.slots[index].destroySVG();
+		this.slots[index].destroy();
 		this.slots.splice(index, 1);
 
 		// resign indicies
 		for(var i = 0; i < this.slots.length; i++) {
 			this.slots[i].index = i;
 		}
-
-		// update the graphics
-		
-
 	}
 
-	getWidth() {
-		return this.rect.width + 20;
-	}
-
-	getHeight() {
-		return this.rect.height + 20;
-	}
+	
 
 	/**
 	 * add()
@@ -139,7 +141,6 @@ export default class Inventory {
 
 		let newSlot = this.createSlot(this.slots.length);
 		this.slots.push(newSlot)
-		newSlot.createSVG();
 	}
 
 	/**
@@ -155,7 +156,32 @@ export default class Inventory {
 		this.remove(index);
 	}
 
+	/**
+	 * contains()
+	 * @description checks whether a point is contained within the inventory
+	 * @param {Point} point the point to check for 
+	 * @returns true if the point is contained within the inventory
+	 */
 	contains(point) {
 		return this.rect.contains(point);
 	}
+
+	/**
+	 * get width()
+	 * @description gets the width of the inventory
+	 * @returns the width of the inventory
+	 */
+	get width() {
+		return this.rect.width + 20
+	}
+
+	/**
+	 * get width()
+	 * @description gets the width of the inventory
+	 * @returns the width of the inventory
+	 */
+	get height() {
+		return this.rect.height + 20;
+	}
+
 }

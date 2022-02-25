@@ -20,6 +20,7 @@ import Snappable from "../Snappable";
 import Pipe from "../Pipe";
 import Drop from "../Drop";
 import Fluid from "../../Fluid";
+import EmptyFluid from "../../EmptyFluid";
 
 export default class Tank extends Snappable {
 
@@ -42,7 +43,7 @@ export default class Tank extends Snappable {
 
 		// the list of fluids in the tank
 		this._fluids = [
-			new Fluid("Empty", 0, interior.width * interior.height, {red: 256, green: 256, blue: 256})
+			new EmptyFluid(interior.width * interior.height)
 		] 
 
 		// the open and closes sides
@@ -51,9 +52,6 @@ export default class Tank extends Snappable {
 		this._upOpened = upOpened;
 		this._downOpened = downOpened;
 
-		this.currentLevel = 0;
-		this.maxLevel = interior.width * interior.height;
-		//this.liquid = new Liquid(0, {red: 0, green: 0, blue: 0});
 		this.interior = interior;
 		this.wallWidth = wallWidth;
 		this._position = center;
@@ -137,9 +135,13 @@ export default class Tank extends Snappable {
 			walls: mainSVG.append("rect"),
 			interiorVertical: mainSVG.append("rect"),
 			interiorHorizontal: mainSVG.append("rect"),
-			fluids: mainSVG.append("g"),
-			label: mainSVG.append("text")
+			fluids: mainSVG.append("g")
 		};
+
+		this.svg.walls.attr("name", "walls")
+		this.svg.interiorHorizontal.attr("name", "interiorHorizontal")
+		this.svg.interiorVertical.attr("name", "interiorVertical")
+		this.svg.fluids.attr("fluids")
 
 		this.updateSVG()
 	}
@@ -159,6 +161,7 @@ export default class Tank extends Snappable {
 		this.svg.walls.attr("x", this._position.x);
 		this.svg.walls.attr("y", this._position.y);
 		this.svg.walls.style("fill", this.wallColor);
+		
 
 		// setup interior svg
 		this.svg.interiorVertical.attr("height", this.interior.height);
@@ -201,7 +204,7 @@ export default class Tank extends Snappable {
 			}
 		}
 
-		this._fluids[0].render(this.svg.fluids)
+		this.getEmptyFluid().create(this.svg.fluids)
 
 		// setup liquid svg
 		this.updateFluidsSVG()
@@ -230,6 +233,17 @@ export default class Tank extends Snappable {
 			//console.log(lastY)
 		}
 		//console.log(this._fluids)
+	}
+	
+
+	/**
+	 * removeVolumelessFluids()
+	 * @description removes any fluids that have a volume of 0
+	 */
+	removeVolumelessFluids() {
+		this._fluids.filter((fluid) => {
+			return !(fluid instanceof EmptyFluid) && fluid.volume <= 0;
+		})
 	}
 
 	/**
@@ -266,7 +280,7 @@ export default class Tank extends Snappable {
 		}
 			
 
-		newFluid.render(this.svg.fluids);
+		newFluid.create(this.svg.fluids);
 		this.updateFluidsSVG()
 	}
 
@@ -310,8 +324,9 @@ export default class Tank extends Snappable {
 					// get a drop from the tank
 					if(firstFluid) {
 						let dropSize = pipe.getDropSize()
-						console.log(dropSize);
+						//console.log(dropSize);
 						drop = firstFluid.removeDrop(dropSize)
+						this.removeVolumelessFluids()
 						this.getEmptyFluid().addDrop(dropSize)
 						this.updateFluidsSVG();
 					} else {
@@ -361,7 +376,7 @@ export default class Tank extends Snappable {
 	 */
 	getEmptyFluid() {
 		for (const fluid of this._fluids) {
-			if(fluid.name === "Empty") {
+			if(fluid instanceof EmptyFluid) {
 				return fluid;
 			}
 		}
@@ -386,7 +401,7 @@ export default class Tank extends Snappable {
 		// search throught the list of fluids to find the first 
 		// accessible one by the pipe
 		for (const fluid of this._fluids) {
-			if(fluid.name !== "Empty" && pipe.rect.withinYRange(fluid.rect)) {
+			if(!(fluid instanceof EmptyFluid) && pipe.rect.withinYRange(fluid.rect)) {
 				return fluid;
 			}
 		}

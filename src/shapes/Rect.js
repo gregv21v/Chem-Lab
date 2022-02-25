@@ -5,6 +5,13 @@
 import * as d3 from "d3"
 
 export default class Rect {
+	/**
+	 * constructor()
+	 * @description constructs the Rect
+	 * @param {Point} position the position of the Rect, top left corner
+	 * @param {Number} width the width of the rect
+	 * @param {Number} height the height of the rect
+	 */
 	constructor(position={x: 0, y: 0}, width=0, height=0) {
 		this._width = width;
 		this._height = height;
@@ -21,96 +28,17 @@ export default class Rect {
 		let mainSVG = d3.select("body").select("svg")
 		this.svg = mainSVG.append("rect");
 
+		this.svg.attr("name", "rect")
+
 		this._svg = d3.create("svg:rect")
 	}
 
-	/**
-	 * set fill()
-	 * @description sets the fill of the rectangle
-	 * @param {Object} value the object to set the fill to. The object has a color, and opacity values
-	 */
-	set fill(value) {
-		this._fill = value;
-	}
-
-	/**
-	 * get fill()
-	 * @description gets the fill of this rect
-	 */
-	get fill() {
-		return this._fill
-	}
-
-	/**
-	 * set stroke()
-	 * @description sets the stroke of the rectangle
-	 * @param {Object} value the object to set the stoke to. The object has a color, and width values
-	 */
-	set stroke(value) {
-		this._stroke = value;
-	}
-
-	/**
-	 * get stroke()
-	 * @description gets the stroke of this rect
-	 */
-	get stroke() {
-		return this._stroke
-	}
-
-	/**
-	 * get width()
-	 * @returns the width of the rect
-	 */
-	get width() {
-		return this._width;
-	}
-
-	/**
-	 * set width()
-	 * @description set the width
-	 * @param {Number} value the value to set width to
-	 */
-	set width(value) {
-		this._width = value;
-	}
-
-	/**
-	 * get height()
-	 * @returns the height of the rect
-	 */
-	get height() {
-		return this._height;
-	}
-
-	/**
-	 * set height()
-	 * @description set the width
-	 * @param {Number} value the value to set width to
-	 */
-	set height(value) {
-		this._height = value;
-	}
-
-	/**
-	 * get position()
-	 * @returns the position of the rect
-	 */
-	get position() {
-		return this._position;
-	}
-
-	/**
-	 * set position()
-	 * @description sets the position of the rect
-	 */
-	set position(value) {
-		this._position = value;
-	}
+	
 
 	/**
 	 * getCenter()
 	 * @returns the center point of the rectangle
+	 * @deprecated in favor of get center()
 	 */
 	getCenter() {
 		return {
@@ -201,6 +129,9 @@ export default class Rect {
 	};
 
 
+	
+
+
 	/**
 	 * createSVG()
 	 * @deprecated in favor of render()
@@ -214,13 +145,16 @@ export default class Rect {
 		this.svg.attr("stroke", this._stroke.color);
 		this.svg.attr("fill", this._fill.color);
 		this.svg.attr("fill-opacity", this._fill.opacity);
+		this.svg.attr("name", "rect")
 	}
 
+	
+
 	/**
-	 * render()
+	 * create()
 	 * @param {SVG} parent the parent SVG to append this rect to
 	 */
-	render(parent) {
+	create(parent) {
 		parent.append(() => this._svg.node())
 
 		this._svg.attr("width", this._width);
@@ -246,6 +180,90 @@ export default class Rect {
 		this._svg.attr("stroke", this._stroke.color);
 		this._svg.attr("fill", this._fill.color);
 		this._svg.attr("fill-opacity", this._fill.opacity);
+	}
+
+	/**
+	 * set fill()
+	 * @description sets the fill of the rectangle
+	 * @param {Object} value the object to set the fill to. The object has a color, and opacity values
+	 */
+	 set fill(value) {
+		this._fill = value;
+	}
+
+	/**
+	 * get fill()
+	 * @description gets the fill of this rect
+	 */
+	get fill() {
+		return this._fill
+	}
+
+	/**
+	 * set stroke()
+	 * @description sets the stroke of the rectangle
+	 * @param {Object} value the object to set the stoke to. The object has a color, and width values
+	 */
+	set stroke(value) {
+		this._stroke = value;
+	}
+
+	/**
+	 * get stroke()
+	 * @description gets the stroke of this rect
+	 */
+	get stroke() {
+		return this._stroke
+	}
+
+	/**
+	 * get width()
+	 * @returns the width of the rect
+	 */
+	get width() {
+		return this._width;
+	}
+
+	/**
+	 * set width()
+	 * @description set the width
+	 * @param {Number} value the value to set width to
+	 */
+	set width(value) {
+		this._width = value;
+	}
+
+	/**
+	 * get height()
+	 * @returns the height of the rect
+	 */
+	get height() {
+		return this._height;
+	}
+
+	/**
+	 * set height()
+	 * @description set the width
+	 * @param {Number} value the value to set width to
+	 */
+	set height(value) {
+		this._height = value;
+	}
+
+	/**
+	 * get position()
+	 * @returns the position of the rect
+	 */
+	get position() {
+		return this._position;
+	}
+
+	/**
+	 * set position()
+	 * @description sets the position of the rect
+	 */
+	set position(value) {
+		this._position = value;
 	}
 
 }

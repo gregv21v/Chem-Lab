@@ -10,7 +10,6 @@ import Valve from "./world_objects/Valve"
 import Pipe from "./world_objects/Pipe"
 import Tank from "./world_objects/tanks/Tank"
 import Pump from "./world_objects/Pump"
-import Button from "./gui/buttons/Button"
 import * as d3 from "d3"
 
 export default class Player {
@@ -22,29 +21,37 @@ export default class Player {
   constructor() {
     let svg = d3.select("svg");
     let height = svg.attr("height") - 30;
-    let self = this;
 
-    this.hand = null;
+    this._hand = null;
+
+    
 
     this.world = new World(this, {x: 270, y: 20}, svg.attr("width") - (270 + 400), height);
+
     this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25);
+    this.inventory.create(svg);
+
     this.credits = new ValueBox({x: 20, y: 20}, 250, 25);
-    this.credits.setFill({color: "red"})
-    this.credits.setTextFill({color: "black"})
-    this.credits.setStroke({color: "black", width: 10})
-    this.credits.setLabel("Coins");
-    this.credits.setValue(0)
+    this.credits.create(svg)
+
+    this.credits.styling = {
+      color: "red",
+      textColor: "black",
+      strokeColor: "black",
+      strokeWidth: 10
+    }
+
+    this.credits.label = "Coins";
+    this.credits.value = 0;
 
     // add example items to the players inventory
 
     this.inventory.add(new Valve(
       {
-        x: this.inventory.getWidth() + this.world.getWidth()/2,
+        x: this.inventory.width + this.world.getWidth()/2,
         y: this.world.getHeight()/2
       },
-      20,
-      10,
-      5
+      20, 10, 5
     ));
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 50, height: 50}, 5));
@@ -52,21 +59,6 @@ export default class Player {
     this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));
 
     //this.inventory.createSlots();
-
-
-
-    /**this.sellBtn = new Button(
-      {
-        x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button,
-        y: this.world.getHeight() - 35 /* Space for the button
-      },
-      208,
-      30
-    );*/
-    //this.sellBtn.setText("Sell");
-    //this.sellBtn.setFill({color: "red"});
-    //this.sellBtn.setStroke({color: "blue", width: 2})
-
 
     /**
      * Test Tanks
@@ -105,8 +97,8 @@ export default class Player {
     // positioned sell tank at center of world.
     var sellTank = new Tank(
       {
-        x: this.inventory.getWidth() + this.world.getWidth()/2 - 100, /* border width of sell button */
-        y: this.inventory.getHeight() - 50 - 6 // Space for the button
+        x: this.inventory.width + this.world.getWidth()/2 - 100, /* border width of sell button */
+        y: this.inventory.height - 50 - 6 // Space for the button
       },
       {
         width: 200,
@@ -134,7 +126,7 @@ export default class Player {
     })*/
 
     var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
-    startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
+    startPump.position.x = this.inventory.width + this.world.getWidth()/2 - startPump.getWidth()/2;
     startPump.position.y = startPump.getWidth() + startPump.production;
 
     var testValve = new Valve(
@@ -152,15 +144,19 @@ export default class Player {
 
 
 
-    for (const tank of testTanks) {
-      ;//this.world.add(tank)
-    }
     this.world.add(sellTank);
     this.world.add(startPump);
     //this.world.add(testValve)
     //this.world.add(testFaucet);
   }
 
+  /**
+   * create()
+   * @description creates the player
+   */
+  create() {
+    this.world.createSVG()
+  }
 
   update() {
     var self = this;
@@ -168,17 +164,6 @@ export default class Player {
       self.world.update();
     }, 20);
   };
-
-  createSVG() {
-
-    this.inventory.createSVG();
-    this.world.createSVG();
-    //this.sellBtn.createSVG();
-    this.credits.createSVG();
-
-    // show-hide snap areas
-    //this.world.showSnapAreas();
-  }
 
   /**
    * onKeyPress()
@@ -188,11 +173,18 @@ export default class Player {
     this.inventory.onKeyPress(event);
 
     console.log(event.key)
-    if(event.key === 'r' && this.hand instanceof Pipe) {
-      console.log("rotating");
-      this.hand.rotate();
-      this.hand.updateSVG();
+    if(event.key === 'r' && this._hand instanceof Pipe) {
+      this._hand.rotate();
+      this._hand.updateSVG();
     }
+  }
+
+  /**
+   * get hand()
+   * @returns the object in the players hand
+   */
+  get hand() {
+    return this._hand;
   }
 
 }

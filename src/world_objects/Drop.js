@@ -10,7 +10,6 @@ import ToolTip from "../gui/ToolTip";
 import Tank from "./tanks/Tank";
 import * as d3 from "d3"
 import GameObject from "./GameObject";
-import Substance from "../Fluid";
 
 export default class Drop extends GameObject {
   /**
@@ -28,6 +27,7 @@ export default class Drop extends GameObject {
 
     let mainSVG = d3.select("body").select("svg")
   	this.svg = mainSVG.append("rect");
+    this.svg.attr("name", "drop")
     this.direction = "" // the direction that the drop is traveling in
 
     this.tooltip = new ToolTip(

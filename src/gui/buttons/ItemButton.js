@@ -1,5 +1,5 @@
 /*
-  Button - A button for a game objects
+  Button - A button for a GameObjects
 
   The button displays the stats of an item as follows:
 
@@ -15,56 +15,72 @@
   Liquid: Water
 
 */
-import * as d3 from "d3"
 import Button from "./Button"
+import * as d3 from "d3"
 
 export default class ItemButton extends Button {
+  /**
+   * constructor() 
+   * @description constructs the itemButton
+   * @param {Point} position the position of the button
+   * @param {Number} width the width of the button
+   * @param {Number} height the height of the button
+   */
   constructor(position, width, height) {
     super(position, width, height)
 
-    this.nameText = "Item"
-    this.dimensionsText = "A X B"
-    this.liquidTypeText = "Water"
-    this.isLiquid = false;
+    this._item = undefined; // the item attached to this button
 
-    var mainSVG = d3.select("body").select("svg")
-    this.svg = {
-  		rect: mainSVG.append("rect"),
-  		clickBox: mainSVG.append("rect"),
-      name: mainSVG.append("text"),
-      dimensions: mainSVG.append("text"),
-      liquidType: mainSVG.append("text")
-    }
+    this._nameText = "Item"
+    this._dimensionsText = "A X B"
+    this._FluidTypeText = "Water"
+    this._isFluid = false;
   }
 
+  
+
   /**
-	 * set position
-	 * @description sets the position of the Button
-	 * @param {Point} value the new position of the button
+	 * create() 
+	 * @description creates the graphics and attach it to the parent
+   * @param {HTMLElement} parent the parent element to attach the svg to
 	 */
-	set position(value) {
-		this._position = value; 
+	create(parent) {
+    this._group = d3.create("svg:g")
+    parent.append(() => this._group.node())
 
-		// add name text
-    this.svg.name.attr("x", this._position.x + 10);
-  	this.svg.name.attr("y", this._position.y + 20);
+    let self = this;
 
-
-    // add dimensions text
-    this.svg.dimensions.attr("x", this._position.x + 10);
-  	this.svg.dimensions.attr("y", this._position.y + 40);
-
-    // add liquid type text
-    if(this.isLiquid) {
-      this.svg.liquidType.attr("x", this._position.x + 10);
-    	this.svg.liquidType.attr("y", this._position.y + 60);
+    this._svg = {
+  		rect: this._group.append("rect"),
+      name: this._group.append("text"),
+      dimensions: this._group.append("text"),
+      fluidType: this._group.append("text"),
+      clickBox: this._group.append("rect"),
     }
 
-    this.svg.clickBox.attr("x", this._position.x);
-		this.svg.clickBox.attr("y", this._position.y);
+    this._group.attr("name", "ItemButton")
+    this._svg.rect.attr("name", "rect")
+    this._svg.name.attr("name", "name")
+    this._svg.dimensions.attr("name", "dimensions")
+    this._svg.fluidType.attr("name", "fluidType")
+    this._svg.clickBox.attr("name", "clickBox")
 
-		this.svg.rect.attr("x", this._position.x);
-		this.svg.rect.attr("y", this._position.y);
+    this._svg.clickBox.style("fill-opacity", 0);
+    this._svg.clickBox.on("click", () => self.onClick())
+
+    this.width = this._width;
+		this.height = this._height;
+		this.position = this._position;
+
+    this.styling = {
+      color: "blue", 
+      opacity: 0.5,
+      strokeColor: "black",
+      strokeWidth: 10,
+      textColor: "black",
+      textOpacity: 1
+    }
+
 	}
 
   /**
@@ -75,63 +91,43 @@ export default class ItemButton extends Button {
   createTextSVG(svgMain) {
 
     // add name text
-    this.svg.name.attr("x", this._position.x + 10);
-  	this.svg.name.attr("y", this._position.y + 20);
-    this.svg.name.text(this.nameText)
+    this._svg.name.attr("x", this._position.x + 10);
+  	this._svg.name.attr("y", this._position.y + 20);
+    this._svg.name.text(this._nameText)
 
 
     // add dimensions text
-    this.svg.dimensions.attr("x", this._position.x + 10);
-  	this.svg.dimensions.attr("y", this._position.y + 40);
-    this.svg.dimensions.text(this.dimensionsText)
+    this._svg.dimensions.attr("x", this._position.x + 10);
+  	this._svg.dimensions.attr("y", this._position.y + 40);
+    this._svg.dimensions.text(this._dimensionsText)
 
     // add liquid type text
-    if(this.isLiquid) {
-      this.svg.liquidType.attr("x", this._position.x + 10);
-    	this.svg.liquidType.attr("y", this._position.y + 60);
-      this.svg.liquidType.text(this.liquidTypeText)
+    if(this._isFluid) {
+      this._svg.fluidType.attr("x", this._position.x + 10);
+    	this._svg.fluidType.attr("y", this._position.y + 60);
+      this._svg.fluidType.text(this._fluidTypeText)
     }
 
   };
 
+
   /**
-		destroySVG()
-		@description destroys the svg
-	*/
-  destroySVG() {
-  	this.svg.name.remove();
-    this.svg.dimensions.remove();
-    this.svg.liquidType.remove();
-  	this.svg.rect.remove();
-  	this.svg.clickBox.remove();
+   * set item()
+   * @description sets the item of this ItemButton
+   * @param {Item} the item to set the item button to
+   */
+  set item(value) {
+    this._item = value;
   }
 
   /**
-		destroySVG()
-		@description sets the fill for the text of the item button
-    @param fill an object with fill properties to set the text to
-	*/
-  setTextFill(fill) {
-  	if(fill.hasOwnProperty("color")) {
-  		this.svg.name.style("fill", fill.color);
-      this.svg.dimensions.style("fill", fill.color);
-      this.svg.liquidType.style("fill", fill.color);
-    }
-  	if(fill.hasOwnProperty("opacity")) {
-      this.svg.name.style("fill-opacity", fill.opacity);
-      this.svg.dimensions.style("fill-opacity", fill.opacity);
-      this.svg.liquidType.style("fill-opacity", fill.opacity);
-    }
-  };
-
-  /**
-		setName()
-		@description sets the nume of the item button
+		set name()
+		@description sets the name of the item button
     @param name name to be set to
 	*/
-  setName(name) {
-  	this.svg.name.text(name);
-  	this.nameText = name;
+  set name(value) {
+  	this._svg.name.text(value);
+  	this._nameText = value;
   };
 
   /**
@@ -141,18 +137,86 @@ export default class ItemButton extends Button {
     @param height the height of the item
 	*/
   setDimensions(width, height) {
-  	this.svg.dimensions.text(width + "X" + height);
-  	this.dimensionsText = width + "X" + height;
+  	this._svg.dimensions.text(width + "X" + height);
+  	this._dimensionsText = width + "X" + height;
   };
 
 
   /**
-    setLiquidType()
-    @description sets the liquid type of the button
-    @param liquid the liquide of the item button
+	 * set styling
+	 * @description sets the styling of the button
+	 * @param {Object} styling the styling of the object
+	 * 
+	 * attributes:
+	 * 	color - the color of the button
+	 *  opacity - the opacity of the button
+	 *  strokeColor - the color of the stroke of the border of the button
+	 *  strokeWidth - the width of the stroke of the border of the button
+	 *  textColor - the color of the buttons label
+	 *  textOpacity - the opacity of the buttons label
+	 */
+	set styling(value) {
+	  this._styling = value;
+ 
+		if(value.hasOwnProperty("color"))
+      this._svg.rect.style("fill", value.color);
+
+		if(value.hasOwnProperty("opacity"))
+			this._svg.rect.style("fill-opacity", value.opacity);
+
+		if(value.hasOwnProperty("textColor")) {
+      this._svg.name.style("fill", value.textColor);
+      this._svg.dimensions.style("fill", value.textColor);
+      this._svg.fluidType.style("fill", value.textColor);
+    }
+
+		if(value.hasOwnProperty("strokeColor"))
+			this._svg.rect.style("stroke", value.strokeColor);
+		
+		if(value.hasOwnProperty("strokeWidth"))
+			this._svg.rect.style("stroke-width", value.strokeWidth);
+		
+	}
+
+
+  /**
+    set fluidType()
+    @description sets the fluid type of the button
+    @param value the name of the fluid type
   */
-  setLiquidType(liquid) {
-  	this.svg.liquidType.text(liquid);
-  	this.liquidTypeText = liquid;
+  set fluidType(value) {
+  	this._svg.fluidType.text(value);
+  	this.fluidTypeText = value;
   };
+
+
+  /**
+	 * set position
+	 * @description sets the position of the Button
+	 * @param {Point} value the new position of the button
+	 */
+	set position(value) {
+		this._position = value; 
+
+		// add name text
+    this._svg.name.attr("x", this._position.x + 10);
+  	this._svg.name.attr("y", this._position.y + 20);
+
+
+    // add dimensions text
+    this._svg.dimensions.attr("x", this._position.x + 10);
+  	this._svg.dimensions.attr("y", this._position.y + 40);
+
+    // add liquid type text
+    if(this._isFluid) {
+      this._svg.fluidType.attr("x", this._position.x + 10);
+    	this._svg.fluidType.attr("y", this._position.y + 60);
+    }
+
+    this._svg.clickBox.attr("x", this._position.x);
+		this._svg.clickBox.attr("y", this._position.y);
+
+		this._svg.rect.attr("x", this._position.x);
+		this._svg.rect.attr("y", this._position.y);
+	}
 }

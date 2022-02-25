@@ -25,16 +25,15 @@ export default class Valve extends Pipe {
     this.interiorHeight = interiorHeight;
     this.wallWidth = wallWidth;
 
-    let mainSVG = d3.select("body").select("svg")
     this.svg = {
       // walls of the valve
-      walls: mainSVG.append("rect"),
+      walls: this._group.append("rect"),
       // inner portion of the pipe.
-      interior: mainSVG.append("rect"),
+      interior: this._group.append("rect"),
       // indicator if liquid can travel through the pipe.
-      latch: mainSVG.append("rect"),
+      latch: this._group.append("rect"),
       // the rect to toggle the latch open and closed
-      toggle: mainSVG.append("rect")
+      toggle: this._group.append("rect")
     }
 
     var self = this

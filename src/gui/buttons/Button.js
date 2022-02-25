@@ -1,170 +1,67 @@
 /*
 	Button - A button
 */
+import Drawable from "../../Drawable";
 import * as d3 from "d3"
-export default class Button {
-	constructor(position, width, height) {
-		this._position = position;
-		this.width = width;
-		this.height = height;
-		this.text = "";
 
-		var mainSVG = d3.select("body").select("svg")
-		this.svg = {
-			rect: mainSVG.append("rect"),
-			label: mainSVG.append("text"),
-			clickBox: mainSVG.append("rect")
-		};
-	}
-
+export default class Button extends Drawable {
 	/**
-	 * set position
-	 * @description sets the position of the Button
-	 * @param {Point} value the new position of the button
+	 * constructor()
+	 * @description constructs the Button
+	 * @param {Point} position the position of the button
+	 * @param {Number} width the width of the button
+	 * @param {Number} height the height of the button
 	 */
-	set position(value) {
-		this._position = value; 
-
-		this.svg.clickBox.attr("x", this._position.x);
-		this.svg.clickBox.attr("y", this._position.y);
-
-		this.svg.rect.attr("x", this._position.x);
-		this.svg.rect.attr("y", this._position.y);
-
-		this.svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
-		this.svg.label.attr("y", this._position.y + this.height/2 + 5);
+	constructor(position, width, height) {
+		super(position)
+		this._width = width;
+		this._height = height;
+		this._text = "";
 	}
 
-	/*
-		Creates the graphics for the overlay of the
-		button
-	*/
-	createOverlaySVG() {
+
+	/**
+	 * create() 
+	 * @description creates the graphics and attach it to the parent
+	 */
+	create(parent) {
+		this._group = d3.create("svg:g")
+		parent.append(() => this._group.node())
 		let self = this;
+	
+		this._svg = {
+			rect: this._group.append("rect"),
+			innerRect: this._group.append("rect"),
+			label: this._group.append("text"),
+			clickBox: this._group.append("rect")
+		};
 
-		// click overlay
-		this.svg.clickBox.attr("x", this._position.x);
-		this.svg.clickBox.attr("y", this._position.y);
-		this.svg.clickBox.attr("width", this.width);
-		this.svg.clickBox.attr("height", this.height);
-		this.svg.clickBox.style("fill", "white");
-		this.svg.clickBox.style("fill-opacity", 0);
-		this.svg.clickBox.on("click", () => self.onClick())
+		this._group.attr("name", "Button")
+		this._svg.rect.attr("name", "rect")
+		this._svg.innerRect.attr("name", "innerRect")
+		this._svg.label.attr("name", "label")
+		this._svg.clickBox.attr("name", "clickBox")
+
+		this._svg.clickBox.style("fill-opacity", 0)
+		this._svg.clickBox.on("click", () => self.onClick())
+
+		// initialize the attributes of the Button
+		this.width = this._width;
+		this.height = this._height;
+		this.position = this._position;
+		this.text = this._text;
+
+		this.styling = {
+			color: "blue", 
+			opacity: 0.5,
+			strokeColor: "black",
+			strokeWidth: 10,
+			textColor: "black",
+			textOpacity: 1
+		}
+
+			
 	}
-
-	/*
-		Creates the graphics for the background of
-		the button
-	*/
-	createBackgroundSVG() {
-		// background
-		this.svg.rect.attr("x", this._position.x);
-		this.svg.rect.attr("y", this._position.y);
-		this.svg.rect.attr("width", this.width);
-		this.svg.rect.attr("height", this.height);
-		this.svg.rect.attr("class", "Button");
-	}
-
-	/**
-		createTextSVG()
-		@description Creates the graphics for the text of the
-		Button
-	*/
-	createTextSVG() {
-		this.svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
-		this.svg.label.attr("y", this._position.y + this.height/2 + 5);
-	}
-
-	/**
-		createSVG()
-		@description create the svg for the button
-	*/
-	createSVG() {
-		this.createBackgroundSVG()
-		this.createTextSVG()
-		this.createOverlaySVG()
-	};
-
-	/**
-		destroySVG()
-		@description destroys the svg for the button
-	*/
-	destroySVG() {
-		this.svg.label.remove();
-		this.svg.rect.remove();
-		this.svg.clickBox.remove();
-	}
-
-
-	/**
-		setFill()
-		@description sets the fill for the button
-		@param fill an object with the color the button
-			will be filled with, can include opacity
-	*/
-	setFill(fill) {
-		if(fill.hasOwnProperty("color"))
-			this.svg.rect.style("fill", fill.color);
-		if(fill.hasOwnProperty("opacity"))
-			this.svg.rect.style("fill-opacity", fill.opacity);
-	};
-
-	/**
-		setTextFill()
-		@description sets the fill for the button's text
-		@param fill an object with the color the button's text
-			will be filled with, can include opacity
-	*/
-	setTextFill(fill) {
-		if(fill.hasOwnProperty("color"))
-			this.svg.label.style("fill", fill.color);
-		if(fill.hasOwnProperty("opacity"))
-			this.svg.label.style("fill-opacity", fill.opacity);
-	};
-
-
-	/**
-		setStroke()
-		@description sets the stroke properties for the button
-		@param stroke an object with the stroke properties to be set
-	*/
-	setStroke(stroke) {
-		if(stroke.hasOwnProperty("color"))
-			this.svg.rect.style("stroke", stroke.color);
-		if(stroke.hasOwnProperty("width"))
-			this.svg.rect.style("stroke-width", stroke.width);
-	};
-
-	/**
-		setText()
-		@description sets the text of the button
-		@param text the text to set the button to
-	*/
-	setText(text) {
-		this.svg.label.text(text);
-		this.text = text;
-	};
-
-	/**
-		setOnClickWithParam()
-		@description sets the buttons on click function with parameters
-		@param onClick the function to call when the button is clicked
-		@param param an object with the parameters for the onclick function
-	*/
-	setOnClickWithParam(onClick, param) {
-		this.svg.clickBox.on('click', function() {
-			onClick(param);
-		});
-	};
-
-	/**
-		setOnClick()
-		@description sets the buttons on click function
-		@param onClick the function to call when the button is clicked
-	*/
-	setOnClick(onClick) {
-		this.svg.clickBox.on('click', onClick);
-	};
 
 	/**
 	 * onClick()
@@ -174,6 +71,121 @@ export default class Button {
 		// do nothing
 	}
 
-}
 
-//export default Button
+	/**
+	 * set styling
+	 * @description sets the styling of the button
+	 * @param {Object} styling the styling of the object
+	 * 
+	 * attributes:
+	 * 	color - the color of the button
+	 *  opacity - the opacity of the button
+	 *  strokeColor - the color of the stroke of the border of the button
+	 *  strokeWidth - the width of the stroke of the border of the button
+	 *  textColor - the color of the buttons label
+	 *  textOpacity - the opacity of the buttons label
+	 */
+	set styling(value) {
+		this._styling = value;
+
+		if(value.hasOwnProperty("color"))
+			this._svg.rect.style("fill", value.color);
+
+		if(value.hasOwnProperty("fillOpacity"))
+			this._svg.rect.style("fill-opacity", value.opacity);
+
+		if(value.hasOwnProperty("textColor"))
+			this._svg.label.style("fill", value.textColor);
+
+		if(value.hasOwnProperty("strokeColor"))
+			this._svg.rect.style("stroke", value.strokeColor);
+		
+		if(value.hasOwnProperty("strokeWidth"))
+			this._svg.rect.style("stroke-width", value.strokeWidth);
+		
+	}
+
+
+
+	/**
+	 * set position
+	 * @description sets the position of the Button
+	 * @param {Point} value the new position of the button
+	 */
+	set position(value) {
+		this._position = value; 
+
+		this._svg.clickBox.attr("x", this._position.x);
+		this._svg.clickBox.attr("y", this._position.y);
+
+		this._svg.rect.attr("x", this._position.x);
+		this._svg.rect.attr("y", this._position.y);
+
+		this._svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
+		this._svg.label.attr("y", this._position.y + this.height/2 + 5);
+	}
+
+
+	/**
+	 * get width()
+	 * @description gets the width of the button
+	 * @returns the width of the button 
+	 */
+	get width() {
+		return this._width;
+	}
+
+	/**
+	 * set width()
+	 * @description sets the width of the button
+	 * @param {Number} value the value to set the width to
+	 */
+	set width(value) {
+		this._width = value;
+
+		this._svg.clickBox.attr("width", this._width);
+		this._svg.rect.attr("width", this._width);
+	}
+
+	/**
+	 * get height()
+	 * @description gets the height of the button
+	 * @returns the height of the button 
+	 */
+	get height() {
+		return this._height;
+	}
+
+	/**
+	 * set height()
+	 * @description sets the height of the button
+	 * @param {Number} value the value to set the height to
+	 */
+	set height(value) {
+		this._height = value;
+
+		this._svg.clickBox.attr("height", this._height);
+		this._svg.rect.attr("height", this._height);
+	}
+
+	/**
+	 * get text()
+	 * @description gets the text of the button
+	 * @returns the text of the button 
+	 */
+	get text() {
+		return this._text;
+	}
+
+	/**
+	 * set text()
+	 * @description sets the text of the button
+	 * @param {String} value the value to set the text to
+	 */
+	set text(value) {
+		this._text = value;
+
+		this._svg.label.text(value);
+	}
+
+}

@@ -1,4 +1,47 @@
 1) Keep things as simple as possible
 2) When adding new features try not to change too much of the
   old code
-3) 
+3) Keep drawing functions seperate from the regular functions. Don't include 
+  any graphics code in the constructor
+
+Each Drawable Class has 3 things:
+1) create() - initializes the graphics of this class
+  - Each svg component of the class should have a name attribute assigned to it.
+3) update() -  method that updates the graphics of this class
+4) destroy() - method that removes the graphics for this class 
+
+
+Classes should follow the following guidlines:
+
+Imports go below the class comment and above the 
+class declaration
+
+Method order:
+constructor()
+
+create()
+destroy()
+
+---everything else---
+
+getters & setters 
+
+
+
+-------------Commenting------------------
+All method comments should look like this:
+/**
+  * methodName()
+  * @description description...
+  * list of parameter 
+  * returns if necessary
+  */
+
+
+All class comments should look like this
+/**
+ * ClassName - description of class
+ */
+
+All code should be properly indented
+

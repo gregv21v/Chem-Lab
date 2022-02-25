@@ -10,8 +10,8 @@ export default class Fluid {
      * @description constructs the fluid
      * @param {String} name the name of the fluid
      * @param {Number} density the density of the fluid
-     * @param {Number} volume the volume of the chemical
-     * @param {Color} color the color of the chemical
+     * @param {Number} volume the volume of the fluid
+     * @param {Color} color the color of the fluid
      */
     constructor(name, density, volume, color) {
         this._volume = volume;
@@ -134,8 +134,8 @@ export default class Fluid {
      * render()
      * @description renders the svg for the fluid
      */
-    render(parent) {
-        this._rect.render(parent);
+    create(parent) {
+        this._rect.create(parent);
     }
 
     /**

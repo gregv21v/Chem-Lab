@@ -21,13 +21,16 @@ export default class Pipe extends Snappable {
   	this.currentLevel = 0;
   	this.drops = [];
 
-  	let mainSVG = d3.select("body").select("svg")
+  	this._group = d3.select("body").select("svg").append("g")
   	this.svg = {
-  		walls: mainSVG.append("rect"),
-  		interior: mainSVG.append("rect")
+  		walls: this._group.append("rect"),
+  		interior: this._group.append("rect")
   	}
 
-  	
+	this.svg.walls.attr("name", "pipeWalls")
+	this.svg.interior.attr("name", "pipeInterior")
+
+  	this._rect = new Rect(this.position, this.getWidth(), this.getHeight());
   	//this.updatePosition();
 
   }
@@ -37,7 +40,10 @@ export default class Pipe extends Snappable {
    * @description gets the rect for this pipe
    */
   get rect() {
-	  return new Rect(this.position, this.getWidth(), this.getHeight());
+	this._rect.position = this.position;
+	this._rect.width = this.getWidth()
+	this._rect.height = this.getHeight()
+	return this._rect
   }
 
   /**
@@ -63,6 +69,8 @@ export default class Pipe extends Snappable {
   		// flowing, give it is at its spout, and ready to leak.
   		if(!drop.canFlow(this) && side === drop.direction) {
   			exitingDrops.push(drop);
+			console.log("Direction: " + drop.direction)
+			console.log("Exiting");
   		} else {
   			keptDrops.push(drop);
   		}
@@ -77,7 +85,7 @@ export default class Pipe extends Snappable {
    * @description update the drops
    */
   updateDrops () {
-  	for(var x in this.drops) {
+  	for(const x in this.drops) {
   		if(this.drops[x].canFlow(this)) {
   			this.drops[x].flow(this);
   		}
@@ -89,17 +97,13 @@ export default class Pipe extends Snappable {
   */
   createSVG() {
   	this.updateSVG();
-  };
+  }
 
-  updateTooltip () {
-    this.tooltip.position = this.position;
-  	//this.updatePosition();
-  };
+
+
 
   updateSVG() {
   	//this.updatePosition();
-
-  	this.tooltip.createSVG();
 
   	if(this.orientation === "horizontal") {
   		// interior
@@ -121,13 +125,17 @@ export default class Pipe extends Snappable {
   	this.svg.walls.attr("x", this.position.x);
   	this.svg.walls.attr("y", this.position.y);
   	this.svg.walls.style("fill", "black")
-  								.style("fill-opacity", 1)
+  				  .style("fill-opacity", 1)
 
 
   	// interior
   	this.svg.interior.style("fill", "white")
-  										.style("fill-opacity", 1)
+  					 .style("fill-opacity", 1)
 
+  }
+
+  destroySVG() {
+	this._group.remove()
   }
   /*
   	==========================================

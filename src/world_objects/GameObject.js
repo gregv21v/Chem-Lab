@@ -31,10 +31,12 @@ export default class GameObject {
     /*********
       Visuals
     **********/
-    let mainSVG = d3.select("body").select("svg")
+    this._group = d3.select("body").select("svg").append("g")
     this.svg = {
-      default: mainSVG.append("circle")
+      default: this._group.append("circle")
     }
+
+    this.svg.default.attr("name", "GameObject")
 
     this.tooltip = new ToolTip(
       center,
@@ -43,21 +45,7 @@ export default class GameObject {
     );
   }
 
-  /**
-   * get position()
-   * @description returns the position of the game object
-   */
-  get position() {
-    return this._position;
-  }
-
-  /**
-   * set position()
-   * @description sets the position of the game object
-   */
-  set position(value) {
-    this._position = value;
-  }
+  
 
   updateTooltip() {
     this.tooltip.position = this._position;
@@ -89,7 +77,7 @@ export default class GameObject {
    * @description destroys the svg for the object
    */
   destroySVG() {
-    this.svg.default.remove()
+    this._group.remove()
   }
 
   /**
@@ -159,6 +147,23 @@ export default class GameObject {
    */
   getRect() {
     return new Rect();
+  }
+
+
+  /**
+   * get position()
+   * @description returns the position of the game object
+   */
+  get position() {
+    return this._position;
+  }
+
+  /**
+   * set position()
+   * @description sets the position of the game object
+   */
+  set position(value) {
+    this._position = value;
   }
 
 }

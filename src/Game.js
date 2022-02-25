@@ -29,9 +29,10 @@ export default class Game {
     this._shop = new Shop();
 
 
-    this._testTradeItem = new TradeItem(
+    /**this._testTradeItem = new TradeItem(
       {x: 30, y: 30},
-      50, 50, "Player", 100, 50);
+      50, 50, "Player", 100, 50);**/
+    
 
     this._testBtn = new BorderedButton(
       {x: 100, y: 100},
@@ -66,7 +67,7 @@ export default class Game {
    * @description renders the game 
    */
   render() {
-    this._player.createSVG();
+    this._player.create();
     this._player.update()
 
     //this._testBtn.createSVG();

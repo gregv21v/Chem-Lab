@@ -1,8 +1,8 @@
-/*
-  A single slot of the inventory
-*/
-
+/**
+ * Slot - A single slot of the inventory
+ */
 import ItemButton from "./buttons/ItemButton";
+
 export default class Slot extends ItemButton {
 
   /**
@@ -41,6 +41,7 @@ export default class Slot extends ItemButton {
 	 * @description the function called when this button is clicked
 	 */
 	onClick() {
+    console.log("on click");
 		this._inventory.pickItem(this._index);
 	}
 }
