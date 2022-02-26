@@ -18,65 +18,38 @@ export default class GameObject {
   /**
    * constructor()
    * @description constructs the game object
-   * @param {Point} center the center of the game object
+   * @param {Vector} center the center of the game object
+   * @param {Vector} velocity the velocity of the game object
    */
   constructor(center, velocity) {
     this._center = center;
     this._position = center;
     this._velocity = velocity;
+    this._width = 0;
+    this._height = 0;
 
     this._id = GameObject.lastId
     GameObject.lastId++ 
-
-    /*********
-      Visuals
-    **********/
-    this._group = d3.select("body").select("svg").append("g")
-    this.svg = {
-      default: this._group.append("circle")
-    }
-
-    this.svg.default.attr("name", "GameObject")
-
-    this.tooltip = new ToolTip(
-      center,
-      20, // radius of hover circle
-      ""
-    );
   }
 
-  
-
-  updateTooltip() {
-    this.tooltip.position = this._position;
-  };
-
   /**
-   * createSVG() 
-   * @description creates the svg graphics for this GameObject
+   * create() 
+   * @description creates the graphics for the game object
+   * @param {SVG} parent the parent svg
    */
-  createSVG(position) {
-    let mainSVG = d3.select("body").select("svg")
+  create(parent) {
+    this._group = d3.create("svg:g")
 
-    //console.log(mainSVG);
+    this._svg = {};
 
-  	this.updateSVG();
-
-  	// add all the svg objects to the world
-    let obj = mainSVG.append(this.svg.default.type)
-
-    obj.attr("cx", this._center.x)
-      .attr("cy", this._center.y)
-      .attr("r", 5)
-      .style("fill", "red")
-
+    parent.append(() => this._group.node())
   }
 
   /**
    * destroySVG()
    * @description destroys the svg for the object
    */
-  destroySVG() {
+  destroy() {
     this._group.remove()
   }
 
@@ -98,34 +71,49 @@ export default class GameObject {
 
   }
 
-  getLiquidType() {
-    return "";
-  };
+  
+  /**
+   * get id()
+   * @description gets the drop id
+   * @returns the drops id
+   */
+  get id() {
+    return this._id;
+  }
+
 
   /**
-   * getWidth()
+   * get liquidType()
+   * @description gets the liquid type this GameObject is
+   */
+  get liquidType() {
+    return "";
+  }
+
+  /**
+   * get width()
    * @description gets the width of this GameObject   
    * @returns the width of this GameObject
    */
-  getWidth() {
+  get width() {
     return 0;
   };
 
   /**
-   * getHeight()
+   * get height()
    * @description gets the hight of this GameObject
    * @returns height
    */
-  getHeight() {
+  get height() {
     return 0;
   }
 
 
   /**
-   * getName()
+   * get name()
    * @returns name of this GameObject
    */
-  getName() {
+  get name() {
     return "";
   }
 
@@ -133,20 +121,24 @@ export default class GameObject {
     getCenter()
     @description get the center point of this Snappable
   */
-  getCenter() {
+  get center() {
     return {
-      x: this._position.x + this.getWidth() / 2,
-      y: this._position.y + this.getHeight() / 2
+      x: this._position.x + this.width / 2,
+      y: this._position.y + this.height / 2
     }
   }
 
   /**
-   * getRect()
+   * get rect()
    * @description gets the rectangler bounding box of this game object.
    * @returns the rectangler bounding box of this GameObject
    */
-  getRect() {
-    return new Rect();
+  get rect() {
+    let rect = new Rect()
+    rect.width = this.width;
+    rect.height = this.height;
+    rect.position = this.position;
+    return rect;
   }
 
 

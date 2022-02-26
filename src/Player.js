@@ -11,6 +11,7 @@ import Pipe from "./world_objects/Pipe"
 import Tank from "./world_objects/tanks/Tank"
 import Pump from "./world_objects/Pump"
 import * as d3 from "d3"
+import GameObject from "./world_objects/GameObject"
 
 export default class Player {
 
@@ -48,8 +49,8 @@ export default class Player {
 
     this.inventory.add(new Valve(
       {
-        x: this.inventory.width + this.world.getWidth()/2,
-        y: this.world.getHeight()/2
+        x: this.inventory.width + this.world.width/2,
+        y: this.world.height/2
       },
       20, 10, 5
     ));
@@ -97,7 +98,7 @@ export default class Player {
     // positioned sell tank at center of world.
     var sellTank = new Tank(
       {
-        x: this.inventory.width + this.world.getWidth()/2 - 100, /* border width of sell button */
+        x: this.inventory.width + this.world.width/2 - 100, /* border width of sell button */
         y: this.inventory.height - 50 - 6 // Space for the button
       },
       {
@@ -126,11 +127,11 @@ export default class Player {
     })*/
 
     var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
-    startPump.position.x = this.inventory.width + this.world.getWidth()/2 - startPump.getWidth()/2;
-    startPump.position.y = startPump.getWidth() + startPump.production;
+    startPump.position.x = this.inventory.width + this.world.width/2 - startPump.width/2;
+    startPump.position.y = startPump.width + startPump.production;
 
     var testValve = new Valve(
-      {x: this.world.getWidth() / 2, y: this.world.getHeight() / 2},
+      {x: this.world.width / 2, y: this.world.height / 2},
       100, // width
       10, // interiorHeight
       5  // wallWidth
@@ -138,7 +139,7 @@ export default class Player {
     //testValve.showSnapAreas();
 
     /*var testFaucet = new Faucet({
-      x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
+      x: this.inventory.width + this.world.width/2 - 100,
       y: 50
     }, 50, 40, 10)*/
 
@@ -160,7 +161,7 @@ export default class Player {
 
   update() {
     var self = this;
-    setInterval(function() {
+    setInterval(() => {
       self.world.update();
     }, 20);
   };
@@ -185,6 +186,15 @@ export default class Player {
    */
   get hand() {
     return this._hand;
+  }
+
+  /**
+   * set hand()
+   * @description sets the player hand value
+   * @param {GameObject} value the value to set the players hand to
+   */
+  set hand(value) {
+    this._hand = value;
   }
 
 }

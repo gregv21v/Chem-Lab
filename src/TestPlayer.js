@@ -24,8 +24,8 @@ export default class TestPlayer {
 
     this.inventory.add(new Valve(
       {
-        x: this.inventory.getWidth() + this.world.getWidth()/2,
-        y: this.world.getHeight()/2
+        x: this.inventory.width + this.world.width/2,
+        y: this.world.height/2
       },
       20,
       10,
@@ -41,8 +41,8 @@ export default class TestPlayer {
 
     this.sellBtn = new Button(
       {
-        x: this.inventory.getWidth() + this.world.getWidth()/2 - 99 /* half the width of button */,
-        y: this.world.getHeight() - 35 /* Space for the button */
+        x: this.inventory.width + this.world.width/2 - 99 /* half the width of button */,
+        y: this.world.height - 35 /* Space for the button */
       },
       208,
       30
@@ -55,8 +55,8 @@ export default class TestPlayer {
     // positioned sell tank at center of world.
     var sellTank = new Tank(
       {
-        x: this.inventory.getWidth() + this.world.getWidth()/2 - 100, /* border width of sell button */
-        y: this.inventory.getHeight() - 50 - 6 // Space for the button
+        x: this.inventory.width + this.world.width/2 - 100, /* border width of sell button */
+        y: this.inventory.height - 50 - 6 // Space for the button
       },
       {
         width: 200,
@@ -84,11 +84,11 @@ export default class TestPlayer {
     })
 
     var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
-    startPump.position.x = this.inventory.getWidth() + this.world.getWidth()/2 - startPump.getWidth()/2;
-    startPump.position.y = startPump.getWidth() + startPump.production;
+    startPump.position.x = this.inventory.width + this.world.width/2 - startPump.width/2;
+    startPump.position.y = startPump.width + startPump.production;
 
     var testValve = new Valve(
-      {x: this.world.getWidth() / 2, y: this.world.getHeight() / 2},
+      {x: this.world.width / 2, y: this.world.height / 2},
       100, // width
       10, // interiorHeight
       5  // wallWidth
@@ -96,7 +96,7 @@ export default class TestPlayer {
     //testValve.showSnapAreas();
 
     /*var testFaucet = new Faucet({
-      x: this.inventory.getWidth() + this.world.getWidth()/2 - 100,
+      x: this.inventory.width + this.world.width/2 - 100,
       y: 50
     }, 50, 40, 10)*/
 

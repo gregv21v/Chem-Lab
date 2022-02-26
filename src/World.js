@@ -8,6 +8,7 @@ import Tank from "./world_objects/tanks/Tank";
 import { Distance } from "./shapes/Point"
 import { getOpposite } from "./util";
 import * as d3 from "d3"
+import GameObject from "./world_objects/GameObject";
 
 export default class World {
 	constructor(player, position, width, height) {
@@ -92,7 +93,7 @@ export default class World {
 		if(this.player.hand != null) {
 
 			for (var i = 0; i < this.lines.length; i++) {
-				var objCenter = this.objs[i].getCenter()
+				var objCenter = this.objs[i].center
 				this.lines[i]
 					.style("stroke", "orange")
 					.attr("x1", objCenter.x)
@@ -127,7 +128,7 @@ export default class World {
 		let closestDistance = 100000
 		for(var obj of this.objs) {
 			if(obj instanceof Snappable) {
-				let distance = Distance(obj.getCenter(), mousePos);
+				let distance = Distance(obj.center, mousePos);
 				if(distance < closestDistance) {
 					closestDistance = distance
 					closestSnappable = obj
@@ -162,8 +163,8 @@ export default class World {
 		this.objs.push(obj);
 
 		// for debugging purposes
-		var mainSVG = d3.select("body").select("svg")
-		this.lines.push(mainSVG.append("line"))
+		//var mainSVG = d3.select("body").select("svg")
+		//this.lines.push(mainSVG.append("line"))
 	};
 
 	/**
@@ -212,16 +213,17 @@ export default class World {
 
 
 	/**
-		within()
-		@description Check to see if a rectangler is entriely in the world
-	*/
-	within(rect) {
+	 * within()
+	 * @description Check to see if a rectangler is entriely in the world
+	 * @param {GameObject} gameObject the game object to check
+	 */
+	within(gameObject) {
 		// if all 4 corners of the rect are in the world
 		return  (
-			this.rect.contains({x: rect.position.x, y: rect.position.y}) && // top left
-			this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y}) && // top right
-			this.rect.contains({x: rect.position.x, y: rect.position.y + rect.height}) && // bottom left
-			this.rect.contains({x: rect.position.x + rect.width, y: rect.position.y + rect.height})
+			this.rect.contains({x: gameObject.position.x, y: gameObject.position.y}) && // top left
+			this.rect.contains({x: gameObject.position.x + gameObject.width, y: gameObject.position.y}) && // top right
+			this.rect.contains({x: gameObject.position.x, y: gameObject.position.y + gameObject.height}) && // bottom left
+			this.rect.contains({x: gameObject.position.x + gameObject.width, y: gameObject.position.y + gameObject.height})
 		);
 	};
 
@@ -256,18 +258,18 @@ export default class World {
 
 
 	/**
-		getWidth()
-		@description Get the width of the world
-	*/
-	getWidth () {
+	 * get width()
+	 * @description Gets the width of the world
+	 */
+	get width() {
 		return this.rect.width + 20;
 	};
 
 	/**
-		getHeight()
-		@description Get the height of the world
+	 * get height()
+	 * @description Gets the height of the world
 	*/
-	getHeight () {
+	get height() {
 		return this.rect.height + 20;
 	};
 }

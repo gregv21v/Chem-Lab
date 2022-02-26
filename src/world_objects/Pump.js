@@ -13,12 +13,13 @@
 
 */
 import GameObject from "./GameObject";
-import Drop from "./Drop"
+import Drop from "./fluids/Drop";
 import ToolTip from "../gui/ToolTip";
 import { getRandomInt } from "../util";
 
 import * as d3 from "d3"
-import Fluid from "../Fluid";
+import Fluid from "./fluids/Fluid";
+import FluidRegistry from "./fluids/FluidRegistry";
 
 export default class Pump extends GameObject {
 	/**
@@ -83,45 +84,61 @@ export default class Pump extends GameObject {
 	}
 
 
-	/*
-		Creates a drop of liquid upon clicking the pump.
-	*/
+	/**
+	 * produceDrop()
+	 * @description Creates a drop of liquid upon clicking the pump.
+	 * @param {World} world the world to produce the drop in
+	 */
 	produceDrop(world) {
-		let fluid = this._possibleFluids[getRandomInt(0, this._possibleFluids.length)].clone()
+		let fluid = FluidRegistry.getRandom();
+		let size = getRandomInt(5, 15)
 
 		let drop = new Drop(
 			{x: this._position.x - this.production/2, y: this._position.y + this.production * 3}, // position
 			{x: 0, y: 1}, // velocity
-			this.production,
+			size,
 			fluid
 		)
 		
-		drop.createSVG();
+		drop.create(d3.select("svg"));
 		world.addDrop(drop);
-	};
+	}
 
 	updateTooltip() {
 	  this.tooltip.position = this._position;
 	}
 
-	getWidth() {
+	/**
+	 * get width()
+	 * @returns the width of the pump
+	 */
+	get width() {
 		return this.production * 4;
 	}
 
 
-	getHeight() {
+	/**
+	 * get height()
+	 * @returns the height of the Pump
+	 */
+	get height() {
 		return this.production * 4;
-	};
+	}
 
-	/*
-		A info used for creating a tooltip
+	/**
+	 * get name()
+	 * @description A info used for creating a tooltip
 	*/
-	getName() {
+	get name() {
 		return this.production;
-	};
+	}
 
-	getLiquidType() {
+	/**
+	 * get liquidType()
+	 * @description gets the liquid type
+	 */
+	get liquidType() {
 		return "Water";
-	};
+	}
 
 }

@@ -18,9 +18,11 @@
 import * as d3 from "d3"
 import Snappable from "../Snappable";
 import Pipe from "../Pipe";
-import Drop from "../Drop";
-import Fluid from "../../Fluid";
-import EmptyFluid from "../../EmptyFluid";
+import Drop from "../fluids/Drop";
+import Fluid from "../fluids/Fluid";
+import EmptyFluid from "../fluids/EmptyFluid";
+import FluidBody from "../fluids/FluidBody";
+import ContainerFluidBody from "../fluids/ContainerFluidBody";
 
 export default class Tank extends Snappable {
 
@@ -41,27 +43,563 @@ export default class Tank extends Snappable {
 	) {
 		super(center, {x: 0, y: 0}) 
 
-		// the list of fluids in the tank
-		this._fluids = [
-			new EmptyFluid(interior.width * interior.height)
-		] 
-
 		// the open and closes sides
 		this._leftOpened = leftOpened;
 		this._rightOpened = rightOpened;
 		this._upOpened = upOpened;
 		this._downOpened = downOpened;
 
-		this.interior = interior;
-		this.wallWidth = wallWidth;
+		this._interior = interior;
+		this._wallWidth = wallWidth;
 		this._position = center;
-		this.orientation = "vertical"
+		this._orientation = "vertical"
 
-		this.wallColor = "green";
-		this.active = false;
-		this.text = "";
+		this._wallColor = "green";
+		this._active = false;
+		this._text = "";
+
+		this._emptyFluid = new ContainerFluidBody(
+			{x: this._position.x + this._wallWidth, y: this._position.y + this._wallWidth}, // position
+			interior.height * interior.width, // volume 
+			new EmptyFluid() // fluid
+		)
+		
+		// the list of fluids in the tank
+		this._fluidBodies = [
+			this._emptyFluid	
+		] 
 	}
 
+	
+
+	
+	/**
+	 * create()
+	 * @description creates the Tank
+	 */
+	createSVG() {
+		this._group = d3.select("body").select("svg").append("g")
+		this.svg = {
+			walls: this._group.append("rect"),
+			interiorVertical: this._group.append("rect"),
+			interiorHorizontal: this._group.append("rect"),
+			fluids: this._group.append("g")
+		};
+
+		this.svg.walls.attr("name", "walls")
+		this.svg.interiorHorizontal.attr("name", "interiorHorizontal")
+		this.svg.interiorVertical.attr("name", "interiorVertical")
+		this.svg.fluids.attr("fluids")
+
+		this._emptyFluid.create(d3.select("svg"))
+		this._emptyFluid.container = this;
+
+		this.updateSVG()
+	}
+
+  	/**
+	 * updateSVG()
+	 * @description renders the svg for the tan
+	 */
+	updateSVG() {
+		//this._position.x = this.center.x - this.width/2;
+		//this._position.y = this.center.y - this.height/2;
+		//this.tooltip.createSVG();
+
+		// setup walls svg
+		this.svg.walls.attr("height", this.height);
+		this.svg.walls.attr("width", this.width);
+		this.svg.walls.attr("x", this._position.x);
+		this.svg.walls.attr("y", this._position.y);
+		this.svg.walls.style("fill", this._wallColor);
+		
+
+		// setup interior svg
+		this.svg.interiorVertical.attr("height", this._interior.height);
+		this.svg.interiorVertical.attr("width", this._interior.width);
+		this.svg.interiorVertical.attr("x", this._position.x + this._wallWidth);
+
+		this.svg.interiorVertical.style("fill", "white")
+
+		this.svg.interiorHorizontal.attr("height", this._interior.height);
+		this.svg.interiorHorizontal.attr("width", this._interior.width);
+		this.svg.interiorHorizontal.attr("y", this._position.y + this._wallWidth)
+
+		this.svg.interiorHorizontal.style("fill", "white")
+    
+		if(this._leftOpened) {
+			this.svg.interiorHorizontal.attr("x", this._position.x);
+
+			if(this._rightOpened) {
+				this.svg.interiorHorizontal.attr("width", this._interior.width + this._wallWidth*2)
+			}
+		} else {
+			this.svg.interiorHorizontal.attr("x", this._position.x + this._wallWidth);
+
+			if(this._rightOpened) {
+				this.svg.interiorHorizontal.attr("width", this._interior.width + this._wallWidth)
+			}
+		}
+
+		if(this._upOpened) {
+			this.svg.interiorVertical.attr("y", this._position.y);
+
+			if(this._downOpened) {
+				this.svg.interiorVertical.attr("height", this._interior.height + this._wallWidth * 2)
+			}
+		} else {
+			this.svg.interiorVertical.attr("y", this._position.y + this._wallWidth)
+
+			if(this._downOpened) {
+				this.svg.interiorVertical.attr("height", this._interior.height + this._wallWidth)
+			}
+		}
+
+		// setup liquid svg
+		this.updateFluidBodies()
+
+		// setup label svg
+		//this.svg.label.attr("fill", "black");
+		//this.svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
+		//this.svg.label.attr("y", this._position.y + this.height/2);
+	}
+
+  	/**
+	 * updateFluidBodies() 
+	 * @description updates the svg for the liquid in the tank
+	 */
+	updateFluidBodies() {
+		let lastY = this.getUpY()
+		for (let fluidBody of this._fluidBodies) {
+			fluidBody.position = {
+				x: this._position.x + this._wallWidth,
+				y: lastY
+			}
+			lastY = fluidBody.getButtomY()
+			console.log(lastY)
+		}
+	}
+	
+
+	/**
+	 * removeVolumelessFluids()
+	 * @description removes any fluids that have a volume of 0
+	 */
+	removeVolumelessFluids() {
+		let newFluidBodies = [];
+		for (const fluidBody of this._fluidBodies) {
+			if(!(fluidBody.fluid instanceof EmptyFluid) && fluidBody.volume <= 0) {
+				fluidBody.destroy()
+			} else {
+				newFluidBodies.push(fluidBody);
+			}
+		}
+
+		this._fluidBodies = newFluidBodies;
+	}
+
+	/**
+	 * addFluid()
+	 * @description adds a fluid to the tank
+	 * @param {Fluid} fluid the fluid to add to the tank
+	 */
+	/**
+	 * new fluid("Water", 1, interior.width * 10, {red: 0, green: 0, blue: 256}),
+			new fluid("Olive Oil", 5, interior.width * 10, {red: 0, green: 256, blue: 0})
+	 */
+	addFluid(newFluid) {
+
+		// find the empty fluid
+		let emptyFluid = this.getEmptyFluid()
+
+		// add the fluid
+		if(emptyFluid.volume > 0) {
+			emptyFluid.volume -= newFluid.volume;
+
+			// search through the fluids to find the new fluid
+			let i = 0;
+			while(i < this._fluidBodies.length && this._fluidBodies[i].fluid.name !== newFluid.fluid.name) {
+				i++;
+			}
+
+			// if it doesn't exist add it
+			if(i >= this._fluidBodies.length) {
+				this._fluidBodies.push(newFluid);
+				this._fluidBodies = this._fluidBodies.sort((a, b) => a.fluid.density - b.fluid.density) 
+			} else { // otherwise combine the new fluid with the existing one
+				this._fluidBodies[i].volume += newFluid.volume
+			}
+		}
+			
+
+		newFluid.create(this.svg.fluids);
+		this.updateFluidBodies()
+	}
+
+	/**
+	 * destroySVG()
+	 * @description destroys the svg for the object
+	 */
+	destroySVG() {
+		for (const part of Object.values(this.svg)) {
+			part.remove()
+		}
+	}
+
+  	/**
+	 * getSnapAreas() 
+	 * @description gets the snap areas for the tank
+	 * @returns snap areas for the tank
+	 */
+	getSnapAreas() {
+		return {
+			left: this.getLeftArea(),
+			right: this.getRightArea(),
+			down: this.getDownArea(),
+      		up: this.getUpArea()
+		}
+	}
+
+
+  	/**
+	 *	transferLiquid()
+	 *	@description transfers liquid from the tank to its connecting pipes
+	 */
+	transferLiquid() {
+		for(const side of Object.keys(this.attachments)) {
+			for(const pipe of this.attachments[side]) {
+				if(pipe instanceof Pipe) {
+					let drop = null;
+					let firstFluid = this.getFirstAccessibleFluid(pipe);
+					
+
+					// get a drop from the tank
+					if(firstFluid) {
+						let dropSize = pipe.getDropSize()
+						//console.log(dropSize);
+						drop = firstFluid.removeDrop(dropSize)
+
+						if(drop) {
+							this.removeVolumelessFluids()
+							this.getEmptyFluid().addDrop(drop.size)
+							this.updateFluidBodies();
+						}
+					}
+
+					// if pipe is there, move the drop to the pipe
+					if(drop) {
+						// position drop at front of pipe
+						if(side === "left") {
+							drop.position = {
+								x: pipe.position.x + pipe.width - drop.size/2,
+								y: pipe.center.y - drop.size/2
+							}
+						} else if(side === "right") {
+							drop.position = {
+								x: pipe.position.x,
+								y: pipe.center.y - drop.size/2
+							}
+						} else if(side === "up") {
+							drop.position = {
+								x: pipe.position.x + drop.size/2,
+								y: pipe.position.y
+							}
+						} else if(side === "down") {
+							drop.position = {
+								x: pipe.position.x + drop.size/2,
+								y: pipe.position.y
+							}
+						}
+
+						// create the drop in the world and add it to the respective pipe
+						drop.direction = side;
+						pipe.addDrop(drop);
+
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * getEmptyFluid() 
+	 * @description gets the empty fluid from the list of fluids
+	 * @returns the empty fluid
+	 */
+	getEmptyFluid() {
+		for (const body of this._fluidBodies) {
+			if(body.fluid instanceof EmptyFluid) {
+				return body;
+			}
+		}
+	}
+
+
+	/**
+	 * createThumbnail() 
+	 * @description create a little image of the tank
+	 */
+
+
+	/**
+	 * getFirstAccessibleFluid()	
+	 * @description Gets the fluid in the tank that the pipe can first access	
+	 * @param {Pipe} pipe the pipe find 
+	 * @returns true if the pipe has access to the fluid
+	 * 			false if the pipe does not have access to the fluid
+	 */
+	getFirstAccessibleFluid(pipe) {
+
+		// search throught the list of fluids to find the first 
+		// accessible one by the pipe
+		for (const fluidBody of this._fluidBodies) {
+			if(!(fluidBody.fluid instanceof EmptyFluid) && pipe.rect.withinYRange(fluidBody.rect)) {
+				return fluidBody;
+			}
+		}
+
+	};
+
+	/**
+	 * addDrop()	
+	 * @description adds a drop to the tank
+	 * @param {Drop} drop the drop to add to the tank
+	 * @returns true if the tank isn't full
+	 * 			false if the tank is full
+	 */
+	addDrop(drop) {
+		// find the empty fluid
+		let emptyFluid = this.getEmptyFluid()
+
+		// add the fluid
+		if(emptyFluid.volume > 0) {
+			emptyFluid.volume -= drop.volume
+
+			// search through the fluids to find the new fluid
+			let i = 0;
+			//console.log(this._fluidBodies)
+			//console.log(drop);
+			while(i < this._fluidBodies.length && this._fluidBodies[i].fluid.name !== drop.fluid.name) {
+				i++;
+			}
+
+			// if it doesn't exist add it
+			if(i >= this._fluidBodies.length) {
+				let newFluid = new ContainerFluidBody({x: 0, y: 0}, drop.volume, drop.fluid);
+				console.log("New Fluid")
+				console.log(newFluid)
+				newFluid.create(this.svg.fluids);
+				newFluid.container = this;
+				this._fluidBodies.push(newFluid);
+				this._fluidBodies = this._fluidBodies.sort((a, b) => a.fluid.density - b.fluid.density) 
+			} else { // otherwise combine the new fluid with the existing one
+				this._fluidBodies[i].volume += drop.volume
+			}
+		}
+			
+		this.updateFluidBodies()
+	};
+
+	/**
+		containsDrop()
+		@description Checks to see if the bottom two corners of a drop are in the liquid
+		near the bottom of the tank
+
+		TODO: convert this to be more readable and elegant.
+	*/
+	containsDrop(drop) {
+		// Either the drop is in the bottom of the tank, or touching the
+		// liquid
+		// one or both of the bottom two corners of the drop are in the liquid
+							 // bottom left
+		var touchingLiquid = (
+								drop.position.x >= this._position.x + this._wallWidth &&
+							 	drop.position.x <= this._position.x + this._wallWidth + this._interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this._interior.height &&
+							 	drop.position.y + drop.size <= this._position.y + this._interior.height
+							 )
+								||
+							 // bottom right
+							 (
+							 	drop.position.x + drop.size >= this._position.x + this._wallWidth &&
+							 	drop.position.x + drop.size <= this._position.x + this._wallWidth + this._interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this._interior.height &&
+							 	drop.position.y + drop.size <= this._position.y + this._interior.height
+							 )
+
+		// if the this is empty, we pretend it has liquid level of 10.
+							 // bottom left
+		var withNoLiquid =  (
+								drop.position.x >= this._position.x + this._wallWidth &&
+							 	drop.position.x <= this._position.x + this._wallWidth + this._interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this._interior.height - 10 &&
+							 	drop.position.y + drop.size <= this._position.y + this._interior.height
+							)
+								||
+							 // bottom right
+							(
+							 	drop.position.x + drop.size >= this._position.x + this._wallWidth &&
+							 	drop.position.x + drop.size <= this._position.x + this._wallWidth + this._interior.width &&
+							 	drop.position.y + drop.size >= this._position.y + this._interior.height - 10 &&
+							 	drop.position.y + drop.size <= this._position.y + this._interior.height
+							)
+		return touchingLiquid || withNoLiquid;
+	}
+
+	
+
+	/**
+	 *	empty()
+	 *	@description Empties the tank of all its liquid
+	 */
+	empty () {
+		/**this.currentLevel = 0;
+		this.liquid = null;
+		this.text = ""
+
+		this.updateFluidBodies();**/
+	};
+
+
+    /**
+		topSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+			the top of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	upSnapBehaviour(snappable, mousePos) {
+		if(!this._upOpened) {
+			let thisRect = this.rect
+			//let otherRect = snappable.rect
+
+			this.orientation = "vertical"
+			this.moveRelativeToCenter({
+				y: snappable._center.y - thisRect.height / 2,
+				x: mousePos.x
+			})
+		}
+	}
+
+
+	/**
+		leftSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+		the left of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	leftSnapBehaviour(snappable, mousePos) {
+		if(!this._leftOpened) {
+			let thisRect = this.rect
+			// match this object with the left edge of
+			// the other object
+			this.moveRelativeToCenter({
+				x: snappable._center.x - thisRect.width / 2,
+				y: mousePos.y
+			})
+		}
+	}
+
+	/**
+		rightSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+		the right of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	rightSnapBehaviour(snappable, mousePos) {
+		if(!this._rightOpened) {
+			let thisRect = this.rect
+			let otherRect = snappable.rect
+			
+			// match the right edge
+			this.moveRelativeToCenter({
+				x: snappable._center.x + otherRect.width + thisRect.width / 2,
+				y: mousePos.y
+			})
+		}
+	}
+
+	/**
+		bottomSnapBehaviour()
+		@description determines what happens when an Snappable snaps to
+		the botttom of another snappable
+		@param snappable the Snappable being snapped to
+		@param mousePos the current position of the mouse
+	*/
+	downSnapBehaviour(snappable, mousePos) {
+		if(!this._downOpened) {
+			let thisRect = this.rect
+			let otherRect = snappable.rect
+
+			this.orientation = "vertical"
+			this.moveRelativeToCenter({
+				y: snappable._center.y + otherRect.height + thisRect.height / 2,
+				x: mousePos.x
+			})
+		}
+  	}
+
+	/**
+	 * getUpY()
+	 * @description get the y value for the top of the tank, below the inner wall
+	 */
+	getUpY() {
+		return this._position.y + this._wallWidth;
+	}
+
+	/**
+	 * getDownY()
+	 * @description get the y value for the bottom of the tank, below the inner wall
+	 */
+	getDownY() {
+		return this._position.y + this._interior.height + this._wallWidth;
+	}
+
+
+	/**
+	 * get name()
+	 * @returns gets the name of the pipe
+	 */
+	get name() {
+		let sidesOpen = "";
+		sidesOpen += (this._leftOpened) ? "left " : ""
+		sidesOpen += (this._rightOpened) ? "right " : ""
+		sidesOpen += (this._upOpened) ? "up " : ""
+		sidesOpen += (this._downOpened) ? "down " : ""
+
+		return "Tank " + sidesOpen;
+	}
+
+	/**
+	 * get interior()
+	 * @description gets the interior dimensions of the tank
+	 */
+	get interior() {
+		return this._interior;
+	}
+
+	/**
+	 * get width()
+	 * @description gets the width of the tank
+	 * @returns the width of the tank
+	 */
+	get width() {
+		return this._interior.width + this._wallWidth * 2;
+	}
+
+	/**
+	 * get height()
+	 * @description gets the height of the tank
+	 * @returns height of the tank
+	 */
+	get height() {
+		return this._interior.height + this._wallWidth * 2;
+	}
+
+
+	
 	/** 
 	 * get leftOpened()
 	 * @description gets the left opened value
@@ -98,510 +636,16 @@ export default class Tank extends Snappable {
 		return this._downOpened;
 	}
 
-
 	/**
-	 * getUpY()
-	 * @description get the y value for the top of the tank, below the inner wall
+	 * moveRelativeToCenter()
+	 * @description moves the Snappable relative to it's center
+	 * @param point point to move to
 	 */
-	getUpY() {
-		return this._position.y + this.wallWidth;
+	moveRelativeToCenter(point) {
+		this._position.x = point.x - this.width / 2
+		this._position.y = point.y - this.height / 2
+
+		this.updateFluidBodies()
 	}
 
-	/**
-	 * getDownY()
-	 * @description get the y value for the bottom of the tank, below the inner wall
-	 */
-	getDownY() {
-		return this._position.y + this.interior.height + this.wallWidth;
-	}
-
-
-	/**
-	 * getLiquidY()
-	 * @description gets the y position of the liquid in the tank
-	 * @returns the liquid's y position
-	 */
-	getLiquidY() {
-		return this._position.y + this.interior.height - this.getLiquidHeight() + this.wallWidth;
-	};
-
-	/**
-	 * create()
-	 * @description creates the Tank
-	 */
-	createSVG() {
-		let mainSVG = d3.select("body").select("svg")
-		this.svg = {
-			walls: mainSVG.append("rect"),
-			interiorVertical: mainSVG.append("rect"),
-			interiorHorizontal: mainSVG.append("rect"),
-			fluids: mainSVG.append("g")
-		};
-
-		this.svg.walls.attr("name", "walls")
-		this.svg.interiorHorizontal.attr("name", "interiorHorizontal")
-		this.svg.interiorVertical.attr("name", "interiorVertical")
-		this.svg.fluids.attr("fluids")
-
-		this.updateSVG()
-	}
-
-  	/**
-	 * updateSVG()
-	 * @description renders the svg for the tan
-	 */
-	updateSVG() {
-		//this._position.x = this.center.x - this.getWidth()/2;
-		//this._position.y = this.center.y - this.getHeight()/2;
-		//this.tooltip.createSVG();
-
-		// setup walls svg
-		this.svg.walls.attr("height", this.getHeight());
-		this.svg.walls.attr("width", this.getWidth());
-		this.svg.walls.attr("x", this._position.x);
-		this.svg.walls.attr("y", this._position.y);
-		this.svg.walls.style("fill", this.wallColor);
-		
-
-		// setup interior svg
-		this.svg.interiorVertical.attr("height", this.interior.height);
-		this.svg.interiorVertical.attr("width", this.interior.width);
-		this.svg.interiorVertical.attr("x", this._position.x + this.wallWidth);
-
-		this.svg.interiorVertical.style("fill", "white")
-
-		this.svg.interiorHorizontal.attr("height", this.interior.height);
-		this.svg.interiorHorizontal.attr("width", this.interior.width);
-		this.svg.interiorHorizontal.attr("y", this._position.y + this.wallWidth)
-
-		this.svg.interiorHorizontal.style("fill", "white")
-    
-		if(this._leftOpened) {
-			this.svg.interiorHorizontal.attr("x", this._position.x);
-
-			if(this._rightOpened) {
-				this.svg.interiorHorizontal.attr("width", this.interior.width + this.wallWidth*2)
-			}
-		} else {
-			this.svg.interiorHorizontal.attr("x", this._position.x + this.wallWidth);
-
-			if(this._rightOpened) {
-				this.svg.interiorHorizontal.attr("width", this.interior.width + this.wallWidth)
-			}
-		}
-
-		if(this._upOpened) {
-			this.svg.interiorVertical.attr("y", this._position.y);
-
-			if(this._downOpened) {
-				this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth * 2)
-			}
-		} else {
-			this.svg.interiorVertical.attr("y", this._position.y + this.wallWidth)
-
-			if(this._downOpened) {
-				this.svg.interiorVertical.attr("height", this.interior.height + this.wallWidth)
-			}
-		}
-
-		this.getEmptyFluid().create(this.svg.fluids)
-
-		// setup liquid svg
-		this.updateFluidsSVG()
-
-		// setup label svg
-		//this.svg.label.attr("fill", "black");
-		//this.svg.label.attr("x", this._position.x + this.getWidth()/2 - (this.text.length * 6)/2);
-		//this.svg.label.attr("y", this._position.y + this.getHeight()/2);
-	}
-
-  	/**
-	 * updateFluidsSVG() 
-	 * @description updates the svg for the liquid in the tank
-	 */
-	updateFluidsSVG() {
-		
-		let lastY = this.getUpY()
-		for (const fluid of this._fluids) {
-			fluid.updateRect(
-				{
-					x: this._position.x + this.wallWidth,
-					y: lastY
-				}, this.interior.width
-			)
-			lastY = fluid.rect.position.y + fluid.rect.height
-			//console.log(lastY)
-		}
-		//console.log(this._fluids)
-	}
-	
-
-	/**
-	 * removeVolumelessFluids()
-	 * @description removes any fluids that have a volume of 0
-	 */
-	removeVolumelessFluids() {
-		this._fluids.filter((fluid) => {
-			return !(fluid instanceof EmptyFluid) && fluid.volume <= 0;
-		})
-	}
-
-	/**
-	 * addFluid()
-	 * @description adds a fluid to the tank
-	 * @param {Fluid} fluid the fluid to add to the tank
-	 */
-	/**
-	 * new fluid("Water", 1, interior.width * 10, {red: 0, green: 0, blue: 256}),
-			new fluid("Olive Oil", 5, interior.width * 10, {red: 0, green: 256, blue: 0})
-	 */
-	addFluid(newFluid) {
-
-		// find the empty fluid
-		let emptyFluid = this.getEmptyFluid()
-
-		// add the fluid
-		if(emptyFluid.volume > 0) {
-			emptyFluid.volume -= newFluid.volume;
-
-			// search through the fluids to find the new fluid
-			let i = 0;
-			while(i < this._fluids.length && this._fluids[i].name !== newFluid.name) {
-				i++;
-			}
-
-			// if it doesn't exist add it
-			if(i >= this._fluids.length) {
-				this._fluids.push(newFluid);
-				this._fluids = this._fluids.sort((a, b) => a.density - b.density) 
-			} else { // otherwise combine the new fluid with the existing one
-				this._fluids[i].volume += newFluid.volume
-			}
-		}
-			
-
-		newFluid.create(this.svg.fluids);
-		this.updateFluidsSVG()
-	}
-
-	/**
-	 * destroySVG()
-	 * @description destroys the svg for the object
-	 */
-	destroySVG() {
-		for (const part of Object.values(this.svg)) {
-			part.remove()
-		}
-	}
-
-  	/**
-	 * getSnapAreas() 
-	 * @description gets the snap areas for the tank
-	 * @returns snap areas for the tank
-	 */
-	getSnapAreas() {
-		return {
-			left: this.getLeftArea(),
-			right: this.getRightArea(),
-			down: this.getDownArea(),
-      		up: this.getUpArea()
-		}
-	}
-
-
-  	/**
-	 *	transferLiquid()
-	 *	@description transfers liquid from the tank to its connecting pipes
-	 */
-	transferLiquid() {
-		for(const side of Object.keys(this.attachments)) {
-			for(const pipe of this.attachments[side]) {
-				if(pipe instanceof Pipe) {
-					let drop;
-					let firstFluid = this.getFirstAccessibleFluid(pipe);
-					
-
-					// get a drop from the tank
-					if(firstFluid) {
-						let dropSize = pipe.getDropSize()
-						//console.log(dropSize);
-						drop = firstFluid.removeDrop(dropSize)
-						this.removeVolumelessFluids()
-						this.getEmptyFluid().addDrop(dropSize)
-						this.updateFluidsSVG();
-					} else {
-						drop = null;
-					}
-
-					// if pipe is there, move the drop to the pipe
-					if(drop) {
-						// position drop at front of pipe
-						if(side === "left") {
-							drop.position = {
-								x: pipe.position.x + pipe.getWidth() - drop.size/2,
-								y: pipe.getCenter().y - drop.size/2
-							}
-						} else if(side === "right") {
-							drop.position = {
-								x: pipe.position.x,
-								y: pipe.getCenter().y - drop.size/2
-							}
-						} else if(side === "up") {
-							drop.position = {
-								x: pipe.position.x + drop.size/2,
-								y: pipe.position.y
-							}
-						} else if(side === "down") {
-							drop.position = {
-								x: pipe.position.x + drop.size/2,
-								y: pipe.position.y
-							}
-						}
-
-						// create the drop in the world and add it to the respective pipe
-						drop.createSVG();
-						drop.direction = side;
-						pipe.addDrop(drop);
-
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * getEmptyFluid() 
-	 * @description gets the empty fluid from the list of fluids
-	 * @returns the empty fluid
-	 */
-	getEmptyFluid() {
-		for (const fluid of this._fluids) {
-			if(fluid instanceof EmptyFluid) {
-				return fluid;
-			}
-		}
-	}
-
-
-	/**
-	 * createThumbnail() 
-	 * @description create a little image of the tank
-	 */
-
-
-	/**
-	 * getFirstAccessibleFluid()	
-	 * @description Gets the fluid in the tank that the pipe can first access	
-	 * @param {Pipe} pipe the pipe find 
-	 * @returns true if the pipe has access to the fluid
-	 * 			false if the pipe does not have access to the fluid
-	 */
-	getFirstAccessibleFluid(pipe) {
-
-		// search throught the list of fluids to find the first 
-		// accessible one by the pipe
-		for (const fluid of this._fluids) {
-			if(!(fluid instanceof EmptyFluid) && pipe.rect.withinYRange(fluid.rect)) {
-				return fluid;
-			}
-		}
-
-	};
-
-	/**
-	 * addDrop()	
-	 * @description adds a drop to the tank
-	 * @param {Drop} drop the drop to add to the tank
-	 * @returns true if the tank isn't full
-	 * 			false if the tank is full
-	 */
-	addDrop(drop) {
-		this.addFluid(drop.fluid);
-
-		// show percentage full ==> "(" + this.currentLevel + "/" + this.maxLevel + ")"
-
-	};
-
-	/**
-		containsDrop()
-		@description Checks to see if the bottom two corners of a drop are in the liquid
-		near the bottom of the tank
-
-		TODO: convert this to be more readable and elegant.
-	*/
-	containsDrop(drop) {
-		// Either the drop is in the bottom of the tank, or touching the
-		// liquid
-		// one or both of the bottom two corners of the drop are in the liquid
-							 // bottom left
-		var touchingLiquid = (
-								drop.position.x >= this._position.x + this.wallWidth &&
-							 	drop.position.x <= this._position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this._position.y + this.interior.height &&
-							 	drop.position.y + drop.size <= this._position.y + this.interior.height
-							 )
-								||
-							 // bottom right
-							 (
-							 	drop.position.x + drop.size >= this._position.x + this.wallWidth &&
-							 	drop.position.x + drop.size <= this._position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this._position.y + this.interior.height &&
-							 	drop.position.y + drop.size <= this._position.y + this.interior.height
-							 )
-
-		// if the this is empty, we pretend it has liquid level of 10.
-							 // bottom left
-		var withNoLiquid =  (
-								drop.position.x >= this._position.x + this.wallWidth &&
-							 	drop.position.x <= this._position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this._position.y + this.interior.height - 10 &&
-							 	drop.position.y + drop.size <= this._position.y + this.interior.height
-							)
-								||
-							 // bottom right
-							(
-							 	drop.position.x + drop.size >= this._position.x + this.wallWidth &&
-							 	drop.position.x + drop.size <= this._position.x + this.wallWidth + this.interior.width &&
-							 	drop.position.y + drop.size >= this._position.y + this.interior.height - 10 &&
-							 	drop.position.y + drop.size <= this._position.y + this.interior.height
-							)
-		return touchingLiquid || withNoLiquid;
-	}
-
-
-	/*
-		A string of info used for creating a tooltip
-	*/
-	getName() {
-		let sidesOpen = "";
-		sidesOpen += (this._leftOpened) ? "left " : ""
-		sidesOpen += (this._rightOpened) ? "right " : ""
-		sidesOpen += (this._upOpened) ? "up " : ""
-		sidesOpen += (this._downOpened) ? "down " : ""
-
-		return "Tank " + sidesOpen;
-	}
-
-	/**
-	 * getWidth()
-	 * @description gets the width of the tank
-	 * @returns the width of the tank
-	 */
-	getWidth() {
-		return this.interior.width + this.wallWidth * 2;
-	}
-
-	/**
-	 * getHeight()
-	 * @description gets the height of the tank
-	 * @returns height of the tank
-	 */
-	getHeight() {
-		return this.interior.height + this.wallWidth * 2;
-	}
-
-	/*
-		Get the liquid in the tank.
-	*/
-	getLiquid () {
-		return {
-			amount: this.currentLevel,
-			type: this.liquid
-		}
-	}
-
-  	
-
-	/**
-	 *	empty()
-	 *	@description Empties the tank of all its liquid
-	 */
-	empty () {
-		/**this.currentLevel = 0;
-		this.liquid = null;
-		this.text = ""
-
-		this.updateFluidsSVG();**/
-	};
-
-
-    /**
-		topSnapBehaviour()
-		@description determines what happens when an Snappable snaps to
-			the top of another snappable
-		@param snappable the Snappable being snapped to
-		@param mousePos the current position of the mouse
-	*/
-	upSnapBehaviour(snappable, mousePos) {
-		if(!this._upOpened) {
-			let thisRect = this.getRect()
-			//let otherRect = snappable.getRect()
-
-			this.orientation = "vertical"
-			this.moveRelativeToCenter({
-				y: snappable._center.y - thisRect.height / 2,
-				x: mousePos.x
-			})
-		}
-	}
-
-
-	/**
-		leftSnapBehaviour()
-		@description determines what happens when an Snappable snaps to
-		the left of another snappable
-		@param snappable the Snappable being snapped to
-		@param mousePos the current position of the mouse
-	*/
-	leftSnapBehaviour(snappable, mousePos) {
-		if(!this._leftOpened) {
-			let thisRect = this.getRect()
-			// match this object with the left edge of
-			// the other object
-			this.moveRelativeToCenter({
-				x: snappable._center.x - thisRect.width / 2,
-				y: mousePos.y
-			})
-		}
-	}
-
-	/**
-		rightSnapBehaviour()
-		@description determines what happens when an Snappable snaps to
-		the right of another snappable
-		@param snappable the Snappable being snapped to
-		@param mousePos the current position of the mouse
-	*/
-	rightSnapBehaviour(snappable, mousePos) {
-		if(!this._rightOpened) {
-			let thisRect = this.getRect()
-			let otherRect = snappable.getRect()
-			
-			// match the right edge
-			this.moveRelativeToCenter({
-				x: snappable._center.x + otherRect.width + thisRect.width / 2,
-				y: mousePos.y
-			})
-		}
-	}
-
-	/**
-		bottomSnapBehaviour()
-		@description determines what happens when an Snappable snaps to
-		the botttom of another snappable
-		@param snappable the Snappable being snapped to
-		@param mousePos the current position of the mouse
-	*/
-	downSnapBehaviour(snappable, mousePos) {
-		if(!this._downOpened) {
-			let thisRect = this.getRect()
-			let otherRect = snappable.getRect()
-
-			this.orientation = "vertical"
-			this.moveRelativeToCenter({
-				y: snappable._center.y + otherRect.height + thisRect.height / 2,
-				x: mousePos.x
-			})
-		}
-  	}
 }

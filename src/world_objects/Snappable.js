@@ -44,33 +44,33 @@ export default class Snappable extends GameObject {
   };
 
   /**
-    getShapeHeight()
-    @description the width of the shape of the object irregadless of
-      of what type of object it is
-  */
-  getWidth() {
+   * get height()
+   * @description the width of the shape of the object irregardless of
+   * of what type of object it is
+   */
+  get width() {
     return -1;
   };
 
   /**
-    getShapeHeight()
-    @description the height of the shape of the object irregadless of
-      of what type of object it is
-  */
-  getHeight() {
+   * get height()
+   * @description the height of the shape of the object irregardless of
+   *  of what type of object it is
+   */
+  get height() {
     return -1;
   };
 
   /**
-    getRect()
-    @description get a rectangle representing
-      the area of the valve
-  */
-  getRect() {
+   * get rect()
+   * @description gets a rectangle representing
+   *  the area of the valve
+   */
+  get rect() {
   	var newRect = new Rect();
   	newRect.position = this._position
-    newRect.width = this.getWidth(); // horizontal dimension
-    newRect.height = this.getHeight(); //   vertical dimension
+    newRect.width = this.width; // horizontal dimension
+    newRect.height = this.height; //   vertical dimension
 
     //newRect.createSVG()
   	return newRect;
@@ -84,7 +84,7 @@ export default class Snappable extends GameObject {
   getUpArea() {
     var upArea = new Rect()
     upArea.fill.color = "red"
-    upArea.width = this.getWidth()
+    upArea.width = this.width
     upArea.height = this.snapRadius
     upArea.position.x = this._position.x
     upArea.position.y = this._position.y - this.snapRadius
@@ -100,10 +100,10 @@ export default class Snappable extends GameObject {
   getDownArea() {
     var downArea = new Rect()
     downArea.fill.color = "green"
-    downArea.width = this.getWidth()
+    downArea.width = this.width
     downArea.height = this.snapRadius
     downArea.position.x = this._position.x
-    downArea.position.y = this._position.y + this.getHeight()
+    downArea.position.y = this._position.y + this.height
 
     return downArea
   };
@@ -118,7 +118,7 @@ export default class Snappable extends GameObject {
     var leftArea = new Rect()
     leftArea.fill.color = "blue"
     leftArea.width = this.snapRadius
-    leftArea.height = this.getHeight()
+    leftArea.height = this.height
     leftArea.position.x = this._position.x - this.snapRadius
     leftArea.position.y = this._position.y
 
@@ -134,8 +134,8 @@ export default class Snappable extends GameObject {
     var rightArea = new Rect()
     rightArea.fill.color = "yellow"
     rightArea.width = this.snapRadius
-    rightArea.height = this.getHeight()
-    rightArea.position.x = this._position.x + this.getWidth()
+    rightArea.height = this.height
+    rightArea.position.x = this._position.x + this.width
     rightArea.position.y = this._position.y
 
     //console.log("Right Area: " + JSON.stringify(rightArea));
@@ -175,8 +175,8 @@ export default class Snappable extends GameObject {
    * @param point point to move to
    */
   moveRelativeToCenter(point) {
-    this._position.x = point.x - this.getWidth() / 2
-    this._position.y = point.y - this.getHeight() / 2
+    this._position.x = point.x - this.width / 2
+    this._position.y = point.y - this.height / 2
   }
 
 
@@ -212,8 +212,8 @@ export default class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   leftSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
+    var thisRect = this.rect
+    //var otherRect = snappable.rect
     // match this object with the left edge of
     // the other object
     this.orientation = "horizontal"
@@ -231,8 +231,8 @@ export default class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   rightSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
+    var thisRect = this.rect
+    var otherRect = snappable.rect
 
     this.orientation = "horizontal"
     // match the right edge
@@ -250,8 +250,8 @@ export default class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   upSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
+    var thisRect = this.rect
+    var otherRect = snappable.rect
 
     this.orientation = "vertical"
     this.moveRelativeToCenter({
@@ -270,8 +270,8 @@ export default class Snappable extends GameObject {
     @param mousePos the current position of the mouse
   */
   downSnapBehaviour(snappable, mousePos) {
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
+    var thisRect = this.rect
+    var otherRect = snappable.rect
 
     this.orientation = "vertical"
     this.moveRelativeToCenter({
@@ -293,8 +293,8 @@ export default class Snappable extends GameObject {
     var closestDistance = 2000;
     var snapAreas = snappable.getSnapAreas()
     //snappable.showSnapAreas();
-    var thisRect = this.getRect()
-    var otherRect = snappable.getRect()
+    var thisRect = this.rect
+    var otherRect = snappable.rect
 
     for(var side of Object.keys(snapAreas)) {
       var distance = Distance(snapAreas[side].getCenter(), mousePos)
@@ -325,7 +325,7 @@ export default class Snappable extends GameObject {
     }
 
     return closestSide;
-  };
+  }
 
   /**
     attachTo()
@@ -341,6 +341,6 @@ export default class Snappable extends GameObject {
     } else {
       this.attachments[side].push(snappable)
     }
-  };
+  }
 
 }

@@ -55,6 +55,8 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
   - Convert to Raster Graphics for faster performance
 - Create a test page
 - Add touch screen capability
+- Switch to using Snap.SVG
+  - make the change with easier to switch componets first then do the hard ones last
 
 
 

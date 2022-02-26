@@ -3,7 +3,6 @@
 */
 
 import Pipe from "./Pipe";
-import * as d3 from "d3"
 
 export default class Valve extends Pipe {
   /**
@@ -17,7 +16,7 @@ export default class Valve extends Pipe {
   constructor(center, width, interiorHeight, wallWidth) {
     super(center)
 
-    this.width = width;
+    this._width = width;
     this.opened = false;
     this.pipe = null; // the pipe that this valve is connected to.
     this.position = center;
@@ -46,13 +45,13 @@ export default class Valve extends Pipe {
 
   createSVG() {
   	this.updateSVG();
-  };
+  }
 
   updateSVG() {
     var self = this;
 
-    this.svg.toggle.attr("width", this.getWidth());
-    this.svg.toggle.attr("height", this.getHeight());
+    this.svg.toggle.attr("width", this.width);
+    this.svg.toggle.attr("height", this.height);
     this.svg.toggle.attr("x", this.position.x);
     this.svg.toggle.attr("y", this.position.y);
     this.svg.toggle.style("fill-opacity", 0);
@@ -76,8 +75,8 @@ export default class Valve extends Pipe {
 
 
   	// walls
-  	this.svg.walls.attr("width", this.getWidth());
-  	this.svg.walls.attr("height", this.getHeight());
+  	this.svg.walls.attr("width", this.width);
+  	this.svg.walls.attr("height", this.height);
   	this.svg.walls.attr("x", this.position.x);
   	this.svg.walls.attr("y", this.position.y);
   	this.svg.walls.style("fill", "black").style("fill-opacity", 0.5);
@@ -96,9 +95,9 @@ export default class Valve extends Pipe {
 
 
   /**
-    toggle()
-    @description toggle the valve opened and closed
-  */
+   * toggle()
+   * @description toggle the valve opened and closed
+   */
   toggle() {
     if(this.opened) {
       this.opened = false;
@@ -110,30 +109,34 @@ export default class Valve extends Pipe {
   };
 
   /**
-    getHeight()
-    @description referes to height of the actual object in the world
-  */
-  getHeight() {
+   * get height() 
+   * @description referes to height of the actual object in the world
+   */
+  get height() {
   	if(this.orientation === "horizontal") {
   		return this.interiorHeight + this.wallWidth * 2;
   	} else {
-  		return this.width;
+  		return this._width;
   	}
   };
 
-  getWidth() {
+  /**
+   * get width() 
+   * @description referes to width of the actual object in the world
+   */
+  get width() {
   	if(this.orientation === "horizontal") {
-  		return this.width;
+  		return this._width;
   	} else {
   		return this.interiorHeight + this.wallWidth * 2;
   	}
   };
 
   /**
-   * getName()
+   * get name()
    * @returns name of this Valve
    */
-  getName() {
+  get name() {
     return "Valve";
   }
 

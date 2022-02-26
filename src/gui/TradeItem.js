@@ -4,7 +4,6 @@
 
 import BorderedButton from "./buttons/BorderedButton";
 import Button from "./buttons/Button";
-import * as d3 from "d3"
 
 export default class TradeItem extends BorderedButton {
   /**
@@ -20,13 +19,13 @@ export default class TradeItem extends BorderedButton {
   constructor(position, width, height, owner, sellValue, purchaseValue) {
     super(position, width, height);
 
-    this.sellValue = sellValue;
-    this.purchaseValue = purchaseValue;
-    this.owner = owner;
+    this._sellValue = sellValue;
+    this._purchaseValue = purchaseValue;
+    this._owner = owner;
 
     var btnWidth = 100;
     var btnHeight = 20;
-    this.sellBtn = new Button(
+    this._sellBtn = new Button(
       {
         x: this._position.x + width - 50 - 20,
         y: this._position.y + height/2 - 20/2
@@ -35,15 +34,24 @@ export default class TradeItem extends BorderedButton {
       btnHeight // height
     )
 
-    this.sellBtn.create(d3.select("svg"))
+    this.index = 0;
+  }
 
-    this.sellBtn.styling = {
+
+  /**
+   * create()
+   * @description create the graphics for the TradeItem 
+   * @param {SVG} parent the parent svg to attach the TradeItem to
+   */
+  create(parent) {
+    this._sellBtn.create(parent);
+
+    this._sellBtn.styling = {
       color: "blue",
       opacity: 1
     }
 
-    this.sellBtn.text = "Sell"
-    this.index = 0;
+    this._sellBtn.text = "Sell"
   }
 
 }

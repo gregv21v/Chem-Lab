@@ -102,8 +102,8 @@ export default class Inventory {
 			strokeWidth: 5
 		}
 
-		newSlot.name = this.objs[index].getName();
-		newSlot.setDimensions(this.objs[index].getWidth(), this.objs[index].getHeight());
+		newSlot.name = this.objs[index].name;
+		newSlot.setDimensions(this.objs[index].width, this.objs[index].height);
 		newSlot.index = index;
 
 		return newSlot;

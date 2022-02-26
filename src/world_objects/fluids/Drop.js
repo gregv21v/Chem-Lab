@@ -1,74 +1,51 @@
 /*
 	Drop - the smallest unit of liquid
 
-
   Behavior: falls until it reaches the bottom of a tank. At that point,
 	it enters the tank.
 */
 
-import ToolTip from "../gui/ToolTip";
-import Tank from "./tanks/Tank";
+import Tank from "../tanks/Tank";
 import * as d3 from "d3"
-import GameObject from "./GameObject";
+import FluidBody from "./FluidBody";
 
-export default class Drop extends GameObject {
+export default class Drop extends FluidBody {
   /**
    * constructor()
    * @description constructs the drop
    * @param {Point} position the position of the drop in the world
-   * @param {Number} size the size of the drop
-   * @param {Fluid} fluid the fluid of the drop
    * @param {Point} velocity the velocity of the drop
    */
   constructor(position, velocity, size, fluid) {
-    super(position, velocity)
-  	this.size = size;
-    this._fluid = fluid;
+    super(position, velocity, size * size, fluid)
+    this._size = size;
 
-    let mainSVG = d3.select("body").select("svg")
-  	this.svg = mainSVG.append("rect");
-    this.svg.attr("name", "drop")
+    /**
+     * Will be removed in favor of velocity
+     */
     this.direction = "" // the direction that the drop is traveling in
-
-    this.tooltip = new ToolTip(
-      position,
-      "Drop is the most basic unit of fluid");
-  }
-
-
-  /**
-   * get fluid()
-   * @description gets the fluid of this drop
-   */
-  get fluid() {
-    return this._fluid;
   }
 
   /**
-   * get id()
-   * @description gets the drop id
-   * @returns the drops id
+   * create() 
+   * @description creates the graphics for the game object
+   * @param {SVG} parent the parent svg
    */
-  get id() {
-    return this._id;
-  }
+  create(parent) {
+    this._group = d3.create("svg:g")
 
-  /*
-  	Creates and adds the svg to the main svg object.
-  */
-  createSVG() {
-  	this.updateSVG();
-  };
+    this._svg = {
+      rect: this._group.append("rect")
+    };
 
-  /*
-  	Updates the svg after its already been added to the main svg object.
-  */
-  updateSVG() {
-  	this.svg.attr("width", this.size);
-  	this.svg.attr("height", this.size);
-  	this.svg.attr("x", this.position.x);
-  	this.svg.attr("y", this.position.y);
-  	this.svg.attr("fill", this._fluid.fill());
+    this._svg.rect.attr("name", "Drop")
+    this._svg.rect.style("fill", this._fluid.getColorAsString())
+
+    this.position = this._position;
+    this.size = this._size
+
+
+    parent.append(() => this._group.node())
   }
 
 
@@ -76,18 +53,20 @@ export default class Drop extends GameObject {
   /**
    * getVolume()
    * @returns the volume of the drop
+   * @deprecated in favor of get volume()
    */
   getVolume() {
-    return this.size * this.size;
+    return this._size * this._size;
   }
 
-
-  /*
-    Removes the svg
-  */
-  destroySVG() {
-  	this.svg.remove();
+  /**
+   * get volume()
+   * @returns the volume of the drop
+   */
+  get volume() {
+    return this._size * this._size;
   }
+
 
 
   /**
@@ -97,26 +76,27 @@ export default class Drop extends GameObject {
   update(world) {
     let self = this;
 
-    this.position.x += this._velocity.x;
-    this.position.y += this._velocity.y;
+    this.position = {
+      x: this.position.x + this._velocity.x,
+      y: this.position.y + this._velocity.y
+    }
 
-    this.updateSVG()
 
     // if the drop is outside the world remove it
   	if(!world.within({position: this.position, width: this.size, height: this.size})) {
   		world.removeDrop(this);
-  		this.destroySVG();
+  		this.destroy();
   	} else { // drop is inside the world
   		// if in tank, remove drop and fill tank with size of drop
   		world.objs.forEach(function(obj) {
 
   			if(obj instanceof Tank && obj.containsDrop(self) && obj.upOpened) {
-          // add respective amount of fluid to the tank
+          // add the drop to the tank
   				obj.addDrop(self);  
 
   				// remove drop from world
   				world.removeDrop(self);
-  				self.destroySVG();
+  				self.destroy();
 
   				return;
   			}
@@ -129,7 +109,7 @@ export default class Drop extends GameObject {
     This called every update.
     directions: up, down, left, right
   */
-  flow(pipe) {
+  flow() {
     if(this.direction === "up") {
       this.position.y -= 1
     }
@@ -144,7 +124,9 @@ export default class Drop extends GameObject {
     if(this.direction === "right") {
       this.position.x += 1
     }
-    this.updateSVG();
+
+    this._svg.rect.attr("x", this.position.x)
+    this._svg.rect.attr("y", this.position.y)
   };
 
 
@@ -156,29 +138,52 @@ export default class Drop extends GameObject {
   canFlow(pipe) {
     if(this.direction === "up") {
       // make sure the drop is below the pipes upper edge
-      if(this.position.y - 1 < pipe.getCenter().y - pipe.getHeight()/2 - this.size) {
+      if(this.position.y - 1 < pipe.center.y - pipe.height/2 - this.size) {
         return false;
       }
     }
     if(this.direction === "down") {
       // make sure the drop is below the pipes lower edge
-      if(this.position.y + 1 > pipe.getCenter().y + pipe.getHeight()/2 - this.size) {
+      if(this.position.y + 1 > pipe.center.y + pipe.height/2 - this.size) {
         return false;
       }
     } else if(this.direction === "left") {
       // make sure the drop is below the pipes left edge
-      if(this.position.x - 1 < pipe.getCenter().x - pipe.getWidth()/2) {
+      if(this.position.x - 1 < pipe.center.x - pipe.width/2) {
         return false;
       }
     }
     else if(this.direction === "right") {
       // make sure the drop is below the pipes right edge
-      if(this.position.x + 1 > pipe.getCenter().x + pipe.getWidth()/2 - this.size) {
+      if(this.position.x + 1 > pipe.center.x + pipe.width/2 - this.size) {
         return false;
       }
     }
     return true;
-  };
+  }
+
+
+  /**
+   * set size()
+   * @description sets the size of the drop
+   * @param {Number} size the size to set the drop to
+   */
+  set size(value) {
+    this._size = value;
+    
+
+    this._svg.rect.attr("width", this._size);
+  	this._svg.rect.attr("height", this._size);
+  }
+
+  /**
+   * get size()
+   * @description gets the size
+   * @returns the drops size
+   */
+  get size() {
+    return this._size;
+  }
 
 
 }
