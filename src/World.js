@@ -141,16 +141,9 @@ export default class World {
 		createSVG()
 		@description create svg's for all the world objects
 	*/
-	createSVG() {
-		this.rect.createSVG();
-
-		// create svg's for all the in world objects except drops
-		for(var i = 0; i < this.objs.length; i++)
-			this.objs[i].createSVG();
-
-		//for(var i = 0; i < this.objs.length; i++)
-		//	this.objs[i].tooltip.createSVG();
-
+	create() {
+		this.rect.create(d3.select("svg"));
+		this.rect.update()
 	}
 
 
@@ -161,6 +154,8 @@ export default class World {
 	*/
 	add (obj) {
 		this.objs.push(obj);
+
+		obj.createSVG();
 
 		// for debugging purposes
 		//var mainSVG = d3.select("body").select("svg")

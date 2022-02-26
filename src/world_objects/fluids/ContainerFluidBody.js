@@ -51,8 +51,9 @@ export default class ContainerFluidBody extends FluidBody {
             newDrop.create(d3.select("svg"))
 			return newDrop;
 		} else {
-            this.volume = 0
-            let newDrop = new Drop({x: 0, y: 0}, {x: 0, y: 0}, Math.sqrt(this.volume), this.fluid);
+            let dropSize = Math.round(Math.sqrt(this.volume))
+            this.volume -= dropSize * dropSize
+            let newDrop = new Drop({x: 0, y: 0}, {x: 0, y: 0}, dropSize, this.fluid);
             newDrop.create(d3.select("svg"))
             return newDrop;
         }

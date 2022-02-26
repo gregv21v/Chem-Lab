@@ -30,7 +30,7 @@ export default class Inventory {
 	 */
 	constructor(player, position, width, height) {
 		this.player = player; // the player the inventory belongs to 
-		this.slotHeight = 80; // the height of the slots 
+		this.slotHeight = 60; // the height of the slots 
 
 		// a rect that borders the inventory
 		this.rect = new Rect();
@@ -53,6 +53,7 @@ export default class Inventory {
 	 */
 	create(parent) {
 		this.rect.create(parent);
+		this.rect.update()
 	}
 
 	
@@ -89,7 +90,7 @@ export default class Inventory {
 		@param {Number} index the index of the new slot
 	*/
 	createSlot(index) {
-		let newSlot = new Slot(this, index, this.rect.width, 80)
+		let newSlot = new Slot(this, index, this.rect.width, this.slotHeight)
 
 		newSlot.create(d3.select("svg")); // creates the graphics for the slot
 

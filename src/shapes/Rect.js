@@ -25,12 +25,7 @@ export default class Rect {
 			width: 1
 		};
 
-		let mainSVG = d3.select("body").select("svg")
-		this.svg = mainSVG.append("rect");
-
-		this.svg.attr("name", "rect")
-
-		this._svg = d3.create("svg:rect")
+		
 	}
 
 	
@@ -127,27 +122,6 @@ export default class Rect {
 		this._width = Math.abs(point1.x - point2.x);
 		this._height = Math.abs(point1.y - point2.y);
 	};
-
-
-	
-
-
-	/**
-	 * createSVG()
-	 * @deprecated in favor of render()
-	 */
-	createSVG() {
-		this.svg.attr("width", this._width);
-		this.svg.attr("height", this._height);
-		this.svg.attr("x", this._position.x);
-		this.svg.attr("y", this._position.y);
-		this.svg.attr("stroke-width", this._stroke.width);
-		this.svg.attr("stroke", this._stroke.color);
-		this.svg.attr("fill", this._fill.color);
-		this.svg.attr("fill-opacity", this._fill.opacity);
-		this.svg.attr("name", "rect")
-	}
-
 	
 
 	/**
@@ -155,32 +129,39 @@ export default class Rect {
 	 * @param {SVG} parent the parent SVG to append this rect to
 	 */
 	create(parent) {
-		parent.append(() => this._svg.node())
+		this._group = d3.create("svg:g")
 
-		this._svg.attr("width", this._width);
-		this._svg.attr("height", this._height);
-		this._svg.attr("x", this._position.x);
-		this._svg.attr("y", this._position.y);
-		this._svg.attr("stroke-width", this._stroke.width);
-		this._svg.attr("stroke", this._stroke.color);
-		this._svg.attr("fill", this._fill.color);
-		this._svg.attr("fill-opacity", this._fill.opacity);
+		this._svg = {
+			rect: this._group.append("rect")
+		}
+
+		parent.append(() => this._group.node())
 	}
 
-	destroySVG() {
-		this.svg.remove()
+	/**
+	 * update()
+	 * @description updates the attributes of the svg shape
+	 */
+	update() {
+		this._svg.rect.attr("width", this._width);
+		this._svg.rect.attr("height", this._height);
+		this._svg.rect.attr("x", this._position.x);
+		this._svg.rect.attr("y", this._position.y);
+		this._svg.rect.attr("stroke-width", this._stroke.width);
+		this._svg.rect.attr("stroke", this._stroke.color);
+		this._svg.rect.attr("fill", this._fill.color);
+		this._svg.rect.attr("fill-opacity", this._fill.opacity);
 	}
 
-	updateSVG() {
-		this._svg.attr("width", this._width);
-		this._svg.attr("height", this._height);
-		this._svg.attr("x", this._position.x);
-		this._svg.attr("y", this._position.y);
-		this._svg.attr("stroke-width", this._stroke.width);
-		this._svg.attr("stroke", this._stroke.color);
-		this._svg.attr("fill", this._fill.color);
-		this._svg.attr("fill-opacity", this._fill.opacity);
+	/**
+	 * destroy()
+	 * @description destroys the svg
+	 */
+	destroy() {
+		this._group.remove()
 	}
+
+	
 
 	/**
 	 * set fill()

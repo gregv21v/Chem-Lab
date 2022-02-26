@@ -28,6 +28,7 @@ export default class Player {
     
 
     this.world = new World(this, {x: 270, y: 20}, svg.attr("width") - (270 + 400), height);
+    this.world.create()
 
     this.inventory = new Inventory(this, {x: 20, y: 45}, 250, height - 25);
     this.inventory.create(svg);
@@ -57,6 +58,8 @@ export default class Player {
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 40, height: 100}, 5));
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 50, height: 50}, 5));
     this.inventory.add(new Tank({x: 0, y: 0}, {width: 50, height: 50}, 5, false, false, false, false))
+    this.inventory.add(new Tank({x: 0, y: 0}, {width: 50, height: 100}, 5, false, false, false, false))
+    this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));
     this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));
 
     //this.inventory.createSlots();
@@ -156,7 +159,7 @@ export default class Player {
    * @description creates the player
    */
   create() {
-    this.world.createSVG()
+    
   }
 
   update() {

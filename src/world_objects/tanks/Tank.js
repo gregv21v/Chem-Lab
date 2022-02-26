@@ -79,19 +79,19 @@ export default class Tank extends Snappable {
 	 */
 	createSVG() {
 		this._group = d3.select("body").select("svg").append("g")
-		this.svg = {
+		this._svg = {
 			walls: this._group.append("rect"),
 			interiorVertical: this._group.append("rect"),
 			interiorHorizontal: this._group.append("rect"),
 			fluids: this._group.append("g")
 		};
 
-		this.svg.walls.attr("name", "walls")
-		this.svg.interiorHorizontal.attr("name", "interiorHorizontal")
-		this.svg.interiorVertical.attr("name", "interiorVertical")
-		this.svg.fluids.attr("fluids")
+		this._svg.walls.attr("name", "walls")
+		this._svg.interiorHorizontal.attr("name", "interiorHorizontal")
+		this._svg.interiorVertical.attr("name", "interiorVertical")
+		this._svg.fluids.attr("name", "fluids")
 
-		this._emptyFluid.create(d3.select("svg"))
+		this._emptyFluid.create(this._svg.fluids)
 		this._emptyFluid.container = this;
 
 		this.updateSVG()
@@ -107,51 +107,51 @@ export default class Tank extends Snappable {
 		//this.tooltip.createSVG();
 
 		// setup walls svg
-		this.svg.walls.attr("height", this.height);
-		this.svg.walls.attr("width", this.width);
-		this.svg.walls.attr("x", this._position.x);
-		this.svg.walls.attr("y", this._position.y);
-		this.svg.walls.style("fill", this._wallColor);
+		this._svg.walls.attr("height", this.height);
+		this._svg.walls.attr("width", this.width);
+		this._svg.walls.attr("x", this._position.x);
+		this._svg.walls.attr("y", this._position.y);
+		this._svg.walls.style("fill", this._wallColor);
 		
 
 		// setup interior svg
-		this.svg.interiorVertical.attr("height", this._interior.height);
-		this.svg.interiorVertical.attr("width", this._interior.width);
-		this.svg.interiorVertical.attr("x", this._position.x + this._wallWidth);
+		this._svg.interiorVertical.attr("height", this._interior.height);
+		this._svg.interiorVertical.attr("width", this._interior.width);
+		this._svg.interiorVertical.attr("x", this._position.x + this._wallWidth);
 
-		this.svg.interiorVertical.style("fill", "white")
+		this._svg.interiorVertical.style("fill", "white")
 
-		this.svg.interiorHorizontal.attr("height", this._interior.height);
-		this.svg.interiorHorizontal.attr("width", this._interior.width);
-		this.svg.interiorHorizontal.attr("y", this._position.y + this._wallWidth)
+		this._svg.interiorHorizontal.attr("height", this._interior.height);
+		this._svg.interiorHorizontal.attr("width", this._interior.width);
+		this._svg.interiorHorizontal.attr("y", this._position.y + this._wallWidth)
 
-		this.svg.interiorHorizontal.style("fill", "white")
+		this._svg.interiorHorizontal.style("fill", "white")
     
 		if(this._leftOpened) {
-			this.svg.interiorHorizontal.attr("x", this._position.x);
+			this._svg.interiorHorizontal.attr("x", this._position.x);
 
 			if(this._rightOpened) {
-				this.svg.interiorHorizontal.attr("width", this._interior.width + this._wallWidth*2)
+				this._svg.interiorHorizontal.attr("width", this._interior.width + this._wallWidth*2)
 			}
 		} else {
-			this.svg.interiorHorizontal.attr("x", this._position.x + this._wallWidth);
+			this._svg.interiorHorizontal.attr("x", this._position.x + this._wallWidth);
 
 			if(this._rightOpened) {
-				this.svg.interiorHorizontal.attr("width", this._interior.width + this._wallWidth)
+				this._svg.interiorHorizontal.attr("width", this._interior.width + this._wallWidth)
 			}
 		}
 
 		if(this._upOpened) {
-			this.svg.interiorVertical.attr("y", this._position.y);
+			this._svg.interiorVertical.attr("y", this._position.y);
 
 			if(this._downOpened) {
-				this.svg.interiorVertical.attr("height", this._interior.height + this._wallWidth * 2)
+				this._svg.interiorVertical.attr("height", this._interior.height + this._wallWidth * 2)
 			}
 		} else {
-			this.svg.interiorVertical.attr("y", this._position.y + this._wallWidth)
+			this._svg.interiorVertical.attr("y", this._position.y + this._wallWidth)
 
 			if(this._downOpened) {
-				this.svg.interiorVertical.attr("height", this._interior.height + this._wallWidth)
+				this._svg.interiorVertical.attr("height", this._interior.height + this._wallWidth)
 			}
 		}
 
@@ -159,9 +159,9 @@ export default class Tank extends Snappable {
 		this.updateFluidBodies()
 
 		// setup label svg
-		//this.svg.label.attr("fill", "black");
-		//this.svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
-		//this.svg.label.attr("y", this._position.y + this.height/2);
+		//this._svg.label.attr("fill", "black");
+		//this._svg.label.attr("x", this._position.x + this.width/2 - (this.text.length * 6)/2);
+		//this._svg.label.attr("y", this._position.y + this.height/2);
 	}
 
   	/**
@@ -176,7 +176,7 @@ export default class Tank extends Snappable {
 				y: lastY
 			}
 			lastY = fluidBody.getButtomY()
-			console.log(lastY)
+			//console.log(lastY)
 		}
 	}
 	
@@ -232,7 +232,7 @@ export default class Tank extends Snappable {
 		}
 			
 
-		newFluid.create(this.svg.fluids);
+		newFluid.create(this._svg.fluids);
 		this.updateFluidBodies()
 	}
 
@@ -241,7 +241,7 @@ export default class Tank extends Snappable {
 	 * @description destroys the svg for the object
 	 */
 	destroySVG() {
-		for (const part of Object.values(this.svg)) {
+		for (const part of Object.values(this._svg)) {
 			part.remove()
 		}
 	}
@@ -281,7 +281,7 @@ export default class Tank extends Snappable {
 
 						if(drop) {
 							this.removeVolumelessFluids()
-							this.getEmptyFluid().addDrop(drop.size)
+							this._emptyFluid.addDrop(drop.size)
 							this.updateFluidBodies();
 						}
 					}
@@ -388,7 +388,7 @@ export default class Tank extends Snappable {
 				let newFluid = new ContainerFluidBody({x: 0, y: 0}, drop.volume, drop.fluid);
 				console.log("New Fluid")
 				console.log(newFluid)
-				newFluid.create(this.svg.fluids);
+				newFluid.create(this._svg.fluids);
 				newFluid.container = this;
 				this._fluidBodies.push(newFluid);
 				this._fluidBodies = this._fluidBodies.sort((a, b) => a.fluid.density - b.fluid.density) 
