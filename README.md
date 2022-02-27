@@ -57,6 +57,7 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Add touch screen capability
 - Switch to using Snap.SVG
   - make the change with easier to switch componets first then do the hard ones last
+- Add fluid "shaders" that make lower density fluids appear more like smoke, and vis versa for denser fluids 
 
 
 
