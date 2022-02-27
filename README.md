@@ -57,6 +57,8 @@ Mix chemicals together. Create a network of connecting pipes and tanks to separa
 - Add touch screen capability
 - Switch to using Snap.SVG
   - make the change with easier to switch componets first then do the hard ones last
+- Make it so that two or more pipes can connect the the edge of the tank
+  - not sure why this isn't already working to being with. It looks like the code is there to begin with
 
 
 

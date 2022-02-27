@@ -251,7 +251,7 @@ export default class Snappable extends GameObject {
   */
   upSnapBehaviour(snappable, mousePos) {
     var thisRect = this.rect
-    var otherRect = snappable.rect
+    //var otherRect = snappable.rect
 
     this.orientation = "vertical"
     this.moveRelativeToCenter({

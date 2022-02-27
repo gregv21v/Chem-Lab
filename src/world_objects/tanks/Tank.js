@@ -386,8 +386,6 @@ export default class Tank extends Snappable {
 			// if it doesn't exist add it
 			if(i >= this._fluidBodies.length) {
 				let newFluid = new ContainerFluidBody({x: 0, y: 0}, drop.volume, drop.fluid);
-				console.log("New Fluid")
-				console.log(newFluid)
 				newFluid.create(this._svg.fluids);
 				newFluid.container = this;
 				this._fluidBodies.push(newFluid);

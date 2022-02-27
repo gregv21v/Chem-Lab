@@ -102,10 +102,13 @@ export default class World {
 					.attr("y2", mousePos.y)
 			}
 
-
-			this.player.hand.moveRelativeToCenter(mousePos)
+			// move the object in the players 
+			// relative to the mouse
+			this.player.hand.moveRelativeToCenter(mousePos) 
 			let closestSnappable = this.findClosestSnappable(mousePos)
-			//console.log(closestSnappable);
+
+			
+			console.log(closestSnappable);
 			if(closestSnappable != null) {
 				this.snapSide = this.player.hand.snapTo(closestSnappable, mousePos);
 				if(this.snapSide !== "")
@@ -126,7 +129,7 @@ export default class World {
 		// then try to snap to that.
 		let closestSnappable = null
 		let closestDistance = 100000
-		for(var obj of this.objs) {
+		for(const obj of this.objs) {
 			if(obj instanceof Snappable) {
 				let distance = Distance(obj.center, mousePos);
 				if(distance < closestDistance) {
