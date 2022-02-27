@@ -108,7 +108,7 @@ class World {
 			this.player.hand.moveRelativeToCenter(mousePos)
 			//this.player.hand.updateSVG();
 			let closestSnappable = this.findClosestSnappable(mousePos)
-			closestSnappable.showSnapAreas();
+			//closestSnappable.showSnapAreas();
 			//console.log(closestSnappable);
 			if(closestSnappable != null) {
 				this.snapSide = this.player.hand.snapTo(closestSnappable, mousePos);

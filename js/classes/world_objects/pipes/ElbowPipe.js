@@ -1,4 +1,14 @@
+/**
+ * ElbowPipe - a pipe with a bend in it
+ */
 class ElbowPipe extends Pipe {
+  /**
+   * 
+   * @param {position} position the position of the elbow pipe
+   * @param {Number} diameter the diameter of the elbow pipe
+   * @param {Number} lengthFromCorner the length of the pipe starting from its corner
+   * @param {Number} wallWidth the width of the walls of the pipe
+   */
   constructor(position, diameter, lengthFromCorner, wallWidth) {
     super(position, diameter, lengthFromCorner, wallWidth)
 

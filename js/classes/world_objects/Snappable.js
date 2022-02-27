@@ -197,7 +197,7 @@ class Snappable extends GameObject {
     var closestSide = "";
     var closestDistance = 20000;
     var snapAreas = snappable.getSnapAreas()
-    snappable.showSnapAreas();
+    //snappable.showSnapAreas();
     var thisRect = this.getRect()
     var otherRect = snappable.getRect()
 
