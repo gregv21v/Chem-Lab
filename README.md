@@ -4,6 +4,8 @@
 An idle game about mixing chemicals. <br>
 Inspired by Minecraft's Buildcraft Mod
 
+This game is in early alpha, so expect bugs
+
 <strong>Objective:</strong>
 Mix chemicals together. Create a network of connecting pipes and tanks to separate tanks individually.
 
