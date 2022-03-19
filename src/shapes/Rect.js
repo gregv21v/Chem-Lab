@@ -162,6 +162,10 @@ export default class Rect {
 	}
 
 	
+	rotate() {
+
+	}
+	
 
 	/**
 	 * set fill()

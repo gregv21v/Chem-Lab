@@ -6,12 +6,18 @@
 import World from "./World"
 import Inventory from "./gui/Inventory"
 import ValueBox from "./gui/ValueBox"
-import Valve from "./world_objects/Valve"
-import Pipe from "./world_objects/Pipe"
+import Valve from "./world_objects/pipes/Valve"
+import Pipe from "./world_objects/pipes/Pipe"
+import ElbowPipe from "./world_objects/pipes/ElbowPipe"
 import Tank from "./world_objects/tanks/Tank"
 import Pump from "./world_objects/Pump"
 import * as d3 from "d3"
 import GameObject from "./world_objects/GameObject"
+import AnimationPath from "./AnimationPath"
+import Snap from "snapsvg-cjs";
+import Vector from "./shapes/Vector"
+import Path from "./shapes/Path"
+
 
 export default class Player {
 
@@ -25,8 +31,7 @@ export default class Player {
 
     this._hand = null;
 
-    
-
+  
     this.world = new World(this, {x: 270, y: 20}, svg.attr("width") - (270 + 400), height);
     this.world.create()
 
@@ -59,8 +64,9 @@ export default class Player {
     this.inventory.add(new Tank({x: 475, y: 540}, {width: 50, height: 50}, 5));
     this.inventory.add(new Tank({x: 0, y: 0}, {width: 50, height: 50}, 5, false, false, false, false))
     this.inventory.add(new Tank({x: 0, y: 0}, {width: 50, height: 100}, 5, false, false, false, false))
+    this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));  // center, width, diameter, wall width
     this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));
-    this.inventory.add(new Pipe({x: 500, y: 500}, 50, 10, 5));
+    this.inventory.add(new ElbowPipe({x: 0, y: 0}, 10, 50, 5)); // position, diameter, length, wall width
 
     //this.inventory.createSlots();
 
@@ -70,6 +76,7 @@ export default class Player {
     let startX = 300;
     let startY = 100;
     
+    /*
     let testTanks = [
       new Tank(
         {x: startX + 100, y: startY}, {width: 40, height: 40}, 5, 
@@ -96,7 +103,38 @@ export default class Player {
         false, false, false, false 
       )
     ]
+    */
 
+    /*
+    let testAnimationPath = new AnimationPath(300, 20);
+    
+    testAnimationPath.addPoint(new Vector(this.world.position.x, this.world.position.y))
+    testAnimationPath.addPoint(new Vector(this.world.position.x + 200, 300))
+    testAnimationPath.addPoint(new Vector(this.world.position.x + 200, 150 ))
+    testAnimationPath.traverse(testGameObject);
+    */
+
+    let snap = Snap("#main")
+
+    let testGameObject = new GameObject(
+      new Vector(this.world.position.x + 10, this.world.position.y + 10), new Vector(0, 0)
+    )
+    
+
+    testGameObject.width = 20;
+    testGameObject.height = 20;
+    testGameObject.createSVG(snap)
+
+    // create a path
+    
+    let path = new Path();
+    path.moveTo(this.world.position.x + 20, this.world.position.y + 20)
+    path.lineTo(this.world.position.x + 20, this.world.position.y + 170)
+    path.lineTo(this.world.position.x + 170, this.world.position.y + 170)
+    path.createSVG(snap)
+    path.animateObjectAlongPath(testGameObject, 0, 5000, () => console.log("Animation Complete"))
+
+    
 
     // positioned sell tank at center of world.
     var sellTank = new Tank(
@@ -110,6 +148,7 @@ export default class Player {
       },
       5
     );
+    sellTank.createSVG(d3.select("svg"))
     sellTank.wallColor = "red";
 
 
@@ -130,8 +169,10 @@ export default class Player {
     })*/
 
     var startPump = new Pump(this.world, {x: 0, y: 0}, 10);
+    startPump.createSVG(d3.select("svg"))
     startPump.position.x = this.inventory.width + this.world.width/2 - startPump.width/2;
     startPump.position.y = startPump.width + startPump.production;
+    startPump.updateSVG()
 
     var testValve = new Valve(
       {x: this.world.width / 2, y: this.world.height / 2},
@@ -176,8 +217,8 @@ export default class Player {
   onKeyPress(event) {
     this.inventory.onKeyPress(event);
 
-    console.log(event.key)
-    if(event.key === 'r' && this._hand instanceof Pipe) {
+    if(event.key === 'r' && (this._hand instanceof Pipe || this._hand instanceof ElbowPipe)) {
+      console.log("rotating");
       this._hand.rotate();
       this._hand.updateSVG();
     }

@@ -3,6 +3,7 @@
 */
 
 import Pipe from "./Pipe";
+import * as d3 from "d3"
 
 export default class Valve extends Pipe {
   /**
@@ -23,8 +24,17 @@ export default class Valve extends Pipe {
 
     this.interiorHeight = interiorHeight;
     this.wallWidth = wallWidth;
+  }
 
-    this.svg = {
+  /**
+   * createSVG()  
+   * @description add the svg graphics of this Valve to a parent svg
+   * @param {SVG} parent the parent svg to add this graphic to
+   */
+  createSVG(parent) {
+    this._group = d3.create("svg:g")
+
+    this._svg = {
       // walls of the valve
       walls: this._group.append("rect"),
       // inner portion of the pipe.
@@ -36,59 +46,66 @@ export default class Valve extends Pipe {
     }
 
     var self = this
-    this.svg.toggle.on("mouseclick", function(event) {
+    this._svg.toggle.on("mouseclick", function(event) {
       console.log("Toggling...");
       self.toggle();
       //self.updateSVG();
     })
-  }
 
-  createSVG() {
+    parent.append(() => this._group.node())
+
   	this.updateSVG();
   }
 
+
+  /**
+   * updateSVG()
+   * @description updates the attributes of the svg
+   */
   updateSVG() {
     var self = this;
 
-    this.svg.toggle.attr("width", this.width);
-    this.svg.toggle.attr("height", this.height);
-    this.svg.toggle.attr("x", this.position.x);
-    this.svg.toggle.attr("y", this.position.y);
-    this.svg.toggle.style("fill-opacity", 0);
-    this.svg.toggle.on("click", function() {
+    this._svg.toggle.attr("width", this.width);
+    this._svg.toggle.attr("height", this.height);
+    this._svg.toggle.attr("x", this.position.x);
+    this._svg.toggle.attr("y", this.position.y);
+    this._svg.toggle.style("fill-opacity", 0);
+    this._svg.toggle.on("click", function() {
       self.toggle();
     });
 
   	if(this.orientation === "horizontal") {
   		// interior
-  		this.svg.interior.attr("width", this.width);
-  		this.svg.interior.attr("height", this.interiorHeight);
+      this._svg.interior.attr("x", this.position.x);
+      this._svg.interior.attr("y", this.position.y + this.wallWidth);
+  		this._svg.interior.attr("width", this.width);
+  		this._svg.interior.attr("height", this.interiorHeight);
   	} else {
   		// interior
-  		this.svg.interior.attr("width", this.interiorHeight);
-  		this.svg.interior.attr("height", this.width);
+      this._svg.interior.attr("x", this.position.x + this.wallWidth);
+      this._svg.interior.attr("y", this.position.y);
+  		this._svg.interior.attr("width", this.interiorHeight);
+  		this._svg.interior.attr("height", this.width);
   	}
 
-    this.svg.interior.attr("x", this.position.x);
-    this.svg.interior.attr("y", this.position.y + this.wallWidth);
-    this.svg.interior.style("fill-opacity", 0.5)
+    this._svg.interior.style("fill-opacity", 0.5)
 
 
   	// walls
-  	this.svg.walls.attr("width", this.width);
-  	this.svg.walls.attr("height", this.height);
-  	this.svg.walls.attr("x", this.position.x);
-  	this.svg.walls.attr("y", this.position.y);
-  	this.svg.walls.style("fill", "black").style("fill-opacity", 0.5);
+  	this._svg.walls.attr("width", this.width);
+  	this._svg.walls.attr("height", this.height);
+  	this._svg.walls.attr("x", this.position.x);
+  	this._svg.walls.attr("y", this.position.y);
+  	this._svg.walls.style("fill", "black").style("fill-opacity", 0.5);
 
     // latch
-    this.svg.latch.attr("width", 10);
-    this.svg.latch.attr("x", this.position.x + this.width/2 - 5);
-    this.svg.latch.attr("y", this.position.y + this.wallWidth);
-    this.svg.latch.style("fill", "black").style("fill-opacity", 1);
+    this._svg.latch.attr("width", 10);
+    this._svg.latch.attr("x", this.position.x + this.width/2 - 5);
+    this._svg.latch.attr("y", this.position.y + this.wallWidth);
+    this._svg.latch.style("fill", "black").style("fill-opacity", 1);
 
   	// interior
-  	this.svg.interior.attr("fill", "white");
+  	this._svg.interior.attr("fill", "white");
 
   }
 
@@ -101,10 +118,10 @@ export default class Valve extends Pipe {
   toggle() {
     if(this.opened) {
       this.opened = false;
-      this.svg.latch.attr("height", 0);
+      this._svg.latch.attr("height", 0);
     } else {
       this.opened = true;
-      this.svg.latch.attr("height", this.interiorHeight);
+      this._svg.latch.attr("height", this.interiorHeight);
     }
   };
 

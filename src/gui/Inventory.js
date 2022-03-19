@@ -139,7 +139,6 @@ export default class Inventory {
 	 */
 	add(item) {
 		this.objs.push(item);
-
 		let newSlot = this.createSlot(this.slots.length);
 		this.slots.push(newSlot)
 	}
@@ -152,7 +151,7 @@ export default class Inventory {
 	pickItem(index) {
 		// put the item in the players hand
 		this.player.hand = this.objs[index];
-		this.player.hand.createSVG();
+		this.player.hand.createSVG(d3.select("svg"));
 
 		this.remove(index);
 	}

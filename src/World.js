@@ -1,7 +1,7 @@
 /*
 	The world contains all the game objects.
 */
-import Pipe from "./world_objects/Pipe";
+import Pipe from "./world_objects/pipes/Pipe";
 import Snappable from "./world_objects/Snappable";
 import Rect from "./shapes/Rect";
 import Tank from "./world_objects/tanks/Tank";
@@ -15,6 +15,7 @@ export default class World {
 		this.player = player;
 		this.snapSide = "";
 		this.snappingTo = null;
+		this._position = position;
 
 		// The side that the given object (snappingTo) is on.
 		this.objectOn = ""
@@ -155,7 +156,7 @@ export default class World {
 	add (obj) {
 		this.objs.push(obj);
 
-		obj.createSVG();
+		obj.createSVG(d3.select("svg"));
 
 		// for debugging purposes
 		//var mainSVG = d3.select("body").select("svg")
@@ -267,4 +268,13 @@ export default class World {
 	get height() {
 		return this.rect.height + 20;
 	};
+
+
+	/**
+	 * get position()
+	 * @description get the position of the world
+	 */
+	get position() {
+		return this._position;
+	}
 }

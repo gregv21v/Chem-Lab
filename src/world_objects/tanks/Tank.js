@@ -17,11 +17,10 @@
 
 import * as d3 from "d3"
 import Snappable from "../Snappable";
-import Pipe from "../Pipe";
+import Pipe from "../pipes/Pipe";
 import Drop from "../fluids/Drop";
 import Fluid from "../fluids/Fluid";
 import EmptyFluid from "../fluids/EmptyFluid";
-import FluidBody from "../fluids/FluidBody";
 import ContainerFluidBody from "../fluids/ContainerFluidBody";
 
 export default class Tank extends Snappable {
@@ -77,8 +76,8 @@ export default class Tank extends Snappable {
 	 * create()
 	 * @description creates the Tank
 	 */
-	createSVG() {
-		this._group = d3.select("body").select("svg").append("g")
+	createSVG(parent) {
+		this._group = d3.create("svg:g")
 		this._svg = {
 			walls: this._group.append("rect"),
 			interiorVertical: this._group.append("rect"),
@@ -94,6 +93,7 @@ export default class Tank extends Snappable {
 		this._emptyFluid.create(this._svg.fluids)
 		this._emptyFluid.container = this;
 
+		parent.append(() => this._group.node())
 		this.updateSVG()
 	}
 
@@ -127,6 +127,7 @@ export default class Tank extends Snappable {
 
 		this._svg.interiorHorizontal.style("fill", "white")
     
+		// the logic for displayed the correctly opened sides of the tank
 		if(this._leftOpened) {
 			this._svg.interiorHorizontal.attr("x", this._position.x);
 

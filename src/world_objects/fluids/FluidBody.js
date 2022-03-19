@@ -10,7 +10,7 @@ export default class FluidBody extends GameObject {
     /**
      * constructor()
      * @description constructs the fluid
-     * @param {Vector} position the position of the fluid
+     * @param {Point} position the position of the fluid
      * @param {Vector} velocity the velocity of the fluid
      * @param {Number} volume the volume of the fluid
      * @param {Fluid} fluid the fluid that this mass is made of 

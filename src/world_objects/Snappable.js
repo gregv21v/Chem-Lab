@@ -32,9 +32,12 @@ export default class Snappable extends GameObject {
   }
 
 
-  // Rotating should maintain consistency
-  // between the snap areas and their corresponding
-  // sides.
+  /**
+   * @description Rotates the snappable
+   *  Rotating should maintain consistency
+   *  between the snap areas and their corresponding
+   *  sides.
+   */
   rotate() {
     if(this.orientation === "horizontal") {
       this.orientation = "vertical"

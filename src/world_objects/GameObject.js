@@ -9,8 +9,6 @@
 
 */
 import Rect from "../shapes/Rect";
-import * as d3 from "d3"
-import ToolTip from "../gui/ToolTip"
 
 export default class GameObject {
 
@@ -22,11 +20,11 @@ export default class GameObject {
    * @param {Vector} velocity the velocity of the game object
    */
   constructor(center, velocity) {
-    this._center = center;
+    this._center = center; // does this need to be here?
     this._position = center;
     this._velocity = velocity;
-    this._width = 0;
-    this._height = 0;
+    this._width = 5;
+    this._height = 5;
 
     this._id = GameObject.lastId
     GameObject.lastId++ 
@@ -35,14 +33,48 @@ export default class GameObject {
   /**
    * create() 
    * @description creates the graphics for the game object
-   * @param {SVG} parent the parent svg
+   * @param {SVG} paper the svg paper
    */
-  create(parent) {
+  createSVG(paper) {
+    this._group = paper.g()
+
+    this._svg = {
+      rect: this._group.rect(this._position.x, this._position.y, this._width, this._height)
+    }
+
+    this._svg.rect.attr({
+      fill: "red"
+    })
+
+    
+    /* to be removed
     this._group = d3.create("svg:g")
 
-    this._svg = {};
+    this._svg = {
+      rect: this._group.append("rect")
+    };
+
+    this._group.attr("name", "GameObject")
+
+    this.updateSVG()
 
     parent.append(() => this._group.node())
+    */
+  }
+
+  
+
+  /**
+   * updateSVG()
+   * @description updates the svg of this game object
+   */
+  updateSVG() {
+    this._svg.rect.attr({
+      x: this.position.x,
+      y: this.position.y,
+      width: this.width,
+      height: this.height
+    })
   }
 
   /**
@@ -61,15 +93,6 @@ export default class GameObject {
     this._position.x += this._velocity.x;
     this._position.y += this._velocity.y;
   } 
-
-
-  /**
-   * updateSVG()
-   * @description updates the svg graphic for this GameObject
-   */
-  updateSVG() {
-
-  }
 
   
   /**
@@ -96,8 +119,17 @@ export default class GameObject {
    * @returns the width of this GameObject
    */
   get width() {
-    return 0;
-  };
+    return this._width;
+  }
+
+  /**
+   * set width()
+   * @description sets the width of the game object
+   * @param {Number} width the width of the game object
+   */
+  set width(value) {
+    this._width = value;
+  }
 
   /**
    * get height()
@@ -105,8 +137,18 @@ export default class GameObject {
    * @returns height
    */
   get height() {
-    return 0;
+    return this._height;
   }
+
+  /**
+   * set height()
+   * @description sets the height of the game object
+   * @param {Number} height the height of the game object
+   */
+  set height(value) {
+    this._height = value;
+  }
+  
 
 
   /**
@@ -156,6 +198,14 @@ export default class GameObject {
    */
   set position(value) {
     this._position = value;
+  }
+
+  /**
+   * get svg
+   * @description gets the svg group of this game object
+   */
+  get svg() {
+    return this._svg.rect
   }
 
 }

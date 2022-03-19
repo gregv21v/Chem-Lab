@@ -19,7 +19,6 @@ loadingScreen.select("[name='test']").on("click", () => {
     app.html(TestModeScreenTemplate)
     game = new Game(0);
     game.render()
-
 })
 
 loadingScreen.select("[name='creative']").on("click", () => {
@@ -33,6 +32,4 @@ loadingScreen.select("[name='normal']").on("click", () => {
     game = new Game(2);
     game.render()
 })
-
-
 
