@@ -199,9 +199,14 @@ export default class Path {
         Snap.animate(start, length, (value) => {
             let movePoint = Snap.path.getPointAtLength(this._svg, value);
 
-            gameObject.svg.attr({ x: movePoint.x, y: movePoint.y })
+            gameObject.svg.attr({ x: movePoint.x - gameObject.width / 2, y: movePoint.y - gameObject.height / 2 })
         }, duration, null, () => callback(this._svg))
     }
+
+
+    
+
+
 }
 
 

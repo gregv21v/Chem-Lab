@@ -131,6 +131,7 @@ export default class Player {
     path.moveTo(this.world.position.x + 20, this.world.position.y + 20)
     path.lineTo(this.world.position.x + 20, this.world.position.y + 170)
     path.lineTo(this.world.position.x + 170, this.world.position.y + 170)
+    path.smoothCurveTo(800, 200, this.world.position.x + 300, this.world.position.y + 400)
     path.createSVG(snap)
     path.animateObjectAlongPath(testGameObject, 0, 5000, () => console.log("Animation Complete"))
 
