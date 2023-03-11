@@ -1,8 +1,11 @@
 # Chem-Lab
-
-
 An idle game about mixing chemicals. <br>
 Inspired by Minecraft's Buildcraft Mod
+
+# Getting Started 
+To run the game, first install it, by running the command `npm install` in your command line. Once you've 
+install the game, type `npm run dev` to run the game.
+
 
 <strong>Objective:</strong>
 Mix chemicals together. Create a network of connecting pipes and tanks to separate tanks individually.
@@ -34,8 +37,7 @@ This game is in early alpha, so expect bugs
   - Make it so that fluids can only enter sided tanks 
       through an open side. (partly done way done)
   - make it so that fluids can pass through pipes again
-
-
+  - make it so that pipes connected to tanks show like they are connected
 - Create the liquid distributor pipe
 - Create the liquid sorter pipe 
 - Create a class for the sell tank (extra)

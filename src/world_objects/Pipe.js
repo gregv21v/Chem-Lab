@@ -38,6 +38,7 @@ export default class Pipe extends Snappable {
 		this._svg.interior.attr("name", "pipeInterior")
 
 		this._rect = new Rect(this.position, this.width, this.height);
+
 		//this.updatePosition();
 
   	}
@@ -102,9 +103,14 @@ export default class Pipe extends Snappable {
 	updateSVG() {
 		//this.updatePosition();
 
+	
 		if(this.orientation === "horizontal") {
+			//let extraWidth = (this.attachments.right && this.attachments.right[0].wallWidth) ? this.attachments.right[0].wallWidth : 0
+			//console.log(extraWidth);
+
+
 			// interior
-			this._svg.interior.attr("width", this._width);
+			this._svg.interior.attr("width", this._width + extraWidth);
 			this._svg.interior.attr("height", this._interiorHeight);
 			this._svg.interior.attr("x", this._position.x);
 			this._svg.interior.attr("y", this._position.y + this._wallWidth);

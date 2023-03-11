@@ -68,6 +68,7 @@ export default class Tank extends Snappable {
 		this._fluidBodies = [
 			this._emptyFluid	
 		] 
+
 	}
 
 	
@@ -555,6 +556,16 @@ export default class Tank extends Snappable {
 	 */
 	getDownY() {
 		return this._position.y + this._interior.height + this._wallWidth;
+	}
+
+
+	/**
+	 * get wallWidth()
+	 * @description gets the wall width of the tank
+	 * @returns the wall width of the tank
+	 */
+	get wallWidth() {
+		return this._wallWidth;
 	}
 
 
